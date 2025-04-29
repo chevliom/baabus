@@ -11,8 +11,12 @@ export const NavLinks = async ({ channel }: { channel: string }) => {
 
 	return (
 		<>
-			<NavLink href="/products">All</NavLink>
-			{navLinks.menu?.items?.map((item) => {
+			{/* <NavLink href="/products">All</NavLink> */}
+			<NavLink href="/products">Home</NavLink>
+			<NavLink href="/products">Categories</NavLink>
+			<NavLink href="/products">About</NavLink>
+			<NavLink href="/products">Contact Us</NavLink>
+			{/* {navLinks.menu?.items?.map((item) => {
 				if (item.category) {
 					return (
 						<NavLink key={item.id} href={`/categories/${item.category.slug}`}>
@@ -42,7 +46,7 @@ export const NavLinks = async ({ channel }: { channel: string }) => {
 					);
 				}
 				return null;
-			})}
+			})} */}
 		</>
 	);
 };

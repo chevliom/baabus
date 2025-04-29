@@ -1,8 +1,8 @@
 "use client";
-
+import NextImage, { type ImageProps } from "next/image";
 import { usePathname } from "next/navigation";
 import { LinkWithChannel } from "../atoms/LinkWithChannel";
-
+import CompanyLogo from  "@/assets/logo.png";
 const companyName = "ACME";
 
 export const Logo = () => {
@@ -18,7 +18,11 @@ export const Logo = () => {
 	return (
 		<div className="flex items-center font-bold">
 			<LinkWithChannel aria-label="homepage" href="/">
-				{companyName}
+			<NextImage
+				className="w-[150px]"
+				src={CompanyLogo}
+				alt={companyName}
+			/>
 			</LinkWithChannel>
 		</div>
 	);

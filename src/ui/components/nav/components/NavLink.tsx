@@ -13,8 +13,8 @@ export function NavLink({ href, children }: { href: string; children: JSX.Elemen
 			<LinkWithChannel
 				href={href}
 				className={clsx(
-					isActive ? "border-neutral-900 text-neutral-900" : "border-transparent text-neutral-500",
-					"inline-flex items-center border-b-2 pt-px text-sm font-medium hover:text-neutral-700",
+					isActive ? "border-neutral-900 " : "border-transparent",
+					"inline-flex items-center border-b-2 pt-px text-md font-[700] text-[#E62875]",
 				)}
 			>
 				{children}
