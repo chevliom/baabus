@@ -23,10 +23,12 @@ export const FeatureByAnima = (): JSX.Element => {
 				{features.map((feature, index) => (
 					<div key={index} className="flex items-center gap-3">
 						{feature.isIconSvg ? (
-							<Image className="h-6 w-6" alt="Safe icon" src={feature.icon} />
+							<Image width={24} height={24} className="h-6 w-6" alt="Safe icon" src={feature.icon} />
 						) : (
 							<div className="relative h-8 w-8">
 								<Image
+									width={25}
+									height={32}
 									className="absolute left-[3px] top-0 h-8 w-[25px]"
 									alt="Discount icon"
 									src={feature.icon}

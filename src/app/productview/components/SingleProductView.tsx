@@ -21,17 +21,6 @@ export const SingleProductView = (): JSX.Element => {
 		{ id: 4, src: "/image-60-2.png", alt: "Product Thumbnail 4" },
 	];
 
-	const productDetails = [
-		{ label: "SKU", value: "SS001" },
-		{ label: "Category", value: "Swing Car" },
-	];
-
-	const socialIcons = [
-		{ id: 1, src: "/akar-icons_facebook-fill.svg", alt: "Facebook" },
-		{ id: 2, src: "/akar-icons_linkedin-box-fill.svg", alt: "LinkedIn" },
-		{ id: 3, src: "/ant-design_twitter-circle-filled.svg", alt: "Twitter" },
-	];
-
 	const reviews = [
 		{
 			name: "Kristin Watson",
@@ -42,7 +31,7 @@ export const SingleProductView = (): JSX.Element => {
 		},
 		{
 			name: "Jane Cooper",
-			avatar: "https://via.placeholder.com/48",
+			avatar: "https://via.placeholder.com/48.jpg",
 			rating: 4,
 			text: `Keep the soil evenly moist for the healthiest growth. If the sun gets too hot, Chinese cabbage tends to "bolt"...`,
 			time: "30 Apr, 2021",
@@ -81,14 +70,16 @@ export const SingleProductView = (): JSX.Element => {
 								{thumbnails.map((thumbnail) => (
 									<div
 										key={thumbnail.id}
-										className={`flex h-20 w-[76px] flex-shrink-0 cursor-pointer items-center justify-center rounded-[10px] bg-[#d9e8f6] ${
-											mainImage === thumbnail.src ? "ring-2 ring-[#ea518f]" : ""
+										className={`flex h-20 w-[76px] flex-shrink-0 cursor-pointer items-center justify-center rounded-lg transition-all ${
+											mainImage === thumbnail.src ? "bg-[#D9E9F7]" : "bg-white"
 										}`}
 										onClick={() => setMainImage(thumbnail.src)}
 									>
 										<Image
 											loading="lazy"
-											className="h-[70px] w-[70px] object-cover"
+											width={70}
+											height={70}
+											className="h-[70px] w-[70px] rounded-lg object-cover"
 											alt={thumbnail.alt}
 											src={thumbnail.src}
 										/>
@@ -100,7 +91,9 @@ export const SingleProductView = (): JSX.Element => {
 							<div className="relative flex h-[400px] w-full items-center justify-center rounded-lg bg-[url(/image-6.png)] bg-cover bg-center md:h-[500px] md:w-[423px]">
 								<Image
 									loading="lazy"
-									className="h-[279px] w-[279px] object-cover"
+									width={279}
+									height={279}
+									className="h-[279px] w-[279px] rounded-lg object-cover"
 									alt="Main Product"
 									src={mainImage}
 								/>
@@ -110,32 +103,6 @@ export const SingleProductView = (): JSX.Element => {
 
 					{/* Product Info */}
 					<FrameByAnima />
-				</div>
-
-				{/* Product Details */}
-				<div className="mt-8">
-					{productDetails.map((detail, index) => (
-						<div key={index} className="mb-4 flex gap-8">
-							<div className="font-['Poppins',Helvetica] text-base font-normal text-[#9f9f9f]">
-								{detail.label}
-							</div>
-							<div className="font-['Poppins',Helvetica] text-base font-normal text-[#9f9f9f]">
-								{detail.value}
-							</div>
-						</div>
-					))}
-
-					{/* Social Share */}
-					<div className="mb-8 flex items-center gap-4">
-						<div className="font-['Poppins',Helvetica] text-base font-normal text-[#9f9f9f]">Share</div>
-						<div className="flex gap-4">
-							{socialIcons.map((icon) => (
-								<button key={icon.id} aria-label={`Share on ${icon.alt}`} className="h-5 w-5">
-									<Image loading="lazy" alt={icon.alt} src={icon.src} />
-								</button>
-							))}
-						</div>
-					</div>
 				</div>
 
 				<Separator className="my-8" />
@@ -172,7 +139,14 @@ export const SingleProductView = (): JSX.Element => {
 								<div className="relative h-[300px] w-full rounded-lg bg-[url(/Video.png)] bg-cover md:w-[536px]">
 									<div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
 										<div className="flex h-[50px] w-[50px] items-center justify-center rounded-full bg-[#ea518f]">
-											<Image loading="lazy" className="h-[18px] w-3.5" alt="Play" src="/play.png" />
+											<Image
+												loading="lazy"
+												width={14} // w-3.5 = 0.875rem = 14px
+												height={18} // h-[18px] as given
+												className="h-[18px] w-3.5"
+												alt="Play"
+												src="/play.png"
+											/>
 										</div>
 									</div>
 								</div>
@@ -283,6 +257,8 @@ export const SingleProductView = (): JSX.Element => {
 											src={review.avatar}
 											alt={`${review.name} avatar`}
 											className="h-12 w-12 rounded-full object-cover"
+											width={48} // Set the width
+											height={48} // Set the height
 										/>
 										<div className="flex-1">
 											<div className="flex items-center justify-between">
