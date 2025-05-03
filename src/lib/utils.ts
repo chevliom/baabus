@@ -1,43 +1,76 @@
-export const formatDate = (date: Date | number) => {
-	return new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(date);
+// utils/index.ts (or lib/index.ts)
+
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+// Utility function for merging Tailwind class names
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+/**
+ * Formats a Date or a timestamp into a medium date style.
+ * @param date The date to format, either a Date object or a timestamp (number).
+ * @returns A string representing the formatted date.
+ */
+export const formatDate = (date: Date | number): string => {
+  return new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(date);
 };
 
-export const formatMoney = (amount: number, currency: string) =>
-	new Intl.NumberFormat("en-US", {
-		style: "currency",
-		currency,
-	}).format(amount);
+/**
+ * Formats a number as a currency value based on the given currency.
+ * @param amount The amount of money to format.
+ * @param currency The currency code (e.g., 'USD', 'EUR').
+ * @returns A string representing the formatted money.
+ */
+export const formatMoney = (amount: number, currency: string): string => {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
+  }).format(amount);
+};
 
+/**
+ * Formats a range of money values, either the same or different, into a string.
+ * @param range The range containing a start and stop value, both with amounts and currencies.
+ * @returns A string representing the formatted money range.
+ */
 export const formatMoneyRange = (
-	range: {
-		start?: { amount: number; currency: string } | null;
-		stop?: { amount: number; currency: string } | null;
-	} | null,
-) => {
-	const { start, stop } = range || {};
-	const startMoney = start && formatMoney(start.amount, start.currency);
-	const stopMoney = stop && formatMoney(stop.amount, stop.currency);
+  range: {
+    start?: { amount: number; currency: string } | null;
+    stop?: { amount: number; currency: string } | null;
+  } | null
+): string => {
+  const { start, stop } = range || {};
+  const startMoney = start && formatMoney(start.amount, start.currency);
+  const stopMoney = stop && formatMoney(stop.amount, stop.currency);
 
-	if (startMoney === stopMoney) {
-		return startMoney;
-	}
+  if (startMoney === stopMoney) {
+    return startMoney;
+  }
 
-	return `${startMoney} - ${stopMoney}`;
+  return `${startMoney} - ${stopMoney}`;
 };
 
+/**
+ * Generates a URL for a product variant, including the product slug and optional variant ID.
+ * @param productSlug The slug of the product.
+ * @param variantId The optional variant ID.
+ * @returns The generated URL string.
+ */
 export function getHrefForVariant({
-	productSlug,
-	variantId,
+  productSlug,
+  variantId,
 }: {
-	productSlug: string;
-	variantId?: string;
+  productSlug: string;
+  variantId?: string;
 }): string {
-	const pathname = `/products/${encodeURIComponent(productSlug)}`;
+  const pathname = `/products/${encodeURIComponent(productSlug)}`;
 
-	if (!variantId) {
-		return pathname;
-	}
+  if (!variantId) {
+    return pathname;
+  }
 
-	const query = new URLSearchParams({ variant: variantId });
-	return `${pathname}?${query.toString()}`;
+  const query = new URLSearchParams({ variant: variantId });
+  return `${pathname}?${query.toString()}`;
 }
