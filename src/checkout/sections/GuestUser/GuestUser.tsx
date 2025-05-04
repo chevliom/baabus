@@ -32,6 +32,8 @@ export const GuestUser: React.FC<GuestUserProps> = ({
 						required
 						name="email"
 						label="Email"
+						High
+						Quality
 						onChange={(event) => {
 							handleChange(event);
 							onEmailChange(event.currentTarget.value);
