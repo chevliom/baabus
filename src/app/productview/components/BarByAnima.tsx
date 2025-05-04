@@ -1,22 +1,16 @@
 "use client";
 
 import { HeartIcon, SearchIcon, ShoppingCartIcon, UserIcon } from "lucide-react";
-import Image from "next/image";
 import React from "react";
-import { Button } from "@/ui/Button";
-import { Input } from "@/ui/Input";
-
-interface NavItem {
-	label: string;
-	href: string;
-}
+import Image from "next/image";
 
 export const BarByAnima = (): JSX.Element => {
-	const navItems: NavItem[] = [
-		{ label: "Home", href: "#" },
-		{ label: "Categories", href: "#" },
-		{ label: "About", href: "#" },
-		{ label: "Contact Us", href: "#" },
+	// Navigation links data
+	const navLinks = [
+		{ title: "Home", href: "/" },
+		{ title: "Categories", href: "/categories" },
+		{ title: "About", href: "/about" },
+		{ title: "Contact Us", href: "/contact" },
 	];
 
 	return (
@@ -28,50 +22,41 @@ export const BarByAnima = (): JSX.Element => {
 
 			{/* Navigation Links */}
 			<nav className="ml-16 flex items-center gap-12">
-				{navItems.map((item, index) => (
+				{navLinks.map((link, index) => (
 					<a
 						key={index}
-						href={item.href}
-						className="text-primaryp-500 font-['Poppins',Helvetica] text-xl font-bold"
+						href={link.href}
+						className="text-primaryp-500 font-['Poppins',Helvetica] text-xl font-bold font-bold text-[#ea518f]"
 					>
-						{item.label}
+						{link.title}
 					</a>
 				))}
 			</nav>
 
-			{/* Search Bar */}
-			<div className="mx-4 max-w-[416px] flex-1">
-				<div className="flex h-12 items-center rounded-[50px] border border-dashed border-[#600b2e] bg-[#d9e8f6] px-2.5">
-					<SearchIcon className="h-[27px] w-7 text-gray-600" />
-					<Input
-						className="h-full border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
-						placeholder="Search..."
-					/>
-				</div>
+			<div className="flex h-[48px] w-[416px] items-center rounded-full border border-dashed border-[#600b2e] bg-[#d9e8f6] px-[20px]">
+				<SearchIcon className="h-5 w-5 text-[#0e3973]" />
+				<input
+					type="text"
+					className="ml-3 flex-1 border-none bg-transparent text-base font-normal text-[#0e3973] placeholder-[#0e3973] outline-none"
+				/>
 			</div>
 
 			{/* Action Buttons */}
-			<div className="flex items-center gap-6">
-				<Button
-					className="h-12 w-[49px] rounded-[50px] border border-dashed border-[#600b2e] bg-[#f7bfd5] p-2.5 hover:bg-[#f7bfd5]/90"
-					variant="ghost"
-				>
-					<ShoppingCartIcon className="h-[27px] w-[27px]" />
-				</Button>
+			<div className="flex gap-4">
+				{/* Cart Button */}
+				<button className="flex h-12 w-[49px] items-center justify-center rounded-[50px] border-[1px] border-dashed border-[#600B2E] bg-[#F8BFD6] ">
+					<ShoppingCartIcon className="h-[27px] w-[27px] text-[#E62875]" />
+				</button>
 
-				<Button
-					className="h-12 w-[49px] rounded-[50px] border border-dashed border-[#600b2e] bg-[#f7bfd5] p-2.5 hover:bg-[#f7bfd5]/90"
-					variant="ghost"
-				>
-					<HeartIcon className="h-5 w-5" />
-				</Button>
+				{/* Wishlist Button */}
+				<button className="flex h-12 w-[49px] items-center justify-center rounded-[50px] border-[1px] border-dashed border-[#600B2E] bg-[#F8BFD6]">
+					<HeartIcon className="h-5 w-5 text-[#E62875]" />
+				</button>
 
-				<Button
-					className="h-12 w-[49px] rounded-[50px] border border-dashed border-[#600b2e] bg-[#fafeaa] p-2.5 hover:bg-[#fafeaa]/90"
-					variant="ghost"
-				>
-					<UserIcon className="h-6 w-6" />
-				</Button>
+				{/* User Profile Button */}
+				<button className="flex h-12 w-[49px] items-center justify-center rounded-[50px] border-[1px] border-dashed border-[#600B2E] bg-[#FAFEAB]">
+					<UserIcon className="h-6 w-6 text-[#E62875]" />
+				</button>
 			</div>
 		</header>
 	);

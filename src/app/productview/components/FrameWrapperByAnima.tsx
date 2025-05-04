@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/ui/Button";
 import { Card, CardContent } from "@/ui/Card";
@@ -16,6 +16,7 @@ interface RelatedProduct {
 }
 
 export const FrameWrapperByAnima = (): JSX.Element => {
+	const [liked, setLiked] = useState(false);
 	const relatedProducts: RelatedProduct[] = [
 		{
 			id: 1,
@@ -32,7 +33,7 @@ export const FrameWrapperByAnima = (): JSX.Element => {
 			rating: 5.0,
 			reviews: "1.2k",
 			price: "Rs 725.00",
-			image: "/.png",
+			image: "/image-60-2.png",
 			imageBackground: "/image-6.png",
 		},
 		{
@@ -64,8 +65,17 @@ export const FrameWrapperByAnima = (): JSX.Element => {
 									className="relative h-60 w-full bg-cover bg-center"
 									style={{ backgroundImage: `url(${product.imageBackground})` }}
 								>
-									<button aria-label="Add to Wishlist" className="absolute right-[15px] top-[19px] z-10">
-										<Image className="h-[30px] w-[30px]" alt="Heart Icon" src="/mdi_heart.svg" />
+									<button
+										className="absolute right-4 top-4 z-10"
+										onClick={() => setLiked(!liked)} // Toggle liked state on click
+									>
+										<Image
+											src={liked ? "/redheart.png" : "/whiteheart.png"}
+											alt="Heart"
+											className="transition duration-200 ease-in-out"
+											width={24}
+											height={24}
+										/>
 									</button>
 
 									<Image
