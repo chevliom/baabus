@@ -14,7 +14,7 @@ import { NewsletterSection } from "../../sections/NewsletterSection";
 
 import { ServicesSection } from "../../sections/ServicesSection";
 import { TestimonialsSection } from "../../sections/TestimonialsSection/TestimonialsSection";
-import Categories from "../../sections/CategoriesSection/Categories";
+import { Categories } from "../../sections/CategoriesSection/Categories";
 
 export default function HomePage() {
 	// Footer links data
