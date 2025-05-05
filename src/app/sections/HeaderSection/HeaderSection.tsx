@@ -32,7 +32,8 @@ export const HeaderSection = (): JSX.Element => {
 						<a
 							key={item.id}
 							href={linkMap[item.title as keyof typeof linkMap]}
-							className="text-primaryp-500 font-['Poppins',Helvetica] text-xl font-bold hover:underline"
+							className="font-['Poppins',Helvetica] text-xl font-bold text-primaryp-500 hover:underline"
+							style={{ color: "rgba(230, 40, 117, 1)" }}
 						>
 							{item.title}
 						</a>
@@ -45,7 +46,7 @@ export const HeaderSection = (): JSX.Element => {
 				<SearchIcon className="mr-2 h-7 w-7 text-[#2a68d4]" />
 				<Input
 					className="h-full border-none bg-transparent placeholder:text-gray-500 focus-visible:ring-0 focus-visible:ring-offset-0"
-					placeholder="Search"
+					placeholder=""
 				/>
 			</div>
 

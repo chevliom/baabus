@@ -41,7 +41,7 @@ export const CallToActionSection = (): JSX.Element => {
 		<section className="relative mx-auto w-full max-w-[1396px] pb-20 pt-8">
 			<div className="mb-12">
 				<p className="font-baloo text-2xl font-extrabold text-[#ea518f]">Our Products</p>
-				<h2 className="font-baloo mt-2 text-5xl font-extrabold">
+				<h2 className="mt-2 font-baloo text-5xl font-extrabold">
 					<span className="text-[#ea518f]">Our </span>
 					<span className="text-[#5398d9]">Best Sellers</span>
 					<span className="text-[#ea518f]"> Products</span>
@@ -60,7 +60,7 @@ export const CallToActionSection = (): JSX.Element => {
 									<div className="relative h-[358px] w-full overflow-hidden">
 										<div className="pointer-events-none absolute inset-0 z-0">
 											<Image
-												className="rounded-xl object-contain"
+												className="rounded-xl object-cover"
 												alt={`${product.name} background`}
 												src={product.overlayImage}
 												fill
@@ -93,15 +93,15 @@ export const CallToActionSection = (): JSX.Element => {
 											/>
 										</button>
 									</div>
-									<h3 className="font-baloo mt-2 text-2xl font-extrabold text-black">{product.name}</h3>
+									<h3 className="mt-2 font-baloo text-2xl font-extrabold text-black">{product.name}</h3>
 								</CardContent>
 							</Card>
-							<p className="font-baloo mt-1 text-2xl font-extrabold text-black">{product.price}</p>
+							<p className="mt-1 font-baloo text-2xl font-extrabold text-black">{product.price}</p>
 						</div>
 					))}
 				</div>
 
-				<div className="absolute -bottom-12 right-0 h-[200px] w-[290px]">
+				<div className="absolute right-0 -mt-24 h-[200px] w-[290px]">
 					<Image
 						className="object-cover"
 						alt="Decorative image"
@@ -112,7 +112,13 @@ export const CallToActionSection = (): JSX.Element => {
 				</div>
 
 				<div className="mt-12 flex justify-center">
-					<Button className="bg-primaryp-800 text-primaryp-300 font-baloo rounded-[30px] p-6 text-2xl font-extrabold shadow-[0px_4px_4px_#00000040]">
+					<Button
+						style={{
+							backgroundColor: "rgba(248, 191, 214, 1)",
+							color: "rgba(151, 18, 72, 1)",
+						}}
+						className="rounded-[30px] p-6 text-2xl shadow-[0px_4px_4px_#00000040]"
+					>
 						View All Products
 					</Button>
 				</div>
