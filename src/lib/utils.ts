@@ -1,40 +1,34 @@
-// lib/utils.ts
+// utils/index.ts (or lib/index.ts)
 
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-/**
- * Merge and dedupe Tailwind CSS class names.
- *
- * @example
- * cn("p-4", "bg-white", isActive && "text-primary")
- */
-export function cn(...inputs: ClassValue[]): string {
+// Utility function for merging Tailwind class names
+export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
 /**
- * Format a Date or timestamp to a medium-style date (e.g. “Apr 30, 2025”) in en-US.
- *
- * @example
- * formatDate(new Date())           // “Apr 30, 2025”
- * formatDate(1682832000000)        // “Apr 30, 2025”
+ * Formats a Date or a timestamp into a medium date style.
+ * @param date The date to format, either a Date object or a timestamp (number).
+ * @returns A string representing the formatted date.
  */
-export const formatDate = (date: Date | number): string =>
-	new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(date);
+export const formatDate = (date: Date | number): string => {
+	return new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(date);
+};
 
 /**
- * Format a number as a currency string in en-US locale.
- *
- * @example
- * formatMoney(19.99, "USD")        // “$19.99”
- * formatMoney(1000, "EUR")         // “€1,000.00”
+ * Formats a number as a currency value based on the given currency.
+ * @param amount The amount of money to format.
+ * @param currency The currency code (e.g., 'USD', 'EUR').
+ * @returns A string representing the formatted money.
  */
-export const formatMoney = (amount: number, currency: string): string =>
-	new Intl.NumberFormat("en-US", {
+export const formatMoney = (amount: number, currency: string): string => {
+	return new Intl.NumberFormat("en-US", {
 		style: "currency",
 		currency,
 	}).format(amount);
+};
 
 export interface Money {
 	amount: number;
@@ -52,30 +46,47 @@ export interface Money {
  * formatMoneyRange({ start: { amount: 5, currency: "USD" }, stop: { amount: 10, currency: "USD" } })
  * // “$5.00 – $10.00”
  */
+/**
+ * Formats a range of money values, either the same or different, into a string.
+ * @param range The range containing a start and stop value, both with amounts and currencies.
+ * @returns A string representing the formatted money range.
+ */
 export const formatMoneyRange = (
-	range: { start?: Money | null; stop?: Money | null } | null,
-): string | undefined => {
-	const { start, stop } = range ?? {};
-	const startStr = start ? formatMoney(start.amount, start.currency) : undefined;
-	const stopStr = stop ? formatMoney(stop.amount, stop.currency) : undefined;
+	range: {
+		start?: { amount: number; currency: string } | null;
+		stop?: { amount: number; currency: string } | null;
+	} | null,
+): string => {
+	const { start, stop } = range || {};
+	const startMoney = start && formatMoney(start.amount, start.currency);
+	const stopMoney = stop && formatMoney(stop.amount, stop.currency);
 
-	if (!startStr && !stopStr) return undefined;
-	if (startStr === stopStr) return startStr;
-	if (startStr && stopStr) return `${startStr} – ${stopStr}`;
-	return startStr ?? stopStr;
+	if (startMoney === stopMoney) {
+		return startMoney;
+	}
+
+	return `${startMoney} - ${stopMoney}`;
 };
 
 /**
- * Build a product URL, optionally appending a `variant` query parameter.
- *
- * @example
- * getHrefForVariant({ productSlug: "widget", variantId: "blue" })
- * // "/products/widget?variant=blue"
+ * Generates a URL for a product variant, including the product slug and optional variant ID.
+ * @param productSlug The slug of the product.
+ * @param variantId The optional variant ID.
+ * @returns The generated URL string.
  */
-export function getHrefForVariant(args: { productSlug: string; variantId?: string }): string {
-	const { productSlug, variantId } = args;
-	const base = `/products/${encodeURIComponent(productSlug)}`;
-	if (!variantId) return base;
-	const params = new URLSearchParams({ variant: variantId });
-	return `${base}?${params.toString()}`;
+export function getHrefForVariant({
+	productSlug,
+	variantId,
+}: {
+	productSlug: string;
+	variantId?: string;
+}): string {
+	const pathname = `/products/${encodeURIComponent(productSlug)}`;
+
+	if (!variantId) {
+		return pathname;
+	}
+
+	const query = new URLSearchParams({ variant: variantId });
+	return `${pathname}?${query.toString()}`;
 }

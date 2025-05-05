@@ -117,12 +117,12 @@ export const FrameWrapperByAnima = (): JSX.Element => {
 									<div className="mb-2 mt-4 flex justify-between">
 										<Button
 											variant="outline"
-											className="h-10 w-[120px] rounded-[10px] border-[#ea518f] font-['Baloo-Regular',Helvetica] text-[13px] text-[#ea518f]"
+											className="h-10 w-[120px] rounded-[10px] border-[#ea518f] font-['Baloo',Helvetica] text-[13px] font-bold text-[#ea518f]"
 										>
 											Add To Cart
 										</Button>
 
-										<Button className="h-10 w-[120px] rounded-[10px] bg-[#ea518f] font-['Baloo-Regular',Helvetica] text-[13px] text-white shadow-[0px_4px_4px_#00000040]">
+										<Button className="h-10 w-[120px] rounded-[10px] bg-[#ea518f] font-['Baloo',Helvetica] text-[13px] font-bold text-white shadow-[0px_4px_4px_#00000040]">
 											Buy Now
 										</Button>
 									</div>

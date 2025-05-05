@@ -12,7 +12,7 @@ import { FeatureByAnima } from "./FeatureByAnima";
 
 // UI components
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/ui/tabs";
-import { Separator } from "@/ui/Separator";
+import { Separator } from "@/ui/components/separator";
 import { Card, CardContent } from "@/ui/Card";
 
 export const SingleProductView = (): JSX.Element => {
