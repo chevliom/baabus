@@ -48,7 +48,7 @@ export const FrameByAnima = (): JSX.Element => {
 	const [quantity, setQuantity] = useState<number>(1);
 
 	return (
-		<Card className="w-full max-w-[616px] border-none px-4 md:px-0">
+		<Card className="w-full max-w-[616px] border-none bg-transparent px-4 shadow-none md:px-0">
 			<CardContent className="p-0">
 				<h1 className="mb-6 font-['Poppins',Helvetica] text-[40px] font-semibold text-black">
 					{productData.name}

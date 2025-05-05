@@ -38,7 +38,7 @@ export const AllCategoryOption = (): JSX.Element => {
 				/>
 
 				<Image
-					className="absolute right-[22px] top-0 object-cover"
+					className="absolute left-[22px] top-0 object-cover"
 					alt="Decorative image"
 					src="/image-71.png"
 					width={160} // same as w-40 (10rem)

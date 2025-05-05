@@ -4,7 +4,6 @@ import { CheckIcon } from "lucide-react";
 import React from "react";
 
 export const DescriptionByAnima = (): JSX.Element => {
-	// Product feature list data
 	const features: string[] = [
 		"Built with a strong frame and anti-slip wheels for stability.",
 		"Grows with your baby for long-term use.",
@@ -13,9 +12,9 @@ export const DescriptionByAnima = (): JSX.Element => {
 	];
 
 	return (
-		<section className="flex w-full max-w-[648px] flex-col gap-5">
-			{/* Main description paragraph */}
-			<p className="text-gray-scalegray-500 font-body-small-body-small-400 text-[14px] leading-[150%]">
+		<section className="ml-[63px] mt-[100px] flex w-full max-w-[648px] flex-col gap-6">
+			{/* Main Description */}
+			<p className="font-['Poppins'] text-base leading-[24px] tracking-[0.2px] text-[#808080]">
 				Sed commodo aliquam dui ac porta. Fusce ipsum felis, imperdiet at posuere ac, viverra at mauris.
 				Maecenas tincidunt ligula a sem vestibulum pharetra. Maecenas auctor tortor lacus, nec laoreet nisi
 				porttitor vel. Etiam tincidunt metus vel dui interdum sollicitudin. Mauris sem ante, vestibulum nec
@@ -29,22 +28,20 @@ export const DescriptionByAnima = (): JSX.Element => {
 				neque et pharetra.
 			</p>
 
-			{/* Feature list */}
-			<div className="flex flex-col gap-3.5">
+			{/* Features List */}
+			<div className="flex flex-col gap-4">
 				{features.map((feature, index) => (
-					<div key={index} className="flex items-start gap-2">
-						<div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#ea518f]">
-							<CheckIcon className="h-3 w-3 text-white" />
+					<div key={index} className="flex items-start gap-3">
+						<div className="flex h-[20px] w-[20px] items-center justify-center rounded-full bg-[#EA518F]">
+							<CheckIcon className="h-[12px] w-[12px] text-white" />
 						</div>
-						<p className="text-gray-scalegray-500 w-[620px] font-['Poppins',Helvetica] text-sm font-normal leading-[19.6px]">
-							{feature}
-						</p>
+						<p className="font-['Poppins'] text-sm leading-[22px] tracking-[0.2px] text-[#555]">{feature}</p>
 					</div>
 				))}
 			</div>
 
-			{/* Conclusion paragraph */}
-			<p className="text-gray-scalegray-500 font-body-small-body-small-400 text-[14px] leading-[150%]">
+			{/* Conclusion */}
+			<p className="font-['Poppins'] text-base leading-[24px] tracking-[0.2px] text-[#555]">
 				Helps strengthen leg muscles and improve coordination. Built with a strong frame and anti-slip wheels
 				for stability.
 			</p>

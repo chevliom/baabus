@@ -40,7 +40,7 @@ export const FeatureByAnima = (): JSX.Element => {
 							<div className="font-body-small-body-small-500 text-gray-scalegray-900 text-[length:var(--body-small-body-small-500-font-size)] leading-[var(--body-small-body-small-500-line-height)] tracking-[var(--body-small-body-small-500-letter-spacing)]">
 								{feature.title}
 							</div>
-							<div className="text-gray-scalegray-500 max-w-[198px] font-['Poppins',Helvetica] text-[13px] font-normal leading-[19.5px]">
+							<div className="max-w-[198px] font-['Poppins',Helvetica] text-[13px] font-normal leading-[19.5px] text-[#808080]">
 								{feature.description}
 							</div>
 						</div>
