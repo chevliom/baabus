@@ -13,28 +13,28 @@ type FeatureItem = {
 
 const features: FeatureItem[] = [
 	{
-		icon: "/group.png",
+		icon: "/high.png",
 		iconAlt: "High Quality",
 		title: "High Quality",
 		description: "crafted from top materials",
 		isBackgroundImage: true,
 	},
 	{
-		icon: "/group-1.png",
+		icon: "/guarantee.png",
 		iconAlt: "Group",
 		title: "Warranty Protection",
 		description: "Over 2 years",
 		isBackgroundImage: false,
 	},
 	{
-		icon: "/shipping.svg",
+		icon: "/shipping.png",
 		iconAlt: "Shipping",
 		title: "Free Shipping",
 		description: "Order over 150 $",
 		isBackgroundImage: false,
 	},
 	{
-		icon: "/customer-support.svg",
+		icon: "/customer-support.png",
 		iconAlt: "Customer support",
 		title: "24 / 7 Support",
 		description: "Dedicated support",
@@ -44,27 +44,33 @@ const features: FeatureItem[] = [
 
 export const FrameByAnima = (): JSX.Element => {
 	return (
-		<section className="bg-primaryp-900 w-full py-16">
-			<div className="container mx-auto">
-				<div className="flex flex-wrap justify-between gap-6">
+		<section className="w-full bg-[#FFF7F4] py-12 md:py-20">
+			<div className="container mx-auto px-4">
+				<div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4">
 					{features.map((feature, index) => (
-						<div key={index} className="flex items-center gap-2.5">
-							<div className="relative h-[60px] w-[60px]">
+						<div key={index} className="flex items-start gap-4">
+							<div className="relative h-[60px] min-w-[60px]">
 								{feature.isBackgroundImage ? (
 									<div
-										className="relative left-1 h-[60px] w-[53px] bg-cover bg-center"
+										className="h-[60px] w-[60px] bg-contain bg-center bg-no-repeat"
 										style={{ backgroundImage: `url(${feature.icon})` }}
 									/>
 								) : (
-									<Image src={feature.icon} alt={feature.iconAlt} width={60} height={60} />
+									<Image
+										src={feature.icon}
+										alt={feature.iconAlt}
+										width={60}
+										height={60}
+										className="object-contain"
+									/>
 								)}
 							</div>
 
-							<div className="flex flex-col items-start gap-0.5">
-								<h3 className="mt-[-1.00px] font-['Poppins',Helvetica] text-[25px] font-semibold leading-[37.5px] text-[#242424]">
+							<div className="flex flex-col">
+								<h3 className="font-['Poppins'] text-lg font-semibold leading-[1.4] text-[#242424] md:text-xl">
 									{feature.title}
 								</h3>
-								<p className="text-color-gray-3 font-['Poppins',Helvetica] text-xl font-medium leading-[30px]">
+								<p className="font-['Poppins'] text-sm font-medium leading-[1.6] text-[#898989] md:text-base">
 									{feature.description}
 								</p>
 							</div>
