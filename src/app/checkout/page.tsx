@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import { Trophy, Shield, Package, Headphones } from "lucide-react";
+// import { Trophy, Shield, Package, Headphones } from "lucide-react";
 import Image from "next/image";
 import busImage from "../assets/bus.png";
+import { HeaderSection } from "../sections/HeaderSection";
+import { FrameByAnima } from "../whishlist/componet/FrameByAnima";
 
 export default function CheckoutPage() {
 	const [paymentMethod, setPaymentMethod] = useState("paypal");
@@ -45,7 +47,8 @@ export default function CheckoutPage() {
 	};
 
 	return (
-		<div className="flex min-h-screen flex-col bg-white">
+		<div className="mt-24 flex min-h-screen flex-col bg-white">
+			<HeaderSection />
 			<main className="flex-grow">
 				<div className="mx-auto max-w-6xl px-4 py-8">
 					{/* Checkout Header */}
@@ -340,49 +343,7 @@ export default function CheckoutPage() {
 					</div>
 
 					{/* Benefits Section */}
-					<div className="mt-8 rounded-lg bg-pink-50 p-6">
-						<div className="grid grid-cols-1 gap-6 md:grid-cols-4">
-							<div className="flex items-center">
-								<div className="mr-4">
-									<Trophy className="h-8 w-8 text-gray-700" />
-								</div>
-								<div>
-									<h3 className="font-semibold">High Quality</h3>
-									<p className="text-xs text-gray-600">crafted from top materials</p>
-								</div>
-							</div>
-
-							<div className="flex items-center">
-								<div className="mr-4">
-									<Shield className="h-8 w-8 text-gray-700" />
-								</div>
-								<div>
-									<h3 className="font-semibold">Warranty Protection</h3>
-									<p className="text-xs text-gray-600">Over 2 years</p>
-								</div>
-							</div>
-
-							<div className="flex items-center">
-								<div className="mr-4">
-									<Package className="h-8 w-8 text-gray-700" />
-								</div>
-								<div>
-									<h3 className="font-semibold">Free Shipping</h3>
-									<p className="text-xs text-gray-600">Order over 150 $</p>
-								</div>
-							</div>
-
-							<div className="flex items-center">
-								<div className="mr-4">
-									<Headphones className="h-8 w-8 text-gray-700" />
-								</div>
-								<div>
-									<h3 className="font-semibold">24 / 7 Support</h3>
-									<p className="text-xs text-gray-600">Dedicated support</p>
-								</div>
-							</div>
-						</div>
-					</div>
+					<FrameByAnima />
 				</div>
 			</main>
 		</div>

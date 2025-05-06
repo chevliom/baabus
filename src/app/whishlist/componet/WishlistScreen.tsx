@@ -15,7 +15,7 @@ export const WishlistScreen = (): JSX.Element => {
 			{/* Hero Banner */}
 			<div className="relative h-[219px] w-full bg-[url(/image.png)] bg-cover bg-[50%_50%]">
 				<h1 className="absolute left-1/2 top-[33px] -translate-x-1/2 transform text-8xl font-normal leading-[normal] tracking-[0] text-[#ea518f] [font-family:'Baloo',Helvetica]">
-					Whishlist
+					Wishlist
 				</h1>
 
 				<Image

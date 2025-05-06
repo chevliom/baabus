@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { HeaderSection } from "../../../sections/HeaderSection";
+import { HeaderSection } from "../sections/HeaderSection";
 
 const CartPage = () => {
 	const [cartItems, setCartItems] = useState([

@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { HeaderSection } from "../sections/HeaderSection";
 
 export default function OrderPage() {
 	const steps = [
@@ -12,8 +13,9 @@ export default function OrderPage() {
 	return (
 		<div className="bg-white text-gray-800">
 			{/* Header */}
+			<HeaderSection />
 			<div
-				className="py-150 bg-[url('/image1.png')] bg-cover bg-center bg-no-repeat text-center"
+				className="py-150 mt-28 bg-[url('/image1.png')] bg-cover bg-center bg-no-repeat text-center"
 				style={{ backgroundSize: "1420px 150px" }}
 			>
 				<div className="mx-auto flex h-32 max-w-7xl items-center justify-between px-1">
