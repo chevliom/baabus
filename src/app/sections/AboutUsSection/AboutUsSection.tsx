@@ -31,23 +31,26 @@ export const AboutUsSection = (): JSX.Element => {
 	];
 
 	return (
-		<section className="relative z-40 ml-6 mt-20 h-[518px] w-full">
+		<section className="relative z-40 ml-6 h-[518px] w-full">
 			{/* Background fill for empty bottom space */}
 			<div className="absolute inset-0 z-0 -ml-6 -mt-20 w-full bg-[#d9e9f7]" />
 			<div className="absolute -left-20 -top-[106px] h-[693px] w-[1608px] rounded-[500px] bg-[url(/rectangle-12-3.svg)] bg-[100%_100%]">
-				<div className="font-baloo absolute left-[188px] top-72 w-[522px] text-[64px] font-extrabold leading-[115%]">
+				<div className="font-baloo absolute left-[188px] top-72 w-[582px] text-[64px] font-extrabold leading-[115%]">
 					<span className="text-white">Best </span>
 					<span className="text-[#f8bfd6]">Toys</span>
 					<span className="text-white"> for Your Kids to Play</span>
 				</div>
 
-				<Button className="absolute left-48 top-[445px] rounded-[30px] border border-dashed border-[#e62875] bg-[#fafeaa] hover:bg-[#fafeaa]">
-					<span className="font-baloo text-primaryp-500 text-xl font-extrabold leading-[23px]">
+				<Button className="absolute left-48 top-[445px] mt-4 rounded-[30px] border-2 border-dashed border-[#e62875] bg-[#fafeaa] hover:bg-[#fafeaa]">
+					<span
+						className="text-primary-500 font-baloo text-xl font-extrabold leading-[23px] "
+						style={{ color: "rgba(230, 40, 117, 1)" }}
+					>
 						Shop now!
 					</span>
 				</Button>
 
-				<div className="absolute left-[211px] top-[540px] h-2.5 w-[61px]">
+				<div className="absolute left-[211px] top-[540px] mt-2 h-2.5 w-[61px]">
 					<Image width={61} height={10} className="object-cover" alt="Frame" src="/frame-131267.svg" />
 				</div>
 

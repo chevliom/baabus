@@ -50,7 +50,7 @@ export const Categories: React.FC = () => {
 					<img src={image} alt={alt} className="h-28 w-28 object-contain sm:h-36 sm:w-36" />
 				</div>
 			</div>
-			<h3 className="font-baloo text-xl font-extrabold text-blue-700">{name}</h3>
+			<h3 className="font-baloo text-xl font-extrabold text-blue-400">{name}</h3>
 		</div>
 	);
 
@@ -87,11 +87,14 @@ export const Categories: React.FC = () => {
 						<ChevronLeft size={24} />
 					</button>
 
-					{/* Scrollable container */}
 					<div
 						ref={scrollRef}
-						className="hide-scrollbar mx-4 flex overflow-x-auto px-10 py-8"
+						className="mx-4 flex overflow-x-auto px-10 py-8"
 						onScroll={handleScroll}
+						style={{
+							scrollbarWidth: "none" /* Firefox */,
+							msOverflowStyle: "none" /* IE and Edge */,
+						}}
 					>
 						{categories.map((category) => (
 							<CategoryItem
@@ -101,6 +104,11 @@ export const Categories: React.FC = () => {
 								alt={category.alt}
 							/>
 						))}
+						<style jsx>{`
+							div::-webkit-scrollbar {
+								display: none; /* Chrome, Safari and Opera */
+							}
+						`}</style>
 					</div>
 
 					{/* Right arrow */}
@@ -109,6 +117,9 @@ export const Categories: React.FC = () => {
 						style={{ backgroundColor: "rgba(83, 153, 218, 1)" }}
 						className="z-20 -mr-24 mb-3.5 rounded-full p-2 text-blue-100 shadow-md transition-all duration-300 hover:bg-blue-200"
 						aria-label="Scroll right"
+						disabled={
+							scrollPosition >= (scrollRef.current?.scrollWidth || 0) - (scrollRef.current?.clientWidth || 0)
+						}
 					>
 						<ChevronRight size={24} />
 					</button>
@@ -117,7 +128,7 @@ export const Categories: React.FC = () => {
 					<img
 						src="/image-7-1.png"
 						alt="Decoration Right"
-						className="z-10 ml-2 hidden h-16 h-32 w-16 w-32 object-contain sm:block"
+						className="z-10 ml-2 hidden h-32 w-32 object-contain sm:block"
 					/>
 				</div>
 			</div>

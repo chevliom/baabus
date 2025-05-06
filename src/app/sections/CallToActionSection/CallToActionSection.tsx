@@ -60,7 +60,7 @@ export const CallToActionSection = (): JSX.Element => {
 									<div className="relative h-[358px] w-full overflow-hidden">
 										<div className="pointer-events-none absolute inset-0 z-0">
 											<Image
-												className="rounded-xl object-contain"
+												className="rounded-xl object-cover"
 												alt={`${product.name} background`}
 												src={product.overlayImage}
 												fill
@@ -101,7 +101,7 @@ export const CallToActionSection = (): JSX.Element => {
 					))}
 				</div>
 
-				<div className="absolute -bottom-12 right-0 h-[200px] w-[290px]">
+				<div className="absolute right-0 -mt-24 h-[200px] w-[290px]">
 					<Image
 						className="object-cover"
 						alt="Decorative image"
@@ -112,7 +112,13 @@ export const CallToActionSection = (): JSX.Element => {
 				</div>
 
 				<div className="mt-12 flex justify-center">
-					<Button className="bg-primaryp-800 text-primaryp-300 font-baloo rounded-[30px] p-6 text-2xl font-extrabold shadow-[0px_4px_4px_#00000040]">
+					<Button
+						style={{
+							backgroundColor: "rgba(248, 191, 214, 1)",
+							color: "rgba(151, 18, 72, 1)",
+						}}
+						className="rounded-[30px] p-6 text-2xl shadow-[0px_4px_4px_#00000040]"
+					>
 						View All Products
 					</Button>
 				</div>

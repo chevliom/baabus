@@ -3,10 +3,10 @@
 import Image from "next/image";
 import React from "react";
 import { BarByAnima } from "@/app/category/components/BarByAnima";
-import { FrameByAnima } from "@/app/whishlist/componet/FrameByAnima";
-import { WishlistByAnima } from "@/app/whishlist/componet/WishlistByAnima";
+import { FrameByAnima } from "@/app/whishlist/components/FrameByAnima";
+import { TrackOrder } from "@/app/trackorder/components/TrackOrder";
 
-export const WishlistScreen = (): JSX.Element => {
+export const Trackorderscreen = (): JSX.Element => {
 	return (
 		<div className="flex min-h-screen w-full flex-col overflow-hidden bg-white">
 			<BarByAnima />
@@ -15,7 +15,7 @@ export const WishlistScreen = (): JSX.Element => {
 			{/* Hero Banner */}
 			<div className="relative h-[219px] w-full bg-[url(/image.png)] bg-cover bg-[50%_50%]">
 				<h1 className="absolute left-1/2 top-[33px] -translate-x-1/2 transform text-8xl font-normal leading-[normal] tracking-[0] text-[#ea518f] [font-family:'Baloo',Helvetica]">
-					Whishlist
+					Track Order
 				</h1>
 
 				<Image
@@ -37,7 +37,8 @@ export const WishlistScreen = (): JSX.Element => {
 				/>
 			</div>
 
-			<WishlistByAnima />
+			<TrackOrder />
+
 			<FrameByAnima />
 		</div>
 	);
