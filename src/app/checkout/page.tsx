@@ -1,13 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
-// import { Trophy, Shield, Package, Headphones } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation"; // For app router
+// import { useRouter } from "next/router"; // Use this instead for pages router
 import busImage from "../assets/bus.png";
 import { HeaderSection } from "../sections/HeaderSection";
-import { FrameByAnima } from "../whishlist/componet/FrameByAnima";
+import { FrameByAnima } from "../whishlist/components/FrameByAnima";
 
 export default function CheckoutPage() {
+	const router = useRouter();
 	const [paymentMethod, setPaymentMethod] = useState("paypal");
 	const [formData, setFormData] = useState({
 		firstName: "",
@@ -41,9 +43,12 @@ export default function CheckoutPage() {
 	};
 
 	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
+		e.preventDefault(); // Prevent the default form submission
 		console.log("Form submitted:", formData);
 		console.log("Payment method:", paymentMethod);
+
+		// Navigate to the order page after form submission
+		router.push("/order");
 	};
 
 	return (
@@ -63,12 +68,12 @@ export default function CheckoutPage() {
 						</div>
 					</div>
 
-					<div className="flex flex-col gap-8 md:flex-row">
-						{/* Billing Information */}
-						<div className="w-full md:w-2/3">
-							<div className="mb-6">
-								<h2 className="mb-4 text-xl font-semibold">Billing Information</h2>
-								<form>
+					<form onSubmit={handleSubmit}>
+						<div className="flex flex-col gap-8 md:flex-row">
+							{/* Billing Information */}
+							<div className="w-full md:w-2/3">
+								<div className="mb-6">
+									<h2 className="mb-4 text-xl font-semibold">Billing Information</h2>
 									<div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
 										<div>
 											<label htmlFor="firstName" className="mb-1 block text-sm text-gray-600">
@@ -82,6 +87,7 @@ export default function CheckoutPage() {
 												className="w-full rounded border border-gray-300 p-2"
 												value={formData.firstName}
 												onChange={handleInputChange}
+												required
 											/>
 										</div>
 										<div>
@@ -96,6 +102,7 @@ export default function CheckoutPage() {
 												className="w-full rounded border border-gray-300 p-2"
 												value={formData.lastName}
 												onChange={handleInputChange}
+												required
 											/>
 										</div>
 										<div>
@@ -126,6 +133,7 @@ export default function CheckoutPage() {
 											className="w-full rounded border border-gray-300 p-2"
 											value={formData.streetAddress}
 											onChange={handleInputChange}
+											required
 										/>
 									</div>
 
@@ -141,6 +149,7 @@ export default function CheckoutPage() {
 													className="w-full appearance-none rounded border border-gray-300 p-2 pr-8"
 													value={formData.country}
 													onChange={handleInputChange}
+													required
 												>
 													<option value="">Select</option>
 													<option value="us">United States</option>
@@ -165,6 +174,7 @@ export default function CheckoutPage() {
 													className="w-full appearance-none rounded border border-gray-300 p-2 pr-8"
 													value={formData.state}
 													onChange={handleInputChange}
+													required
 												>
 													<option value="">Select</option>
 													<option value="ny">New York</option>
@@ -193,6 +203,7 @@ export default function CheckoutPage() {
 												className="w-full rounded border border-gray-300 p-2"
 												value={formData.email}
 												onChange={handleInputChange}
+												required
 											/>
 										</div>
 										<div>
@@ -207,6 +218,7 @@ export default function CheckoutPage() {
 												className="w-full rounded border border-gray-300 p-2"
 												value={formData.phone}
 												onChange={handleInputChange}
+												required
 											/>
 										</div>
 									</div>
@@ -226,121 +238,122 @@ export default function CheckoutPage() {
 											</label>
 										</div>
 									</div>
-								</form>
-							</div>
-
-							<div>
-								<h2 className="mb-4 text-xl font-semibold">Additional Info</h2>
-								<div className="mb-4">
-									<label htmlFor="orderNotes" className="mb-1 block text-sm text-gray-600">
-										Order Notes (Optional)
-									</label>
-									<textarea
-										id="orderNotes"
-										name="orderNotes"
-										placeholder="Notes about your order, e.g. special notes for delivery"
-										rows={4}
-										className="w-full resize-none rounded border border-gray-300 p-2"
-										value={formData.orderNotes}
-										onChange={handleInputChange}
-									></textarea>
-								</div>
-							</div>
-						</div>
-
-						{/* Order Summary */}
-						<div className="w-full md:w-5/12">
-							<div className="mb-6">
-								<h2 className="mb-4 text-xl font-semibold">Order Summary</h2>
-
-								<div className="mb-4 border-b pb-4">
-									<div className="mb-2 flex items-center justify-between">
-										<div className="flex items-center">
-											<div className="relative mr-2 h-12 w-12 overflow-hidden rounded">
-												<Image src={busImage} alt="Bus bottle" className="object-cover" fill sizes="48px" />
-											</div>
-											<span className="text-sm">Bus bottle x5</span>
-										</div>
-										<span className="font-medium">₹70.00</span>
-									</div>
-
-									<div className="flex items-center justify-between">
-										<div className="flex items-center">
-											<div className="relative mr-2 h-12 w-12 overflow-hidden rounded">
-												<Image src={busImage} alt="Bus bottle" className="object-cover" fill sizes="48px" />
-											</div>
-											<span className="text-sm">Bus bottle xl</span>
-										</div>
-										<span className="font-medium">₹14.00</span>
-									</div>
-								</div>
-
-								<div className="mb-4 space-y-2 border-b pb-4">
-									<div className="flex justify-between">
-										<span className="text-sm">Subtotal:</span>
-										<span className="font-medium">₹84.00</span>
-									</div>
-									<div className="flex justify-between">
-										<span className="text-sm">Shipping:</span>
-										<span className="text-sm">Free</span>
-									</div>
-									<div className="flex justify-between font-medium">
-										<span>Total:</span>
-										<span>₹84.00</span>
-									</div>
 								</div>
 
 								<div>
-									<h3 className="mb-3 font-semibold">Payment Method</h3>
-									<div className="mb-6 space-y-2">
-										<div className="flex items-center">
-											<input
-												type="radio"
-												id="paypal"
-												name="paymentMethod"
-												value="paypal"
-												checked={paymentMethod === "paypal"}
-												onChange={(e) => setPaymentMethod(e.target.value)}
-												className="mr-2"
-											/>
-											<label htmlFor="paypal">Paypal</label>
+									<h2 className="mb-4 text-xl font-semibold">Additional Info</h2>
+									<div className="mb-4">
+										<label htmlFor="orderNotes" className="mb-1 block text-sm text-gray-600">
+											Order Notes (Optional)
+										</label>
+										<textarea
+											id="orderNotes"
+											name="orderNotes"
+											placeholder="Notes about your order, e.g. special notes for delivery"
+											rows={4}
+											className="w-full resize-none rounded border border-gray-300 p-2"
+											value={formData.orderNotes}
+											onChange={handleInputChange}
+										></textarea>
+									</div>
+								</div>
+							</div>
+
+							{/* Order Summary */}
+							<div className="w-full md:w-5/12">
+								<div className="mb-6">
+									<h2 className="mb-4 text-xl font-semibold">Order Summary</h2>
+
+									<div className="mb-4 border-b pb-4">
+										<div className="mb-2 flex items-center justify-between">
+											<div className="flex items-center">
+												<div className="relative mr-2 h-12 w-12 overflow-hidden rounded">
+													<Image src={busImage} alt="Bus bottle" className="object-cover" fill sizes="48px" />
+												</div>
+												<span className="text-sm">Bus bottle x5</span>
+											</div>
+											<span className="font-medium">₹70.00</span>
 										</div>
-										<div className="flex items-center">
-											<input
-												type="radio"
-												id="googlepay"
-												name="paymentMethod"
-												value="googlepay"
-												checked={paymentMethod === "googlepay"}
-												onChange={(e) => setPaymentMethod(e.target.value)}
-												className="mr-2"
-											/>
-											<label htmlFor="googlepay">Google pay</label>
-										</div>
-										<div className="flex items-center">
-											<input
-												type="radio"
-												id="amazonpay"
-												name="paymentMethod"
-												value="amazonpay"
-												checked={paymentMethod === "amazonpay"}
-												onChange={(e) => setPaymentMethod(e.target.value)}
-												className="mr-2"
-											/>
-											<label htmlFor="amazonpay">Amazon Pay</label>
+
+										<div className="flex items-center justify-between">
+											<div className="flex items-center">
+												<div className="relative mr-2 h-12 w-12 overflow-hidden rounded">
+													<Image src={busImage} alt="Bus bottle" className="object-cover" fill sizes="48px" />
+												</div>
+												<span className="text-sm">Bus bottle xl</span>
+											</div>
+											<span className="font-medium">₹14.00</span>
 										</div>
 									</div>
 
-									<button
-										onClick={handleSubmit}
-										className="w-full rounded-md bg-pink-500 py-3 font-medium text-white transition-colors hover:bg-pink-600"
-									>
-										Place Order
-									</button>
+									<div className="mb-4 space-y-2 border-b pb-4">
+										<div className="flex justify-between">
+											<span className="text-sm">Subtotal:</span>
+											<span className="font-medium">₹84.00</span>
+										</div>
+										<div className="flex justify-between">
+											<span className="text-sm">Shipping:</span>
+											<span className="text-sm">Free</span>
+										</div>
+										<div className="flex justify-between font-medium">
+											<span>Total:</span>
+											<span>₹84.00</span>
+										</div>
+									</div>
+
+									<div>
+										<h3 className="mb-3 font-semibold">Payment Method</h3>
+										<div className="mb-6 space-y-2">
+											<div className="flex items-center">
+												<input
+													type="radio"
+													id="paypal"
+													name="paymentMethod"
+													value="paypal"
+													checked={paymentMethod === "paypal"}
+													onChange={(e) => setPaymentMethod(e.target.value)}
+													className="mr-2"
+													required
+												/>
+												<label htmlFor="paypal">Paypal</label>
+											</div>
+											<div className="flex items-center">
+												<input
+													type="radio"
+													id="googlepay"
+													name="paymentMethod"
+													value="googlepay"
+													checked={paymentMethod === "googlepay"}
+													onChange={(e) => setPaymentMethod(e.target.value)}
+													className="mr-2"
+												/>
+												<label htmlFor="googlepay">Google pay</label>
+											</div>
+											<div className="flex items-center">
+												<input
+													type="radio"
+													id="amazonpay"
+													name="paymentMethod"
+													value="amazonpay"
+													checked={paymentMethod === "amazonpay"}
+													onChange={(e) => setPaymentMethod(e.target.value)}
+													className="mr-2"
+												/>
+												<label htmlFor="amazonpay">Amazon Pay</label>
+											</div>
+										</div>
+
+										<button
+											type="submit"
+											className="w-full rounded-lg bg-pink-500 py-3 font-medium text-white transition-colors hover:bg-pink-600"
+										>
+											Place Order
+										</button>
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
+					</form>
 
 					{/* Benefits Section */}
 					<FrameByAnima />

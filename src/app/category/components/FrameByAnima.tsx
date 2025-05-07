@@ -66,7 +66,7 @@ export const FrameByAnima = (): JSX.Element => {
 	const [liked, setLiked] = useState(false);
 
 	return (
-		<div className="flex w-full justify-center py-8">
+		<div className="flex w-full justify-center py-8 pr-24">
 			<div className="grid w-[1100px] grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
 				{products.map((product) => (
 					<Card

@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Link from "next/link";
 import { HeaderSection } from "../../../sections/HeaderSection";
 
 const CartPage = () => {
@@ -148,9 +149,11 @@ const CartPage = () => {
 									<span>₹{total.toFixed(2)}</span>
 								</div>
 							</div>
-							<button className="w-full rounded-full bg-[#FF4BAC] px-4 py-3 font-semibold text-white transition hover:bg-[#e34291]">
-								Proceed to checkout
-							</button>
+							<Link href="/checkout">
+								<button className="w-full rounded-full bg-[#FF4BAC] px-4 py-3 font-semibold text-white transition hover:bg-[#e34291]">
+									Proceed to checkout
+								</button>
+							</Link>
 						</div>
 					</div>
 				</div>

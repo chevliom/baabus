@@ -27,8 +27,12 @@ interface WishlistItem {
 	lowStockMessage?: string;
 }
 
+type Props = {
+	onExploreMore: () => void;
+};
+
 // Named export to match the import in WishlistScreen
-export function WishlistByAnima(): JSX.Element {
+export function WishlistByAnima({ onExploreMore }: Props): JSX.Element {
 	// Product data for mapping
 	const wishlistItems: WishlistItem[] = [
 		{
@@ -174,7 +178,11 @@ export function WishlistByAnima(): JSX.Element {
 					<div className="text-xl font-normal leading-[26px] tracking-[0] text-[#f188b2] [font-family:'Baloo-Regular',Helvetica]">
 						Love it? Someone else does too! Buy before it&apos;s too late.
 					</div>
-					<Button variant="outline" className="bg-gray-scalegray-50 rounded-[43px] px-8 py-3.5">
+					<Button
+						onClick={onExploreMore}
+						variant="outline"
+						className="bg-gray-scalegray-50 rounded-[43px] px-8 py-3.5"
+					>
 						<span className="text-gray-scalegray-700 font-body-small-body-small-600 text-[length:var(--body-small-body-small-600-font-size)] font-[number:var(--body-small-body-small-600-font-weight)] leading-[var(--body-small-body-small-600-line-height)] tracking-[var(--body-small-body-small-600-letter-spacing)] [font-style:var(--body-small-body-small-600-font-style)]">
 							Explore More
 						</span>

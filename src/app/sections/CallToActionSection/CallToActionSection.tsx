@@ -102,13 +102,15 @@ export const CallToActionSection = (): JSX.Element => {
 				</div>
 
 				<div className="absolute right-0 -mt-24 h-[200px] w-[290px]">
-					<Image
-						className="object-cover"
-						alt="Decorative image"
-						src="/image-44-3.png"
-						width={290}
-						height={200}
-					/>
+					<div className="h-full w-full" style={{ transform: "scaleX(-1)" }}>
+						<Image
+							className="object-cover"
+							alt="Decorative image (mirrored)"
+							src="/image-44-3.png"
+							width={290}
+							height={200}
+						/>
+					</div>
 				</div>
 
 				<div className="mt-12 flex justify-center">
