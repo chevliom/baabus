@@ -5,9 +5,10 @@ import { ShieldCheckIcon, TruckIcon } from "lucide-react";
 import React from "react";
 import { Card, CardContent } from "@/ui/Card";
 import { AboutUsByAnima } from "@/app/AboutUs/components/AboutUsByAnima";
-import { BarByAnima } from "@/app/category/components/BarByAnima";
+// import { BarByAnima } from "@/app/category/components/BarByAnima";
 import { HeadingByAnima } from "@/app/AboutUs/components/HeadingByAnima";
 import { WeDelvieredYouByAnima } from "@/app/AboutUs/components/WeDelvieredYouByAnima";
+import { HeaderSection } from "@/app/sections/HeaderSection";
 
 export const AboutUsScreen = (): JSX.Element => {
 	const featureCards = [
@@ -58,10 +59,10 @@ export const AboutUsScreen = (): JSX.Element => {
 	return (
 		<div className="w-full bg-white">
 			{/* Section imports */}
-			<BarByAnima />
+			<HeaderSection />
 
 			{/* Hero Banner */}
-			<div className="relative h-[219px] w-full bg-[url(/image.png)] bg-cover bg-[50%_50%]">
+			<div className="relative mt-24 h-[219px] w-full bg-[url(/image.png)] bg-cover bg-[50%_50%]">
 				<h1 className="absolute left-1/2 top-[33px] -translate-x-1/2 transform text-8xl font-normal leading-[normal] tracking-[0] text-[#ea518f] [font-family:'Baloo',Helvetica]">
 					About Us
 				</h1>

@@ -1,96 +1,87 @@
 @import url("https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&display=swap");
-
-@tailwind components;
-@tailwind utilities;
-
-@layer components {
-	.all-\[unset\] {
-		all: unset;
-	}
-}
-
-:root {
-	--card-drop-2: 20px 14px 40px 0px rgba(0, 0, 0, 0.08);
-	--primaryp-000: rgba(23, 3, 11, 1);
-	--primaryp-100: rgba(55, 6, 26, 1);
-	--primaryp-200: rgba(96, 11, 46, 1);
-	--primaryp-300: rgba(151, 18, 72, 1);
-	--primaryp-400: rgba(183, 21, 87, 1);
-	--primaryp-500: rgba(230, 40, 117, 1);
-	--primaryp-800: rgba(248, 191, 214, 1);
-	--primaryp-900: rgba(253, 241, 246, 1);
-	--secondarys-500: rgba(40, 115, 185, 1);
-}
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
 	:root {
+		/* Base variables for shadcn/ui compatibility */
 		--background: 0 0% 100%;
-		--foreground: 222.2 47.4% 11.2%;
+		--foreground: 222.2 84% 4.9%;
 
-		--muted: 210 40% 96.1%;
-		--muted-foreground: 215.4 16.3% 46.9%;
+		--card: 0 0% 100%;
+		--card-foreground: 222.2 84% 4.9%;
 
 		--popover: 0 0% 100%;
-		--popover-foreground: 222.2 47.4% 11.2%;
+		--popover-foreground: 222.2 84% 4.9%;
 
-		--border: 214.3 31.8% 91.4%;
-		--input: 214.3 31.8% 91.4%;
-
-		--card: transparent;
-		--card-foreground: 222.2 47.4% 11.2%;
-
-		--primary: 222.2 47.4% 11.2%;
+		--primary: 329 78% 59%; /* Converted from #ea518f */
 		--primary-foreground: 210 40% 98%;
 
 		--secondary: 210 40% 96.1%;
 		--secondary-foreground: 222.2 47.4% 11.2%;
 
+		--muted: 210 40% 96.1%;
+		--muted-foreground: 215.4 16.3% 46.9%;
+
 		--accent: 210 40% 96.1%;
 		--accent-foreground: 222.2 47.4% 11.2%;
 
-		--destructive: 0 100% 50%;
+		--destructive: 0 84.2% 60.2%;
 		--destructive-foreground: 210 40% 98%;
 
-		--ring: 215 20.2% 65.1%;
+		/* This is what was missing - proper border variable */
+		--border: 214.3 31.8% 91.4%;
+		--input: 214.3 31.8% 91.4%;
+		--ring: 222.2 84% 4.9%;
 
 		--radius: 0.5rem;
+
+		/* Custom primary palette */
+		--primaryp-000: #ffffff;
+		--primaryp-100: #fcecf4;
+		--primaryp-200: #f7bfd5;
+		--primaryp-300: #f292b6;
+		--primaryp-400: #ee6598;
+		--primaryp-500: #ea518f;
+		--primaryp-800: #b02e65;
+		--primaryp-900: #7b2247;
+
+		/* Secondary palette */
+		--secondarys-500: #7c89f7;
+
+		/* Shadow variables */
+		--card-drop-2: 0px 2px 6px rgba(0, 0, 0, 0.1);
 	}
 
 	.dark {
-		--background: 224 71% 4%;
-		--foreground: 213 31% 91%;
+		--background: 222.2 84% 4.9%;
+		--foreground: 210 40% 98%;
 
-		--muted: 223 47% 11%;
-		--muted-foreground: 215.4 16.3% 56.9%;
+		--card: 222.2 84% 4.9%;
+		--card-foreground: 210 40% 98%;
 
-		--accent: 216 34% 17%;
-		--accent-foreground: 210 40% 98%;
+		--popover: 222.2 84% 4.9%;
+		--popover-foreground: 210 40% 98%;
 
-		--popover: 224 71% 4%;
-		--popover-foreground: 215 20.2% 65.1%;
+		--primary: 329 78% 59%;
+		--primary-foreground: 210 40% 98%;
 
-		--border: 216 34% 17%;
-		--input: 216 34% 17%;
-
-		--card: transparent;
-		--card-foreground: 213 31% 91%;
-
-		--primary: 210 40% 98%;
-		--primary-foreground: 222.2 47.4% 1.2%;
-
-		--secondary: 222.2 47.4% 11.2%;
+		--secondary: 217.2 32.6% 17.5%;
 		--secondary-foreground: 210 40% 98%;
 
-		--destructive: 0 63% 31%;
+		--muted: 217.2 32.6% 17.5%;
+		--muted-foreground: 215 20.2% 65.1%;
+
+		--accent: 217.2 32.6% 17.5%;
+		--accent-foreground: 210 40% 98%;
+
+		--destructive: 0 62.8% 30.6%;
 		--destructive-foreground: 210 40% 98%;
 
-		--ring: 216 34% 17%;
-
-		--radius: 0.5rem;
+		--border: 217.2 32.6% 17.5%;
+		--input: 217.2 32.6% 17.5%;
+		--ring: 212.7 26.8% 83.9%;
 	}
 }
 
@@ -98,45 +89,10 @@
 	* {
 		@apply border-border;
 	}
-
 	body {
 		@apply bg-background text-foreground;
 		font-feature-settings:
 			"rlig" 1,
 			"calt" 1;
 	}
-}
-
-/* hide-scrollbar utility */
-.hide-scrollbar {
-	scrollbar-width: none; /* Firefox */
-	-ms-overflow-style: none; /* IE and Edge */
-}
-
-.hide-scrollbar::-webkit-scrollbar {
-	display: none; /* Chrome, Safari, Opera */
-}
-
-html {
-	scroll-behavior: smooth;
-}
-
-.long-dash {
-	border-style: dashed;
-	border-width: 1px;
-	border-color: black;
-	border-image: repeating-linear-gradient(to right, black 0, black 12px, transparent 12px, transparent 24px) 1;
-}
-
-@keyframes scroll {
-	0% {
-		transform: translateX(0%);
-	}
-	100% {
-		transform: translateX(-50%);
-	}
-}
-
-.animate-scroll {
-	animation: scroll 30s linear infinite;
 }

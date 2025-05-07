@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 
 // Custom components
-import { BarByAnima } from "./BarByAnima";
+// import { BarByAnima } from "./BarByAnima";
 import { FrameByAnima } from "./FrameByAnima";
 import { FrameWrapperByAnima } from "./FrameWrapperByAnima";
 import { DescriptionByAnima } from "./DescriptionByAnima";
@@ -14,6 +14,7 @@ import { FeatureByAnima } from "./FeatureByAnima";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/ui/tabs";
 import { Separator } from "@/ui/components/separator";
 import { Card, CardContent } from "@/ui/Card";
+import { HeaderSection } from "@/app/sections/HeaderSection";
 
 export const SingleProductView = (): JSX.Element => {
 	const thumbnails = [
@@ -52,9 +53,9 @@ export const SingleProductView = (): JSX.Element => {
 	return (
 		<div className="relative w-full bg-white">
 			{/* Navigation */}
-			<BarByAnima />
+			<HeaderSection />
 
-			<div className="container mx-auto px-4">
+			<div className="container mx-auto mt-40 px-4">
 				{/* Product Gallery and Info */}
 				<div className="mx-auto mt-8 flex max-w-7xl flex-col gap-12 px-4 md:flex-row md:items-start">
 					{/* Left: Thumbnails & Main Image */}

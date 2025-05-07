@@ -5,8 +5,9 @@ import Image from "next/image";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/ui/Accordion";
 import { Checkbox } from "@/ui/Checkbox";
 import { AllCategoriesByAnima } from "@/app/category/components/AllCategoriesByAnima";
-import { BarByAnima } from "@/app/category/components/BarByAnima";
+// import { BarByAnima } from "@/app/category/components/BarByAnima";
 import { FrameByAnima } from "@/app/category/components/FrameByAnima";
+import { HeaderSection } from "@/app/sections/HeaderSection";
 
 export const AllCategoryOption = (): JSX.Element => {
 	// Rating options data
@@ -20,10 +21,10 @@ export const AllCategoryOption = (): JSX.Element => {
 
 	return (
 		<div className="relative min-h-screen w-full bg-white" data-model-id="870:5170">
-			<BarByAnima />
+			<HeaderSection />
 
 			{/* Hero Banner */}
-			<div className="relative h-[219px] w-full bg-[url(/image.png)] bg-cover bg-[50%_50%]">
+			<div className="relative mt-24 h-[219px] w-full bg-[url(/image.png)] bg-cover bg-[50%_50%]">
 				<h1 className="absolute left-1/2 top-[33px] -translate-x-1/2 transform text-8xl font-normal leading-[normal] tracking-[0] text-[#ea518f] [font-family:'Baloo',Helvetica]">
 					Category
 				</h1>

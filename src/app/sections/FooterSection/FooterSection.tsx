@@ -2,16 +2,24 @@ import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Avatar, AvatarImage } from "../../ui/avatar";
 import { Card, CardContent } from "../../ui/card";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "../../ui/dropdown-menu";
 
-type Testimonial = {
+// Define types for testimonials
+interface Testimonial {
 	id: number;
 	backgroundColor: string;
 	textColor: string;
 	name?: string;
 	title?: string;
 	showNameAndTitle: boolean;
-};
+}
 
+// Testimonial data for mapping
 const testimonials: Testimonial[] = [
 	{
 		id: 1,
@@ -81,10 +89,11 @@ const testimonials: Testimonial[] = [
 	},
 ];
 
-export const FooterSection = () => {
-	const scrollRef = useRef<HTMLDivElement | null>(null);
-	const [isPaused, setIsPaused] = useState(false);
+export const FooterSection = (): JSX.Element => {
+	const scrollRef = useRef<HTMLDivElement>(null);
+	const [isPaused, setIsPaused] = useState<boolean>(false);
 
+	// Duplicate testimonials to create seamless infinite scroll effect
 	const duplicatedTestimonials: Testimonial[] = [...testimonials, ...testimonials];
 
 	useEffect(() => {
@@ -93,12 +102,11 @@ export const FooterSection = () => {
 
 		let animationId: number;
 		let startTime: number | null = null;
-		const duration = 50000;
+		const duration = 50000; // Time to scroll through all items once (in ms)
 		const totalWidth = scrollContainer.scrollWidth / 2;
 
-		const step = (timestamp: number) => {
-			if (startTime === null) startTime = timestamp;
-
+		const step = (timestamp: number): void => {
+			if (!startTime) startTime = timestamp;
 			if (isPaused) {
 				animationId = requestAnimationFrame(step);
 				return;
@@ -106,8 +114,11 @@ export const FooterSection = () => {
 
 			const elapsed = timestamp - startTime;
 			const progress = (elapsed % duration) / duration;
+
+			// Calculate position based on progress
 			const scrollPosition = progress * totalWidth;
 
+			// Reset scroll position when we've scrolled through the first set of testimonials
 			if (scrollContainer.scrollLeft >= totalWidth) {
 				scrollContainer.scrollLeft = 0;
 				startTime = timestamp;
@@ -125,30 +136,14 @@ export const FooterSection = () => {
 		};
 	}, [isPaused]);
 
-	const handleMouseEnter = () => setIsPaused(true);
-	const handleMouseLeave = () => setIsPaused(false);
-	const handleTouchStart = () => setIsPaused(true);
-	const handleTouchEnd = () => setIsPaused(false);
+	// Event handlers for pausing scroll on interaction
+	const handleMouseEnter = (): void => setIsPaused(true);
+	const handleMouseLeave = (): void => setIsPaused(false);
+	const handleTouchStart = (): void => setIsPaused(true);
+	const handleTouchEnd = (): void => setIsPaused(false);
 
-	const hideScrollbarStyle: React.CSSProperties = {
-		msOverflowStyle: "none",
-		scrollbarWidth: "none",
-		WebkitOverflowScrolling: "touch",
-	};
-
-	useEffect(() => {
-		const styleTag = document.createElement("style");
-		styleTag.innerHTML = `
-      .hide-webkit-scrollbar::-webkit-scrollbar {
-        display: none;
-      }
-    `;
-		document.head.appendChild(styleTag);
-
-		return () => {
-			document.head.removeChild(styleTag);
-		};
-	}, []);
+	// Create a fixed-size array for star ratings
+	const starRatings = [0, 1, 2, 3, 4]; // 5 stars
 
 	return (
 		<section className="w-full overflow-hidden py-16">
@@ -164,24 +159,27 @@ export const FooterSection = () => {
 				</h1>
 
 				<div
-					className="hide-webkit-scrollbar flex gap-6 overflow-x-auto pb-6 pt-12"
+					className="scrollbar-hide flex gap-6 overflow-x-auto pb-6 pt-12"
+					style={{
+						scrollbarWidth: "none",
+						msOverflowStyle: "none",
+					}}
 					ref={scrollRef}
 					onMouseEnter={handleMouseEnter}
 					onMouseLeave={handleMouseLeave}
 					onTouchStart={handleTouchStart}
 					onTouchEnd={handleTouchEnd}
-					style={hideScrollbarStyle}
 				>
 					<div className="flex w-max gap-6">
 						{duplicatedTestimonials.map((testimonial, index) => (
 							<Card
 								key={`${testimonial.id}-${index}`}
-								className="shadow-card-drop-2 inline-block w-[512px] rounded-lg"
+								className="inline-block w-[512px] rounded-lg shadow-card-drop-2"
 								style={{ backgroundColor: testimonial.backgroundColor }}
 							>
 								<CardContent className="relative flex items-center gap-4 p-6">
 									<div className="relative flex-shrink-0">
-										<Avatar className="-mt-20 h-[250px] w-40 rounded-none ">
+										<Avatar className="-mt-20 h-[250px] w-40 rounded-none">
 											<AvatarImage
 												src="/rectangle-12-2.png"
 												alt="Customer"
@@ -193,33 +191,89 @@ export const FooterSection = () => {
 									<div className="ml-2 flex flex-1 flex-col items-start gap-4">
 										<div className="flex items-center gap-2">
 											<div className="flex">
-												{Array.from({ length: 5 }, (_, i) => (
+												{starRatings.map((i) => (
 													<div key={i} className="relative h-3.5 w-3.5">
 														<Image
-															src="/star.svg"
+															className="absolute left-px top-px"
+															width={11}
+															height={11}
 															alt="Star"
-															width={14}
-															height={14}
-															className="h-full w-full object-contain"
+															src="/star-1.svg"
 														/>
 													</div>
 												))}
 											</div>
+											<span
+												className={`font-['Manrope',Helvetica] text-${testimonial.textColor} text-[10px] leading-[10px]`}
+											>
+												5.0 rating
+											</span>
 										</div>
 
-										{testimonial.showNameAndTitle && (
-											<>
-												<p className={`text-lg font-bold text-black`}>{testimonial.name}</p>
-												<p className="text-sm text-gray-700">{testimonial.title}</p>
-											</>
+										<p className="font-['Manrope',Helvetica] text-sm font-medium leading-[18px] text-primaryp-000">
+											Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia
+											consequat duis enim velit mollit.
+										</p>
+
+										{testimonial.showNameAndTitle && testimonial.name && testimonial.title && (
+											<div className="flex flex-col items-start gap-1">
+												<div className={`text-${testimonial.textColor} text-xs leading-3`}>
+													{testimonial.name}
+												</div>
+												<div
+													className={`font-baloo font-extrabold text-${testimonial.textColor} text-[8px] leading-[8px]`}
+												>
+													{testimonial.title}
+												</div>
+											</div>
 										)}
 									</div>
+
+									<DropdownMenu>
+										<DropdownMenuTrigger asChild>
+											<button className="absolute right-4 top-11 flex items-center gap-0.5 rounded-[10px] bg-primaryp-000 px-1 py-2">
+												<div
+													style={{
+														backgroundColor: `var(--${testimonial.textColor})`,
+													}}
+													className="h-[5px] w-[5px] rounded-[2.5px]"
+												/>
+												<div
+													style={{
+														backgroundColor: `var(--${testimonial.textColor})`,
+													}}
+													className="h-[5px] w-[5px] rounded-[2.5px]"
+												/>
+												<div
+													style={{
+														backgroundColor: `var(--${testimonial.textColor})`,
+													}}
+													className="h-[5px] w-[5px] rounded-[2.5px]"
+												/>
+											</button>
+										</DropdownMenuTrigger>
+										<DropdownMenuContent>
+											<DropdownMenuItem>View Profile</DropdownMenuItem>
+											<DropdownMenuItem>Share Testimonial</DropdownMenuItem>
+										</DropdownMenuContent>
+									</DropdownMenu>
 								</CardContent>
 							</Card>
 						))}
 					</div>
 				</div>
 			</div>
+
+			{/* Add this style tag if you're not able to define the class in your global CSS */}
+			<style jsx>{`
+				.scrollbar-hide::-webkit-scrollbar {
+					display: none;
+				}
+				.scrollbar-hide {
+					-ms-overflow-style: none;
+					scrollbar-width: none;
+				}
+			`}</style>
 		</section>
 	);
 };
