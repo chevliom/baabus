@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/ui/Accordion";
 
 import { HeaderSection } from "@/app/sections/HeaderSection";
-import { FrameByAnima } from "@/app/whishlist/componet/FrameByAnima";
+import { FrameByAnima } from "../../whishlist/components/FrameByAnima";
 
 // FAQ data for mapping
 const faqItems = [
@@ -104,7 +104,7 @@ export const Faqs = (): JSX.Element => {
 
 						return (
 							<AccordionItem key={index} value={value} className="border-b-0 last:mb-0">
-								<AccordionTrigger className="text-header flex items-center gap-4 py-4 text-xl font-medium leading-4 [font-family:'Poppins',Helvetica] hover:no-underline [&>svg]:hidden">
+								<AccordionTrigger className="text-header flex justify-start gap-4 py-4 text-xl font-medium leading-4 [font-family:'Poppins',Helvetica] hover:no-underline [&>svg]:hidden">
 									<div className="text-primaryp-500 flex h-6 w-6 items-center justify-center">
 										{isOpen ? (
 											<MinusIcon className="h-5 w-5 shrink-0" />

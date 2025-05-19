@@ -1,6 +1,6 @@
 import React from "react";
-import { Blog } from "./blog";
+import { Blog } from "./components/Blog";
 
 export default function FAQPage() {
-	return <Blog />;
+    return <Blog />;
 }

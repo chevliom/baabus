@@ -57,7 +57,7 @@ export const SingleProductView = (): JSX.Element => {
 
 			<div className="container mx-auto mt-40 px-4">
 				{/* Product Gallery and Info */}
-				<div className="mx-auto mt-8 flex max-w-7xl flex-col gap-12 px-4 md:flex-row md:items-start">
+				<div className="mx-auto mt-8 flex max-w-7xl flex-col gap-12 border-b-2 px-4 pb-12 md:flex-row md:items-start">
 					{/* Left: Thumbnails & Main Image */}
 					<div className="flex w-full justify-center md:w-1/2">
 						<div className="flex flex-col gap-8 md:flex-row">
@@ -104,22 +104,21 @@ export const SingleProductView = (): JSX.Element => {
 
 				{/* Tabs Section */}
 				<Tabs defaultValue="description" className="w-full">
-					<TabsList className="flex flex-wrap justify-start gap-6 border-b border-[#D9D9D9] bg-transparent px-2 md:flex-nowrap md:justify-center md:px-0">
+					<TabsList className="flex flex-wrap justify-start gap-6  px-2 md:flex-nowrap md:justify-center md:px-0">
 						{["description", "additional", "reviews"].map((tab) => (
 							<TabsTrigger
 								key={tab}
 								value={tab}
-								className="border-none bg-transparent font-['Poppins'] text-lg 
-      font-medium 
-      text-[#9F9F9F] 
-      shadow-none 
-      transition-none 
-      hover:text-black 
-      hover:shadow-none 
-      focus:outline-none 
-      focus:ring-0 
-      data-[state=active]:text-black 
-      md:text-xl"
+								className="rounded-none border-0 bg-transparent px-0
+        pb-4
+        font-['Poppins']
+        text-lg
+        font-medium
+        text-[#9F9F9F]
+        shadow-none
+        data-[state=active]:bg-transparent
+        data-[state=active]:text-black
+        data-[state=active]:shadow-none"
 							>
 								{tab === "description" && "Description"}
 								{tab === "additional" && "Additional information"}

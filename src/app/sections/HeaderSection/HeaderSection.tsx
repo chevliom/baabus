@@ -11,7 +11,7 @@ export const HeaderSection = (): JSX.Element => {
 		{ title: "Home", path: "/", id: 1 },
 		{ title: "Categories", path: "/category", id: 2 },
 		{ title: "About", path: "/AboutUs", id: 3 },
-		{ title: "Contact Us", path: "/contact", id: 4 },
+		{ title: "Contact Us", path: "/contactus", id: 4 },
 	];
 
 	return (

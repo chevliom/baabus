@@ -130,33 +130,35 @@ export const FrameByAnima = (): JSX.Element => {
 			</CardContent>
 			{/* Product Details */}
 			<div className="mt-8">
-				{productDetails.map((detail, index) => (
-					<div key={index} className="mb-4 flex gap-8">
-						<div className="font-['Poppins',Helvetica] text-base font-normal text-[#9f9f9f]">
-							{detail.label}
+				<div className="flex flex-col gap-4">
+					{productDetails.map((detail, index) => (
+						<div key={index} className="flex">
+							<div className="w-24 font-['Poppins',Helvetica] text-base font-normal text-[#9f9f9f]">
+								{detail.label}
+							</div>
+							<div className="font-['Poppins',Helvetica] text-base font-normal text-[#9f9f9f]">
+								{detail.value}
+							</div>
 						</div>
-						<div className="font-['Poppins',Helvetica] text-base font-normal text-[#9f9f9f]">
-							{detail.value}
-						</div>
-					</div>
-				))}
+					))}
 
-				{/* Social Share */}
-				<div className="mb-8 flex items-center gap-4">
-					<div className="font-['Poppins',Helvetica] text-base font-normal text-[#9f9f9f]">Share</div>
-					<div className="flex gap-4">
-						{socialIcons.map((icon) => (
-							<button key={icon.id} aria-label={`Share on ${icon.alt}`} className="h-5 w-5">
-								<Image
-									loading="lazy"
-									width={40} // adjust based on your design
-									height={40} // adjust based on your design
-									alt={icon.alt}
-									src={icon.src}
-									className="object-contain" // Ensures proper scaling
-								/>
-							</button>
-						))}
+					{/* Social Share */}
+					<div className="flex">
+						<div className="w-24 font-['Poppins',Helvetica] text-base font-normal text-[#9f9f9f]">Share</div>
+						<div className="flex gap-4">
+							{socialIcons.map((icon) => (
+								<button key={icon.id} aria-label={`Share on ${icon.alt}`} className="h-5 w-5">
+									<Image
+										loading="lazy"
+										width={20}
+										height={20}
+										alt={icon.alt}
+										src={icon.src}
+										className="object-contain"
+									/>
+								</button>
+							))}
+						</div>
 					</div>
 				</div>
 			</div>

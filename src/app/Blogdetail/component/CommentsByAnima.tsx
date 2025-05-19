@@ -1,10 +1,10 @@
 import React from "react";
-import { Avatar } from "../../../ui/avatar";
-import { Button } from "../../../ui/button";
-import { Checkbox } from "../../../ui/checkbox";
+import { Avatar } from "../../ui/avatar";
+import { Button } from "../../../ui/Button";
+import { Checkbox } from "../../../ui/Checkbox";
 import { Input } from "../../../ui/input";
-import { Separator } from "../../../ui/separator";
-import { Textarea } from "../../../ui/textarea";
+import { Separator } from "../../ui/separator";
+import { Textarea } from "../../ui/textarea";
 
 // Comment data for mapping
 const comments = [

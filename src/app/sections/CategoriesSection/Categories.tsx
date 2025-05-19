@@ -1,18 +1,68 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export const Categories: React.FC = () => {
 	const scrollRef = useRef<HTMLDivElement>(null);
 	const [scrollPosition, setScrollPosition] = useState(0);
+	const [categories, setCategories] = useState<
+		Array<{
+			id: string;
+			name: string;
+			image: string;
+			alt: string;
+		}>
+	>([]);
+	const [loading, setLoading] = useState(true);
 
-	const categories = [
-		{ id: 1, name: "Water Bottle", image: "/image.png", alt: "water" },
-		{ id: 2, name: "Rise Tower", image: "/image-16-2.png", alt: "tower" },
-		{ id: 3, name: "Swing Car", image: "/image-16-3.png", alt: "car" },
-		{ id: 4, name: "Kick Scooter", image: "/image-16-4.png", alt: "scooter" },
-		{ id: 5, name: "Baby Walker", image: "/image-16-5.png", alt: "walker" },
-		{ id: 6, name: "Baby", image: "/image-16-5.png", alt: "baby" },
-	];
+	useEffect(() => {
+		const fetchCategories = async () => {
+			try {
+				const response = await fetch("http://65.1.0.82:8000/graphql/", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						query: `
+							query {
+								categories {
+									edges {
+										node {
+											id
+											name
+										}
+									}
+								}
+							}
+						`,
+					}),
+				});
+
+				const result = await response.json();
+				if (
+					typeof result === "object" &&
+					result !== null &&
+					"data" in result &&
+					Array.isArray((result as any).data?.categories?.edges)
+				) {
+					// Map API response to our category format with placeholder images
+					const mappedCategories = (result as any).data.categories.edges.map((edge: any, index: number) => ({
+						id: edge.node.id,
+						name: edge.node.name,
+						image: `/image-16-${(index % 5) + 1}.png`,
+						alt: edge.node.name.toLowerCase().replace(/\s+/g, "-"),
+					}));
+					setCategories(mappedCategories);
+				}
+			} catch (error) {
+				console.error("Error fetching categories:", error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchCategories();
+	}, []);
 
 	const scroll = (direction: "left" | "right") => {
 		if (scrollRef.current) {
@@ -53,6 +103,19 @@ export const Categories: React.FC = () => {
 			<h3 className="font-baloo text-xl font-extrabold text-blue-400">{name}</h3>
 		</div>
 	);
+
+	if (loading) {
+		return (
+			<div className="relative -mt-8 overflow-hidden bg-[#d9e9f7] pb-40 pt-20">
+				<div className="container mx-auto px-4 py-8">
+					<h2 className="mb-12 text-center font-baloo text-5xl font-extrabold text-pink-600">Categories</h2>
+					<div className="flex justify-center">
+						<p>Loading categories...</p>
+					</div>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="relative -mt-8 overflow-hidden bg-[#d9e9f7] pb-40 pt-20">

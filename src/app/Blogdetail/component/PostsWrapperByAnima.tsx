@@ -1,6 +1,6 @@
 import { CalendarIcon } from "lucide-react";
 import React from "react";
-import { Card, CardContent } from "../../../ui/card";
+import { Card, CardContent } from "../../../ui/Card";
 
 export const PostsWrapperByAnima = (): JSX.Element => {
 	return (
