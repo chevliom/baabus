@@ -1,15 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { MinusIcon, PlusIcon, StarHalfIcon, StarIcon } from "lucide-react";
-import Image from "next/image"; // Import Image component from Next.js
+import Image from "next/image";
 import { Button } from "@/ui/Button";
 import { Card, CardContent } from "@/ui/Card";
-
-const productDetails = [
-	{ label: "SKU", value: "SS001" },
-	{ label: "Category", value: "Swing Car" },
-];
 
 const socialIcons = [
 	{ id: 1, src: "/akar-icons_facebook-fill.svg", alt: "Facebook" },
@@ -22,30 +18,81 @@ interface ProductColor {
 	name: string;
 }
 
-const productData: {
+interface Product {
+	id: string;
 	name: string;
-	price: string;
-	rating: number;
-	reviewCount: number;
 	description: string;
-	colors: ProductColor[];
-} = {
-	name: "BAABUS Magic Swing Car",
-	price: "Rs. 250,000.00",
-	rating: 4.5,
-	reviewCount: 5,
-	description:
-		"Let your little one cruise in style with this easy-to-ride swing car. Built for smooth rides, it's perfect for active play indoors and outdoors!",
-	colors: [
+	rating: number;
+	isAvailable: boolean;
+	availableForPurchase: boolean;
+	availableForPurchaseAt: string | null;
+	productType: {
+		name: string;
+	};
+	category: {
+		name: string;
+	};
+}
+
+export const FrameByAnima = (): JSX.Element => {
+	const searchParams = useSearchParams();
+	const id = searchParams.get("id");
+
+	const [productData, setProductData] = useState<Product | null>(null);
+	const [selectedColor, setSelectedColor] = useState<string>("Purple");
+	const [quantity, setQuantity] = useState<number>(1);
+
+	const colors: ProductColor[] = [
 		{ color: "#806df9", name: "Purple" },
 		{ color: "#000000", name: "Black" },
 		{ color: "#D4AF37", name: "Gold" },
-	],
-};
+	];
 
-export const FrameByAnima = (): JSX.Element => {
-	const [selectedColor, setSelectedColor] = useState<string>(productData.colors[0].name);
-	const [quantity, setQuantity] = useState<number>(1);
+	useEffect(() => {
+		if (!id) return;
+
+		const fetchProduct = async () => {
+			const res = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					query: `
+            query GetProduct($id: ID!) {
+              product(id: $id, channel: "default-channel") {
+                id
+                name
+                description
+                rating
+                isAvailable
+                availableForPurchase
+                availableForPurchaseAt
+                productType {
+                  name
+                }
+                category {
+                  name
+                }
+              }
+            }
+          `,
+					variables: { id },
+				}),
+			});
+
+			const json = await res.json();
+			setProductData(json.data.product);
+		};
+
+		fetchProduct();
+	}, [id]);
+
+	if (!id) return <p className="text-red-500">No product ID in URL.</p>;
+	if (!productData) return <p className="text-gray-500">Loading...</p>;
+
+	const formatDate = (dateString: string | null): string => {
+		if (!dateString) return "N/A";
+		return new Date(dateString).toLocaleDateString();
+	};
 
 	return (
 		<Card className="w-full max-w-[616px] border-none bg-transparent px-4 shadow-none md:px-0">
@@ -55,7 +102,7 @@ export const FrameByAnima = (): JSX.Element => {
 				</h1>
 
 				<p className="mb-6 font-['Poppins',Helvetica] text-[24px] font-medium text-[#9f9f9f]">
-					{productData.price}
+					Rs. 250,000.00
 				</p>
 
 				<div className="mb-6 flex items-center">
@@ -65,11 +112,9 @@ export const FrameByAnima = (): JSX.Element => {
 						))}
 						<StarHalfIcon className="h-5 w-5 fill-yellow-500 text-yellow-500" />
 					</div>
-
-					<div className="mx-4 h-[30px] w-px bg-gray-300"></div>
-
+					<div className="mx-4 h-[30px] w-px bg-gray-300" />
 					<span className="font-['Poppins',Helvetica] text-[13px] text-[#9f9f9f]">
-						{productData.reviewCount} Customer Review
+						{productData.rating ?? 5} Customer Reviews
 					</span>
 				</div>
 
@@ -80,7 +125,7 @@ export const FrameByAnima = (): JSX.Element => {
 				<div className="mb-6">
 					<p className="mb-3 font-['Poppins',Helvetica] text-sm text-[#9f9f9f]">Color</p>
 					<div className="flex gap-4">
-						{productData.colors.map((colorOption, index) => (
+						{colors.map((colorOption, index) => (
 							<div
 								key={index}
 								onClick={() => setSelectedColor(colorOption.name)}
@@ -128,23 +173,41 @@ export const FrameByAnima = (): JSX.Element => {
 
 				<div className="mt-12 h-px w-full bg-gray-200" />
 			</CardContent>
+
 			{/* Product Details */}
 			<div className="mt-8">
 				<div className="flex flex-col gap-4">
-					{productDetails.map((detail, index) => (
-						<div key={index} className="flex">
-							<div className="w-24 font-['Poppins',Helvetica] text-base font-normal text-[#9f9f9f]">
-								{detail.label}
-							</div>
-							<div className="font-['Poppins',Helvetica] text-base font-normal text-[#9f9f9f]">
-								{detail.value}
-							</div>
+					<div className="flex">
+						<div className="w-24 font-['Poppins',Helvetica] text-base text-[#9f9f9f]">Type</div>
+						<div className="font-['Poppins',Helvetica] text-base text-[#9f9f9f]">
+							{productData.productType?.name ?? "N/A"}
 						</div>
-					))}
+					</div>
+
+					<div className="flex">
+						<div className="w-24 font-['Poppins',Helvetica] text-base text-[#9f9f9f]">Category</div>
+						<div className="font-['Poppins',Helvetica] text-base text-[#9f9f9f]">
+							{productData.category?.name ?? "N/A"}
+						</div>
+					</div>
+
+					<div className="flex">
+						<div className="w-24 font-['Poppins',Helvetica] text-base text-[#9f9f9f]">Available</div>
+						<div className="font-['Poppins',Helvetica] text-base text-[#9f9f9f]">
+							{productData.isAvailable ? "In Stock" : "Out of Stock"}
+						</div>
+					</div>
+
+					{/* <div className="flex">
+						<div className="w-24 font-['Poppins',Helvetica] text-base text-[#9f9f9f]">Purchase At</div>
+						<div className="font-['Poppins',Helvetica] text-base text-[#9f9f9f]">
+							{formatDate(productData.availableForPurchaseAt)}
+						</div>
+					</div> */}
 
 					{/* Social Share */}
 					<div className="flex">
-						<div className="w-24 font-['Poppins',Helvetica] text-base font-normal text-[#9f9f9f]">Share</div>
+						<div className="w-24 font-['Poppins',Helvetica] text-base text-[#9f9f9f]">Share</div>
 						<div className="flex gap-4">
 							{socialIcons.map((icon) => (
 								<button key={icon.id} aria-label={`Share on ${icon.alt}`} className="h-5 w-5">

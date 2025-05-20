@@ -2,19 +2,19 @@
 
 import Image from "next/image";
 import React, { useState } from "react";
-import { BarByAnima } from "@/app/category/components/BarByAnima";
 import { FrameByAnima } from "@/app/whishlist/components/FrameByAnima";
 import { WishlistByAnima } from "@/app/whishlist/components/WishlistByAnima";
 import { WishlistEmpty } from "@/app/whishlist/components/WishlistEmpty";
+import { HeaderSection } from "@/app/sections/HeaderSection";
 export const WishlistScreen = (): JSX.Element => {
 	const [isWishlistEmpty, setIsWishlistEmpty] = useState(false);
 	return (
 		<div className="flex min-h-screen w-full flex-col overflow-hidden bg-white">
-			<BarByAnima />
+			<HeaderSection/>
 
 			{/* Header Section with Decorative Background */}
 			{/* Hero Banner */}
-			<div className="relative h-[219px] w-full bg-[url(/image.png)] bg-cover bg-[50%_50%]">
+			<div className="relative h-[219px] w-full bg-[url(/image.png)] bg-cover bg-[50%_50%] mt-24">
 				<h1 className="absolute left-1/2 top-[33px] -translate-x-1/2 transform text-8xl font-normal leading-[normal] tracking-[0] text-[#ea518f] [font-family:'Baloo',Helvetica]">
 					Whishlist
 				</h1>

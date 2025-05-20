@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 
 // Custom components
-// import { BarByAnima } from "./BarByAnima";
+
 import { FrameByAnima } from "./FrameByAnima";
 import { FrameWrapperByAnima } from "./FrameWrapperByAnima";
 import { DescriptionByAnima } from "./DescriptionByAnima";
