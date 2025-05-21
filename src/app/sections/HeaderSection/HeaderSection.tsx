@@ -59,7 +59,7 @@ export const HeaderSection = (): JSX.Element => {
 				</Link>
 
 				{/* User Button (profile) */}
-				<Link href="/profile">
+				<Link href="/location">
 					<button className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-dashed border-[#600b2e] bg-[#fafeaa]">
 						<UserIcon className="h-6 w-6 fill-[#e62875] text-[#e62875]" />
 					</button>
