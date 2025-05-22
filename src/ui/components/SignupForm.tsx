@@ -1,5 +1,5 @@
 import { getServerAuthClient } from "@/app/config";
-
+import Link from "next/link";
 
 export async function SignupForm() {
 	return (
@@ -72,9 +72,9 @@ export async function SignupForm() {
 
 				<p className="text-center text-sm text-[#999] mt-6">
 					Already have account{" "}
-					<a href="#" className="text-black font-semibold hover:underline">
+					<Link href="/default-channel/login" className="text-black font-semibold hover:underline">
 						Login
-					</a>
+					</Link>
 				</p>
 			</form>
 		</div>

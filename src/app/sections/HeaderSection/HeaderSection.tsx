@@ -17,7 +17,9 @@ export const HeaderSection = (): JSX.Element => {
 	return (
 		<header className="fixed left-0 top-0 z-50 flex h-[95px] w-full items-center justify-between bg-white px-8 shadow-[0px_4px_10px_#2873b980]">
 			{/* Logo */}
-			<Image src={Logo} alt="Logo" width={147} height={57} className="object-cover" />
+			<Link href="/default-channel">
+				<Image src={Logo} alt="Logo" width={147} height={57} className="cursor-pointer object-cover" />
+			</Link>
 
 			{/* Navigation */}
 			<nav className="ml-16 flex items-center gap-12">
@@ -25,7 +27,7 @@ export const HeaderSection = (): JSX.Element => {
 					<Link
 						key={item.id}
 						href={item.path}
-						className="text-primaryp-500 font-['Poppins',Helvetica] text-xl font-bold hover:underline"
+						className="font-['Poppins',Helvetica] text-xl font-bold text-primaryp-500 hover:underline"
 						style={{ color: "rgba(230, 40, 117, 1)" }}
 					>
 						{item.title}
@@ -59,7 +61,7 @@ export const HeaderSection = (): JSX.Element => {
 				</Link>
 
 				{/* User Button (profile) */}
-				<Link href="/location">
+				<Link href="/usertype">
 					<button className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-dashed border-[#600b2e] bg-[#fafeaa]">
 						<UserIcon className="h-6 w-6 fill-[#e62875] text-[#e62875]" />
 					</button>

@@ -6,7 +6,7 @@ import ServicesBanner from "@/ui/components/ServicesBanner";
 export default function SignupPage() {
 	return (
 		<Suspense fallback={<Loader />}>
-			<section className="mx-auto h-[calc(100vh-100px)] max-w-7xl p-8">
+			<section className="mt-16 mx-auto h-[calc(100vh-100px)] max-w-7xl p-8">
 				<SignupForm />
 			</section>
 			<ServicesBanner />

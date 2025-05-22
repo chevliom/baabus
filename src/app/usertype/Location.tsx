@@ -2,12 +2,14 @@
 
 import { CheckIcon } from "lucide-react";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent } from "../../ui/Card";
 import { FrameByAnima } from "../whishlist/components/FrameByAnima";
 import { HeaderSection } from "../sections/HeaderSection";
 
 export const Location = (): JSX.Element => {
-	const [selectedType, setSelectedType] = useState("Retailer/Wholesaler");
+	const [selectedType, setSelectedType] = useState("Customer");
+	const router = useRouter();
 
 	const userTypes = [
 		{
@@ -41,7 +43,12 @@ export const Location = (): JSX.Element => {
 								className={`relative cursor-pointer transition-all duration-300 ${
 									isSelected ? "shadow-lg" : "hover:shadow-md"
 								}`}
-								onClick={() => setSelectedType(userType.title)}
+								onClick={() => {
+									setSelectedType(userType.title);
+									if (userType.title === "Customer") {
+										router.push("/default-channel/login");
+									}
+								}}
 							>
 								<Card
 									className={`w-full overflow-hidden rounded-[20px] transition-all duration-300 ${
