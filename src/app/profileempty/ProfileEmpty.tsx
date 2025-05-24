@@ -1,3 +1,5 @@
+"use client"
+
 import {
 	ClipboardListIcon,
 	HeartIcon,
@@ -7,11 +9,17 @@ import {
 	ShoppingCartIcon,
 	
 } from "lucide-react";
-import React from "react";
+import Link from "next/link";
+import React, { useState } from "react";
 import { Button } from "../../ui/Button";
 import { Card, CardContent } from "../../ui/Card";
 import { HeaderSection } from "../sections/HeaderSection";
 import { FrameByAnima } from "../whishlist/components/FrameByAnima";
+import {
+	DashboardNavigationSection,
+	defaultNavigationItems,
+} from "../profile/Section/DashboardNavigationSection ";
+
 
 // Navigation items data
 const navigationItems = [
@@ -64,6 +72,7 @@ const footerFeatures = [
 ];
 
 export const ProfileEmpty = (): JSX.Element => {
+	const [activeNav, setActiveNav] = useState("Profile Details");
 	return (
 		<div className="relative min-h-screen w-full bg-white">
 			{/* Header */}
@@ -71,29 +80,11 @@ export const ProfileEmpty = (): JSX.Element => {
 
 			<div className="mt-36 flex ">
 				{/* Sidebar Navigation */}
-				<Card className="ml-0 h-fit w-[280px] rounded-lg border border-solid border-[#e6e6e6]">
-					<div className="p-5 pb-4 pt-6">
-						<h2 className="font-body-XL-body-XL-500 text-gray-scalegray-900">Navigation</h2>
-					</div>
-
-					{navigationItems.map((item, index) => (
-						<div
-							key={index}
-							className={`flex items-center gap-2.5 px-5 py-4 ${
-								item.active ? "bg-[#f7bfd5] shadow-[inset_3px_0px_0px_#ea518f]" : ""
-							}`}
-						>
-							{item.icon}
-							<span
-								className={`font-body-medium-body-medium-400 ${
-									item.active ? "text-gray-scalegray-900" : "text-gray-scalegray-600"
-								}`}
-							>
-								{item.label}
-							</span>
-						</div>
-					))}
-				</Card>
+				<DashboardNavigationSection
+					items={defaultNavigationItems}
+					activeLabel={activeNav}
+					onItemClick={(label) => setActiveNav(label)}
+				/>
 
 				{/* Profile Card */}
 				<Card className="ml-[72px] h-[278px] w-[1046px] rounded-[0px_8px_8px_0px] border border-solid border-[#e6e6e6]">
@@ -110,10 +101,11 @@ export const ProfileEmpty = (): JSX.Element => {
 						</div>
 
 						<Button
+							asChild
 							variant="link"
 							className="font-body-medium-body-medium-500 absolute left-[439px] top-[221px] text-center text-[#ea518f]"
 						>
-							Edit Profile
+							<Link href="./profilefilled">Edit Profile</Link>
 						</Button>
 					</CardContent>
 				</Card>

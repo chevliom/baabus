@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { Button } from "../../ui/button";
 import { Card, CardContent } from "../../ui/card";
 import {
@@ -174,10 +175,11 @@ export const OrderHistorySection = (): JSX.Element => {
 										</TableCell>
 										<TableCell className="text-right">
 											<Button
+												asChild
 												variant="link"
 												className="font-body-small-body-small-500 p-0 text-[length:var(--body-small-body-small-500-font-size)] leading-[var(--body-small-body-small-500-line-height)] tracking-[var(--body-small-body-small-500-letter-spacing)] text-[#ea518f]"
 											>
-												View Details
+												<Link href="/trackorder">View Details</Link>
 											</Button>
 										</TableCell>
 									</TableRow>

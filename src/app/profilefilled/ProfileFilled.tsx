@@ -12,7 +12,7 @@ import { HeaderSection } from "../sections/HeaderSection";
 import { FrameByAnima } from "../whishlist/components/FrameByAnima";
 
 export const ProfileFilled = (): JSX.Element => {
-	const [activeNav, setActiveNav] = useState("Order History");
+	const [activeNav, setActiveNav] = useState("Profile Details");
 
 	return (
 		<main className="flex min-h-screen w-full flex-col bg-white">
@@ -36,7 +36,7 @@ export const ProfileFilled = (): JSX.Element => {
 				<div className="flex flex-1 flex-col">
 					{/* User profile and billing details row */}
 					<div className="flex w-full flex-col md:flex-row">
-						<div className="flex-1 md:mr-4">
+						<div className="flex-1  md:mr-4">
 							<UserProfileSection />
 						</div>
 						<div className="flex-1 md:ml-4">

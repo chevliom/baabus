@@ -3,15 +3,14 @@
 import { X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-
 import { Badge } from "@/ui/badge";
 import { Button } from "@/ui/Button";
 import { Card } from "@/ui/Card";
 import { Separator } from "@/ui/components/separator";
-import { fetchWishlist } from "@/lib/graphqlClient"; // adjust path as needed
+import { fetchWishlist } from "@/lib/graphqlClient";
 
 interface WishlistItem {
-	id: string;
+	id: string | number;
 	name: string;
 	image: string;
 	price: string;
@@ -29,31 +28,78 @@ type Props = {
 	onExploreMore: () => void;
 };
 
+const staticWishlistItems: WishlistItem[] = [
+	{
+		id: 1,
+		name: "Bus Bottle",
+		image: "/image-7.png",
+		price: "₹14.99",
+		originalPrice: "₹20.99",
+		stockStatus: "In Stock",
+		stockStatusColor: "#5f0b2d",
+		stockStatusBg: "#f7bfd5",
+		buttonColor: "#ea518f",
+		buttonTextColor: "text-gray-scalewhite",
+		lowStock: true,
+		lowStockMessage: "1 Item left, Hurry!",
+	},
+	{
+		id: 2,
+		name: "Bus Bottle",
+		image: "/image-7.png",
+		price: "₹45.00",
+		stockStatus: "In Stock",
+		stockStatusColor: "#5f0b2d",
+		stockStatusBg: "#f7bfd5",
+		buttonColor: "#ea518f",
+		buttonTextColor: "text-gray-scalewhite",
+	},
+	{
+		id: 3,
+		name: "Bus Bottle",
+		image: "/image-7.png",
+		price: "₹09.00",
+		stockStatus: "Out of Stock",
+		stockStatusColor: "text-brandingerror",
+		stockStatusBg: "#e94b4833",
+		buttonColor: "bg-gray-scalegray-50",
+		buttonTextColor: "text-gray-scalegray-300",
+	},
+];
+
 export function WishlistByAnima({ onExploreMore }: Props): JSX.Element {
 	const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
+	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		async function loadWishlist() {
-			const wishlist = await fetchWishlist();
-			if (!wishlist) return;
+			try {
+				const wishlist = await fetchWishlist();
 
-			const mapped: WishlistItem[] = wishlist.items.map((item: any) => ({
-				id: item.id,
-				name: item.variant.name,
-				image: "/image-7.png", // Placeholder image, replace with real if available
-				price: `₹${item.variant.pricing?.price?.gross?.amount?.toFixed(2) ?? "0.00"}`,
-				originalPrice: undefined,
-				stockStatus: "In Stock", // Assuming all fetched are in stock
-				stockStatusColor: "#5f0b2d",
-				stockStatusBg: "#f7bfd5",
-				buttonColor: "#ea518f",
-				buttonTextColor: "text-gray-scalewhite",
-				lowStock: false,
-			}));
-
-			setWishlistItems(mapped);
+				if (!wishlist || !wishlist.items || wishlist.items.length === 0) {
+					setWishlistItems(staticWishlistItems);
+				} else {
+					const mapped: WishlistItem[] = wishlist.items.map((item: any) => ({
+						id: item.id,
+						name: item.variant.name,
+						image: "/image-7.png", // Replace with real image path if available
+						price: `₹${item.variant.pricing?.price?.gross?.amount?.toFixed(2) ?? "0.00"}`,
+						originalPrice: undefined,
+						stockStatus: "In Stock",
+						stockStatusColor: "#5f0b2d",
+						stockStatusBg: "#f7bfd5",
+						buttonColor: "#ea518f",
+						buttonTextColor: "text-gray-scalewhite",
+					}));
+					setWishlistItems(mapped);
+				}
+			} catch (error) {
+				console.error("Failed to fetch wishlist, using fallback.", error);
+				setWishlistItems(staticWishlistItems);
+			} finally {
+				setIsLoading(false);
+			}
 		}
-
 		loadWishlist();
 	}, []);
 
@@ -75,7 +121,6 @@ export function WishlistByAnima({ onExploreMore }: Props): JSX.Element {
 
 				<Separator className="mb-6 w-full" />
 
-				{/* Product Items */}
 				{wishlistItems.map((item, index) => (
 					<div key={item.id}>
 						<div className="mb-5 flex items-center">
@@ -136,6 +181,7 @@ export function WishlistByAnima({ onExploreMore }: Props): JSX.Element {
 
 				<Separator className="my-6 w-full" />
 
+				{/* Footer */}
 				<div className="flex items-center justify-between">
 					<div className="text-xl font-normal text-[#f188b2]">
 						Love it? Someone else does too! Buy before it&apos;s too late.

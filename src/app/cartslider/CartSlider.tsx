@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState } from "react";
 import { Card, CardContent } from "../../ui/Card";
 import { Separator } from "../ui/separator";

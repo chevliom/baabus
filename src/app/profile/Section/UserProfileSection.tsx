@@ -12,8 +12,8 @@ export const UserProfileSection = (): JSX.Element => {
 	};
 
 	return (
-		<div className="mx-auto my-8 w-full max-w-[538px]">
-			<Card className="w-full rounded-[0px_8px_8px_0px] border border-solid border-[#e6e6e6]">
+		<div className="mx-auto w-full max-w-[538px]">
+			<Card className="w-full rounded-[0px_8px_8px_0px] border border-solid border-[#e6e6e6] h-[345px]">
 				<CardContent className="flex flex-col items-center justify-center px-4 py-8">
 					<Avatar className="h-[100px] w-[100px] bg-[#2873b980]">
 						<AvatarFallback className="font-['Poppins',Helvetica] text-5xl font-semibold text-[#0083ff]">

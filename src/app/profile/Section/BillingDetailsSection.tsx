@@ -13,7 +13,7 @@ export const BillingDetailsSection = (): JSX.Element => {
 	};
 
 	return (
-		<div className="w-full max-w-[428px]">
+		<div className="max-w-[510px]">
 			<Card className="w-full rounded-[0px_8px_8px_8px] border border-solid border-[#e6e6e6]">
 				<CardContent className="p-8">
 					<div className="flex flex-col space-y-8">
