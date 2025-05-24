@@ -30,6 +30,100 @@ type CategoriesResponse = {
 	};
 };
 
+type WishlistProduct = {
+	id: string;
+	name: string;
+	channel: string;
+};
+
+type WishlistVariant = {
+	id: string;
+	name: string;
+	pricing?: {
+		price?: {
+			gross?: {
+				amount: number;
+			};
+			net?: {
+				amount: number;
+			};
+		};
+	};
+	product: WishlistProduct;
+};
+
+type WishlistItem = {
+	id: string;
+	variant: WishlistVariant;
+};
+
+type WishlistUser = {
+	id: string;
+	email: string;
+};
+
+type Wishlist = {
+	id: string;
+	items: WishlistItem[];
+	user: WishlistUser;
+};
+
+type WishlistResponse = {
+	data: {
+		wishlist: Wishlist;
+	};
+};
+
+
+export async function fetchWishlist() {
+	const response = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			query: `
+		  query Wishlist {
+			wishlist {
+			  id
+			  items {
+				id
+				variant {
+				  id
+				  name
+				  pricing {
+					price {
+					  gross {
+						amount
+					  }
+					  net {
+						amount
+					  }
+					}
+				  }
+				  product {
+					channel
+					id
+					name
+				  }
+				}
+			  }
+			  user {
+				email
+				id
+			  }
+			}
+		  }
+		`,
+		}),
+	});
+
+	const json = (await response.json()) as WishlistResponse;
+	return json.data?.wishlist ?? null;
+}
+  
+
+
 export async function fetchCategoriesWithProducts(channel = "default-channel") {
 	const response = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
 		method: "POST",
