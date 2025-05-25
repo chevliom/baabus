@@ -32,11 +32,9 @@ export const Location = (): JSX.Element => {
 			{/* Main Content */}
 			<main className="mb-24 mt-32 flex flex-col items-center">
 				<h1 className="font-poppins mb-12 text-4xl font-extrabold text-[#123453]">Select User Type</h1>
-
 				<div className="w-[398px] space-y-8">
 					{userTypes.map((userType, index) => {
 						const isSelected = userType.title === selectedType;
-
 						return (
 							<div
 								key={index}
