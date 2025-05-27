@@ -1,5 +1,5 @@
-import { getServerAuthClient } from "@/app/config";
 import Link from "next/link";
+import { getServerAuthClient } from "@/app/config";
 
 export async function LoginForm() {
 	return (

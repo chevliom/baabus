@@ -1,12 +1,13 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/ui/Accordion";
 import Link from "next/link";
-import { fetchCategoriesWithProducts } from "@/lib/graphqlClient";
 import { HeartIcon } from "lucide-react";
+import Image from "next/image";
 import { Button } from "../../ui/button";
 import { Card, CardContent } from "../../../ui/Card";
+import { fetchCategoriesWithProducts } from "@/lib/graphqlClient";
+// import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/ui/Accordion";
 
 // Types
 type Product = {
@@ -288,7 +289,7 @@ export const FrameByAnima = () => {
 									/>
 								</button>
 								<div className="flex h-full items-center justify-center">
-									<img
+									<Image
 										src={product.thumbnail?.url || "/placeholder-product.png"}
 										alt={product.name}
 										className="max-h-52 max-w-52 object-contain"

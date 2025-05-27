@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import Image from "next/image";
 import { AboutUsSection } from "../../sections/AboutUsSection/AboutUsSection";
 import { CallToActionSection } from "../../sections/CallToActionSection/CallToActionSection";
@@ -67,16 +68,18 @@ export default function HomePage() {
 			</div>
 
 			{/* <ContactSection /> */}
-			<div className="h-full w-full overflow-hidden">
-				<Image
-					src="/Highlights.png"
-					alt="Highlights"
-					width={1920}
-					height={1080}
-					className="h-auto w-full"
-					priority
-				/>
-			</div>
+			<Link href="/category">
+				<div className="h-full w-full cursor-pointer overflow-hidden">
+					<Image
+						src="/Highlights.png"
+						alt="Highlights"
+						width={1920}
+						height={1080}
+						className="h-auto w-full"
+						priority
+					/>
+				</div>
+			</Link>
 
 			<MainContentSection />
 			<FooterSection />

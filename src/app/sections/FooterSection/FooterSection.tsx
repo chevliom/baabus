@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { Playball } from "next/font/google";
 import { Avatar, AvatarImage } from "../../ui/avatar";
 import { Card, CardContent } from "../../ui/card";
 import {
@@ -18,6 +19,8 @@ interface Testimonial {
 	title?: string;
 	showNameAndTitle: boolean;
 }
+
+const playball = Playball({ weight: "400", subsets: ["latin"] });
 
 // Testimonial data for mapping
 const testimonials: Testimonial[] = [
@@ -149,13 +152,18 @@ export const FooterSection = (): JSX.Element => {
 		<section className="w-full overflow-hidden py-16">
 			<div className="container mx-auto px-4">
 				<h1 className="mb-12 text-left text-5xl leading-tight md:text-6xl lg:text-[70px]">
-					<span className="font-baloo font-extrabold text-black">What </span>
-					<span className="font-['Playball',Helvetica] text-[#f188b3]">Lovely</span>
-					<span className="font-baloo font-extrabold text-black">
+					<span className="text-black  [font-family:'Baloo',Helvetica]">What </span>
+					<span className={`${playball.className} text-[70px] font-normal leading-[100%] text-[#f188b3]`}>
+						Lovely
+					</span>
+
+					<span className="text-black  [font-family:'Baloo',Helvetica]">
 						{" "}
 						Moms and <br /> Dads Are{" "}
 					</span>
-					<span className="font-['Playball',Helvetica] text-[#f188b3]">Saying!</span>
+					<span className={`${playball.className} text-[70px] font-normal leading-[100%] text-[#f188b3]`}>
+						Saying!
+					</span>
 				</h1>
 
 				<div
@@ -210,7 +218,7 @@ export const FooterSection = (): JSX.Element => {
 											</span>
 										</div>
 
-										<p className="font-['Manrope',Helvetica] text-sm font-medium leading-[18px] text-primaryp-000">
+										<p className="text-sm font-medium leading-relaxed text-white">
 											Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia
 											consequat duis enim velit mollit.
 										</p>
