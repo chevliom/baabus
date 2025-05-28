@@ -8,7 +8,8 @@ import { FrameByAnima } from "../whishlist/components/FrameByAnima";
 import { HeaderSection } from "../sections/HeaderSection";
 
 export const Location = (): JSX.Element => {
-	const [selectedType, setSelectedType] = useState("Customer");
+	const [selectedType, setSelectedType] = useState<string | null>(null);
+
 	const router = useRouter();
 
 	const userTypes = [
@@ -47,6 +48,8 @@ export const Location = (): JSX.Element => {
 									setSelectedType(userType.title);
 									if (userType.title === "Customer") {
 										router.push("/default-channel/login");
+									} else if (userType.title === "Retailer/Wholesaler") {
+										router.push("/default-channel/retailer");
 									}
 								}}
 							>

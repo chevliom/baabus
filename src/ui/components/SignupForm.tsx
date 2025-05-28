@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getServerAuthClient } from "@/app/config";
 
 export async function SignupForm() {
@@ -20,7 +21,11 @@ export async function SignupForm() {
 
 					if (data.tokenCreate.errors.length > 0) {
 						// handle error
+						return;
 					}
+
+					// ✅ Redirect to referral page on success
+					redirect("/default-channel/getreferral");
 				}}
 			>
 				<h2 className="mb-8 text-center text-3xl font-bold">Create Account</h2>
