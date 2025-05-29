@@ -292,7 +292,9 @@ export const FrameByAnima = () => {
 									<Image
 										src={product.thumbnail?.url || "/placeholder-product.png"}
 										alt={product.name}
-										className="max-h-52 max-w-52 object-contain"
+										width={208} // max-w-52 = 208px
+										height={208}
+										className="object-contain"
 									/>
 								</div>
 							</div>
