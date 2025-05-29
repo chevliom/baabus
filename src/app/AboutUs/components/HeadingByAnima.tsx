@@ -4,7 +4,7 @@ import React from "react";
 
 export const HeadingByAnima = (): JSX.Element => {
 	return (
-		<section className="flex w-full max-w-[646px] flex-col items-start gap-5 px-4">
+		<section className="ml-auto flex w-full max-w-[646px] flex-col items-start gap-5 px-4">
 			<h2 className="font-['Poppins',Helvetica] text-[40px] font-semibold text-black">
 				100% Trusted by Parents
 			</h2>
