@@ -56,9 +56,7 @@ export async function SignupForm() {
 						placeholder="Confirm Password"
 						className="w-full rounded border border-[#E6E6E6] px-4 py-3 pr-10 font-normal placeholder-[#999]"
 					/>
-					<span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-						{/* <FiEye size={20} /> */}
-					</span>
+					<span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></span>
 				</div>
 
 				<div className="mb-6 flex items-center justify-between text-sm text-[#999]">
