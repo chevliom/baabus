@@ -1,29 +1,46 @@
-import { getServerAuthClient } from "@/app/config";
-import Link from "next/link";
+"use client";
 
-export async function LoginForm() {
+import { loginAccount } from "@/lib/graphqlClient"; // Adjust the path as needed
+import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+export function LoginForm() {
+	const [error, setError] = useState<string | null>(null);
+	const [loading, setLoading] = useState(false);
+	const router = useRouter();
+
+	async function handleSubmit(formData: FormData) {
+		setError(null);
+		setLoading(true);
+
+		const email = formData.get("email")?.toString();
+		const password = formData.get("password")?.toString();
+
+		if (!email || !password) {
+			setError("Email and password are required");
+			setLoading(false);
+			return;
+		}
+
+		const result = await loginAccount({ email, password });
+
+		if (result.errors.length > 0) {
+			setError(result.errors[0].message || "Login failed");
+			setLoading(false);
+			return;
+		}
+
+		// ✅ Redirect to /categories
+		router.push("/category");
+	}
+
 	return (
 		<div className="mx-auto mt-16 w-full max-w-lg">
-			<form
-				className="rounded-lg border border-[#f0f0f0] bg-white px-6 py-6 shadow-xl"
-				action={async (formData) => {
-					"use server";
-
-					const email = formData.get("email")?.toString();
-					const password = formData.get("password")?.toString();
-
-					if (!email || !password) {
-						throw new Error("Email and password are required");
-					}
-
-					const { data } = await getServerAuthClient().signIn({ email, password }, { cache: "no-store" });
-
-					if (data.tokenCreate.errors.length > 0) {
-						// handle error
-					}
-				}}
-			>
+			<form className="rounded-lg border border-[#f0f0f0] bg-white px-6 py-6 shadow-xl" action={handleSubmit}>
 				<h2 className="mb-8 text-center text-3xl font-bold">Sign In</h2>
+
+				{error && <div className="mb-4 rounded bg-red-100 px-4 py-2 text-sm text-red-700">{error}</div>}
 
 				<input
 					type="email"
@@ -39,9 +56,6 @@ export async function LoginForm() {
 						placeholder="Password"
 						className="w-full rounded border border-[#E6E6E6] px-4 py-3 pr-10 font-normal placeholder-[#999]"
 					/>
-					<span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-						{/* <FiEye size={20} /> */}
-					</span>
 				</div>
 
 				<div className="mb-6 flex items-center justify-between text-sm text-[#999]">
@@ -57,13 +71,14 @@ export async function LoginForm() {
 				<button
 					type="submit"
 					className="w-full rounded-full bg-[#EB5190] py-3 font-semibold text-white hover:bg-[#d6447c]"
+					disabled={loading}
 				>
-					Login
+					{loading ? "Logging in..." : "Login"}
 				</button>
 
 				<p className="mt-6 text-center text-sm text-[#999]">
 					Don’t have account?{" "}
-					<Link href="/default-channel/signup" className="font-semibold text-black hover:underline">
+					<Link href="/usertype" className="font-semibold text-black hover:underline">
 						Register
 					</Link>
 				</p>

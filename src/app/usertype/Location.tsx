@@ -8,7 +8,7 @@ import { FrameByAnima } from "../whishlist/components/FrameByAnima";
 import { HeaderSection } from "../sections/HeaderSection";
 
 export const Location = (): JSX.Element => {
-	const [selectedType, setSelectedType] = useState("Customer");
+	const [selectedType, setSelectedType] = useState<string | null>(null);
 	const router = useRouter();
 
 	const userTypes = [
@@ -16,13 +16,20 @@ export const Location = (): JSX.Element => {
 			icon: "/customer.png",
 			title: "Customer",
 			description: "Shop for products at the best prices",
+			navigateTo: "/default-channel/signup",
 		},
 		{
 			icon: "/retailer.png",
 			title: "Retailer/Wholesaler",
 			description: "Buy in bulk and manage your orders",
+			navigateTo: "/default-channel/retailer/personal-details",
 		},
 	];
+
+	const handleSelect = (userType: (typeof userTypes)[number]) => {
+		setSelectedType(userType.title); // Optional: briefly show checkmark before redirect
+		router.push(userType.navigateTo);
+	};
 
 	return (
 		<div className="relative mx-auto min-h-screen w-full max-w-[1440px] bg-white">
@@ -43,12 +50,7 @@ export const Location = (): JSX.Element => {
 								className={`relative cursor-pointer transition-all duration-300 ${
 									isSelected ? "shadow-lg" : "hover:shadow-md"
 								}`}
-								onClick={() => {
-									setSelectedType(userType.title);
-									if (userType.title === "Customer") {
-										router.push("/default-channel/login");
-									}
-								}}
+								onClick={() => handleSelect(userType)}
 							>
 								<Card
 									className={`w-full overflow-hidden rounded-[20px] transition-all duration-300 ${
@@ -70,7 +72,7 @@ export const Location = (): JSX.Element => {
 									</CardContent>
 								</Card>
 
-								{/* Checkmark at the bottom center */}
+								{/* Optional checkmark if you want quick visual feedback before navigation */}
 								{isSelected && (
 									<div className="absolute -bottom-6 left-1/2 -translate-x-1/2">
 										<div className="rounded-full bg-[rgba(253,241,246,1)] p-1.5">

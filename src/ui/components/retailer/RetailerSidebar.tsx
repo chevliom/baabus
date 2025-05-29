@@ -4,10 +4,10 @@ import { usePathname } from "next/navigation";
 import clsx from "clsx";
 
 const navItems = [
-    { name: "Personal Details", path: "retailer/personal-details" },
-    { name: "Address", path: "retailer/address" },
-    { name: "Company Details", path: "retailer/company-details" },
-    { name: "GST Documents", path: "retailer/gst-documents" },
+	{ name: "Personal Details", path: "/personal-details" },
+	{ name: "Company Details", path: "default-channel/retailer/company-details" },
+	{ name: "Address", path: "default-channel/retailer/address" },
+	{ name: "GST Documents", path: "default-channel/retailer/gst-documents" },
 ];
 
 export default function RetailerSidebar() {

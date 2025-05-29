@@ -74,6 +74,35 @@ type WishlistResponse = {
 	};
 };
 
+type LoginInput = {
+	email: string;
+	password: string;
+};
+
+type LoggedInUser = {
+	id: string;
+	email: string;
+	checkoutIds: string[];
+};
+
+type LoginError = {
+	code: string;
+	field: string | null;
+	message: string;
+};
+
+type LoginResponse = {
+	data: {
+		tokenCreate: {
+			csrfToken: string | null;
+			refreshToken: string | null;
+			token: string | null;
+			errors: LoginError[];
+			user: LoggedInUser | null;
+		};
+	};
+};
+
 
 export async function fetchWishlist() {
 	const response = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
@@ -253,4 +282,138 @@ export async function fetchProductById(productId: string, channel = "default-cha
 
 	const json = (await response.json()) as ProductResponse;
 	return json.data?.product ?? null;
-}
+} 
+
+type AccountRegisterInput = {
+	firstName?: string;
+	lastName?: string;
+	email: string;
+	password: string;
+	redirectUrl?: string;
+	channel?: string;
+	metadata?: {
+	  key: string;
+	  value: string;
+	}[];
+  }; 
+
+  type RegisteredUser = {
+	id: string;
+	email: string;
+	firstName: string;
+	lastName: string;
+	metadata: {
+	  key: string;
+	  value: string;
+	}[];
+  }; 
+
+  type AccountRegisterError = {
+	field: string | null;
+	message: string;
+  }; 
+
+  type AccountRegisterResponse = {
+		data: {
+			accountRegister: {
+				user: RegisteredUser | null;
+				errors: AccountRegisterError[];
+				requiresConfirmation: boolean;
+			};
+		};
+	}; 
+
+	const GRAPHQL_ENDPOINT = "https://baabusbabycare.visiobyte.in/graphql/";
+
+	export async function registerAccount(input: AccountRegisterInput): Promise<{
+		user: RegisteredUser | null;
+		errors: AccountRegisterError[];
+		requiresConfirmation: boolean;
+	}> {
+		const response = await fetch(GRAPHQL_ENDPOINT, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				query: `
+			  mutation RegisterAccount($input: AccountRegisterInput!) {
+				accountRegister(input: $input) {
+				  user {
+					id
+					email
+					firstName
+					lastName
+					metadata {
+					  key
+					  value
+					}
+				  }
+				  errors {
+					field
+					message
+				  }
+				  requiresConfirmation
+				}
+			  }
+			`,
+				variables: { input },
+			}),
+		});
+
+		const json = (await response.json()) as AccountRegisterResponse;
+
+		return (
+			json.data?.accountRegister ?? {
+				user: null,
+				errors: [{ field: null, message: "Unknown error" }],
+				requiresConfirmation: false,
+			}
+		);
+	}
+
+	export async function loginAccount(input: LoginInput): Promise<{
+		token: string | null;
+		csrfToken: string | null;
+		refreshToken: string | null;
+		user: LoggedInUser | null;
+		errors: LoginError[];
+	}> {
+		const response = await fetch(GRAPHQL_ENDPOINT, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				query: `
+			mutation TokenCreate($email: String!, $password: String!) {
+			  tokenCreate(email: $email, password: $password) {
+				csrfToken
+				refreshToken
+				token
+				errors {
+				  code
+				  field
+				  message
+				}
+				user {
+				  id
+				  email
+				  checkoutIds
+				}
+			  }
+			}
+		  `,
+				variables: input,
+			}),
+		});
+
+		const json = (await response.json()) as LoginResponse;
+
+		return (
+			json.data?.tokenCreate ?? {
+				token: null,
+				csrfToken: null,
+				refreshToken: null,
+				user: null,
+				errors: [{ code: "UNKNOWN", field: null, message: "Unexpected error" }],
+			}
+		);
+	}
+	
