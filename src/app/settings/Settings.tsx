@@ -10,6 +10,7 @@ import {
 	DashboardNavigationSection,
 	defaultNavigationItems,
 } from "../profile/Section/DashboardNavigationSection ";
+import { PrivacyPolicy } from "../profile/Section/PrivacyPolicy";
 
 // Settings accordion items data
 const settingsItems = [
@@ -39,8 +40,8 @@ export const Settings = (): JSX.Element => {
 
 				{/* Main Content */}
 				<main className="flex-1 p-8">
-					<div className="max-w-[984px]">
-						<Accordion type="single" collapsible className="w-full">
+					<div className="">
+						{/* <Accordion type="single" collapsible className="w-full">
 							{settingsItems.map((item) => (
 								<AccordionItem key={item.id} value={item.id} className="mb-1 border-0">
 									<Card className="shadow-line-shadow rounded-[8px_8px_0px_0px]">
@@ -48,12 +49,13 @@ export const Settings = (): JSX.Element => {
 											<span className="font-body-XL-body-XL-500 text-gray-scalegray-900">{item.title}</span>
 										</AccordionTrigger>
 										<AccordionContent>
-											<CardContent className="pt-4">{/* Content would go here */}</CardContent>
+											<CardContent className="pt-4"></CardContent>
 										</AccordionContent>
 									</Card>
 								</AccordionItem>
 							))}
-						</Accordion>
+						</Accordion> */}
+						<PrivacyPolicy />
 					</div>
 				</main>
 			</div>

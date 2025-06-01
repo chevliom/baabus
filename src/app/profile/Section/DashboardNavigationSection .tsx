@@ -43,11 +43,10 @@ export const DashboardNavigationSection = ({
 								<li key={index} onClick={() => onItemClick?.(item.label)}>
 									<Link
 										href={item.path}
-										className={`flex items-center gap-2.5 px-5 py-4 transition-colors duration-200 ${
-											isActive
-												? "bg-[#f7bfd5] text-gray-900 shadow-[inset_3px_0px_0px_#ea518f]"
-												: "text-gray-600 hover:bg-gray-100"
-										}`}
+										className={`flex items-center gap-2.5 px-5 py-4 transition-colors duration-200 ${isActive
+											? "bg-[#f7bfd5] text-gray-900 shadow-[inset_3px_0px_0px_#ea518f]"
+											: "text-gray-600 hover:bg-gray-100"
+											}`}
 									>
 										{item.icon}
 										<span className="text-base font-medium">{item.label}</span>
@@ -67,7 +66,7 @@ export const defaultNavigationItems: NavigationItem[] = [
 	{
 		icon: <LayoutDashboardIcon className="h-6 w-6" />,
 		label: "Profile Details",
-		path: "/profileempty",
+		path: "/profile",
 	},
 	{
 		icon: <RefreshCwIcon className="h-6 w-6" />,
@@ -76,8 +75,8 @@ export const defaultNavigationItems: NavigationItem[] = [
 	},
 	{
 		icon: <HeartIcon className="h-6 w-6" />,
-		label: "Wishlist",
-		path: "/wishlist",
+		label: "Whishlist",
+		path: "/whishlist",
 	},
 	{
 		icon: <ShoppingCartIcon className="h-6 w-6" />,

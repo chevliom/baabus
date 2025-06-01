@@ -1,5 +1,5 @@
 import { BlogDetailScreen } from "./component/BlogDetailScreen";
 
-export default function CategoriesPage() {
-    return <BlogDetailScreen/>;
+export default function BlogPage() {
+    return <BlogDetailScreen />;
 }
