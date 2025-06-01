@@ -1,3 +1,5 @@
+import { SetStateAction } from "react";
+
 type Product = {
 	id: string;
 	name: string;
@@ -16,6 +18,7 @@ type Product = {
 };
 
 type Category = {
+	id: SetStateAction<string | null>;
 	name: string;
 	products: {
 		edges: { node: Product }[];
@@ -103,7 +106,6 @@ type LoginResponse = {
 	};
 };
 
-
 export async function fetchWishlist() {
 	const response = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
 		method: "POST",
@@ -150,8 +152,6 @@ export async function fetchWishlist() {
 	const json = (await response.json()) as WishlistResponse;
 	return json.data?.wishlist ?? null;
 }
-  
-
 
 export async function fetchCategoriesWithProducts(channel = "default-channel") {
 	const response = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
@@ -161,39 +161,43 @@ export async function fetchCategoriesWithProducts(channel = "default-channel") {
 		},
 		body: JSON.stringify({
 			query: `
-        query CategoriesWithProducts($channel: String!) {
-          categories(first: 10) {
-            edges {
-              node {
-                id
-                name
-                products(first: 5, channel: $channel) {
-                  edges {
-                    node {
-                      id
-                      name
-                      slug
-                      thumbnail {
-                        url
-                      }
-                      pricing {
-                        priceRange {
-                          start {
-                            gross {
-                              amount
-                              currency
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      `,
+		query CategoriesWithProducts($channel: String!) {
+		  categories(first: 10) {
+			edges {
+			  node {
+				id
+				name
+				backgroundImage(format: ORIGINAL, size: 10) {
+		  alt
+		  url
+		}
+				products(first: 5, channel: $channel) {
+				  edges {
+					node {
+					  id
+					  name
+					  slug
+					  thumbnail {
+						url
+					  }
+					  pricing {
+						priceRange {
+						  start {
+							gross {
+							  amount
+							  currency
+							}
+						  }
+						}
+					  }
+					}
+				  }
+				}
+			  }
+			}
+		  }
+		}
+	  `,
 			variables: { channel },
 		}),
 	});
@@ -245,44 +249,44 @@ export async function fetchProductById(productId: string, channel = "default-cha
 		},
 		body: JSON.stringify({
 			query: `
-        query Product($productId: ID!, $channel: String!) {
-          product(id: $productId, channel: $channel) {
-            id
-            seoTitle
-            seoDescription
-            name
-            description
-            slug
-            created
-            updatedAt
-            chargeTaxes
-            rating
-            channel
-            descriptionJson
-            isAvailable
-            availableForPurchase
-            availableForPurchaseAt
-            isAvailableForPurchase
-            externalReference
-            productType {
-              id
-              name
-              slug
-              hasVariants
-              isShippingRequired
-              isDigital
-              kind
-            }
-          }
-        }
-      `,
+		query Product($productId: ID!, $channel: String!) {
+		  product(id: $productId, channel: $channel) {
+			id
+			seoTitle
+			seoDescription
+			name
+			description
+			slug
+			created
+			updatedAt
+			chargeTaxes
+			rating
+			channel
+			descriptionJson
+			isAvailable
+			availableForPurchase
+			availableForPurchaseAt
+			isAvailableForPurchase
+			externalReference
+			productType {
+			  id
+			  name
+			  slug
+			  hasVariants
+			  isShippingRequired
+			  isDigital
+			  kind
+			}
+		  }
+		}
+	  `,
 			variables: { productId, channel },
 		}),
 	});
 
 	const json = (await response.json()) as ProductResponse;
 	return json.data?.product ?? null;
-} 
+}
 
 type AccountRegisterInput = {
 	firstName?: string;
@@ -292,49 +296,49 @@ type AccountRegisterInput = {
 	redirectUrl?: string;
 	channel?: string;
 	metadata?: {
-	  key: string;
-	  value: string;
+		key: string;
+		value: string;
 	}[];
-  }; 
+};
 
-  type RegisteredUser = {
+type RegisteredUser = {
 	id: string;
 	email: string;
 	firstName: string;
 	lastName: string;
 	metadata: {
-	  key: string;
-	  value: string;
+		key: string;
+		value: string;
 	}[];
-  }; 
+};
 
-  type AccountRegisterError = {
+type AccountRegisterError = {
 	field: string | null;
 	message: string;
-  }; 
+};
 
-  type AccountRegisterResponse = {
-		data: {
-			accountRegister: {
-				user: RegisteredUser | null;
-				errors: AccountRegisterError[];
-				requiresConfirmation: boolean;
-			};
+type AccountRegisterResponse = {
+	data: {
+		accountRegister: {
+			user: RegisteredUser | null;
+			errors: AccountRegisterError[];
+			requiresConfirmation: boolean;
 		};
-	}; 
+	};
+};
 
-	const GRAPHQL_ENDPOINT = "https://baabusbabycare.visiobyte.in/graphql/";
+const GRAPHQL_ENDPOINT = "https://baabusbabycare.visiobyte.in/graphql/";
 
-	export async function registerAccount(input: AccountRegisterInput): Promise<{
-		user: RegisteredUser | null;
-		errors: AccountRegisterError[];
-		requiresConfirmation: boolean;
-	}> {
-		const response = await fetch(GRAPHQL_ENDPOINT, {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				query: `
+export async function registerAccount(input: AccountRegisterInput): Promise<{
+	user: RegisteredUser | null;
+	errors: AccountRegisterError[];
+	requiresConfirmation: boolean;
+}> {
+	const response = await fetch(GRAPHQL_ENDPOINT, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({
+			query: `
 			  mutation RegisterAccount($input: AccountRegisterInput!) {
 				accountRegister(input: $input) {
 				  user {
@@ -355,33 +359,33 @@ type AccountRegisterInput = {
 				}
 			  }
 			`,
-				variables: { input },
-			}),
-		});
+			variables: { input },
+		}),
+	});
 
-		const json = (await response.json()) as AccountRegisterResponse;
+	const json = (await response.json()) as AccountRegisterResponse;
 
-		return (
-			json.data?.accountRegister ?? {
-				user: null,
-				errors: [{ field: null, message: "Unknown error" }],
-				requiresConfirmation: false,
-			}
-		);
-	}
+	return (
+		json.data?.accountRegister ?? {
+			user: null,
+			errors: [{ field: null, message: "Unknown error" }],
+			requiresConfirmation: false,
+		}
+	);
+}
 
-	export async function loginAccount(input: LoginInput): Promise<{
-		token: string | null;
-		csrfToken: string | null;
-		refreshToken: string | null;
-		user: LoggedInUser | null;
-		errors: LoginError[];
-	}> {
-		const response = await fetch(GRAPHQL_ENDPOINT, {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				query: `
+export async function loginAccount(input: LoginInput): Promise<{
+	token: string | null;
+	csrfToken: string | null;
+	refreshToken: string | null;
+	user: LoggedInUser | null;
+	errors: LoginError[];
+}> {
+	const response = await fetch(GRAPHQL_ENDPOINT, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({
+			query: `
 			mutation TokenCreate($email: String!, $password: String!) {
 			  tokenCreate(email: $email, password: $password) {
 				csrfToken
@@ -400,20 +404,19 @@ type AccountRegisterInput = {
 			  }
 			}
 		  `,
-				variables: input,
-			}),
-		});
+			variables: input,
+		}),
+	});
 
-		const json = (await response.json()) as LoginResponse;
+	const json = (await response.json()) as LoginResponse;
 
-		return (
-			json.data?.tokenCreate ?? {
-				token: null,
-				csrfToken: null,
-				refreshToken: null,
-				user: null,
-				errors: [{ code: "UNKNOWN", field: null, message: "Unexpected error" }],
-			}
-		);
-	}
-	
+	return (
+		json.data?.tokenCreate ?? {
+			token: null,
+			csrfToken: null,
+			refreshToken: null,
+			user: null,
+			errors: [{ code: "UNKNOWN", field: null, message: "Unexpected error" }],
+		}
+	);
+}

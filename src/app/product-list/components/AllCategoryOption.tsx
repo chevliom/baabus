@@ -2,42 +2,45 @@
 
 import React from "react";
 import Image from "next/image";
-// import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/ui/Accordion";
-// import { Checkbox } from "@/ui/Checkbox";
-import { FrameByAnima, CategoryProvider } from "@/app/category/components/AllCategoriesByAnima1";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/ui/Accordion";
+import { Checkbox } from "@/ui/Checkbox";
+import {
+	AllCategoriesByAnima1,
+	FrameByAnima,
+	CategoryProvider,
+	useCategory,
+} from "@/app/category/components/AllCategoriesByAnima1";
 import { HeaderSection } from "@/app/sections/HeaderSection";
 
-// const ResultCount = () => {
-// 	const { categories, selectedCategoryId, loading } = useCategory();
+const ResultCount = () => {
+	const { categories, selectedCategoryId, loading } = useCategory();
 
-// 	if (loading) return null;
+	if (loading) return null;
 
-// 	const count = selectedCategoryId
-// 		? categories.find((c) => c.node.id === selectedCategoryId)?.node.products.edges.length || 0
-// 		: categories.reduce((acc, c) => acc + (c.node.products.edges.length || 0), 0);
+	const count = selectedCategoryId
+		? categories.find((c) => c.node.id === selectedCategoryId)?.node.products.edges.length || 0
+		: categories.reduce((acc, c) => acc + (c.node.products.edges.length || 0), 0);
 
-// 	return (
-// 		<div className="mt-4 font-[Poppins] text-lg font-medium text-gray-900 sm:ml-72 sm:text-xl">
-// 			Showing {count} Results
-// 		</div>
-// 	);
-// };
+	return (
+		<div className="mt-4 font-[Poppins] text-lg font-medium text-gray-900 sm:ml-72 sm:text-xl">
+			Showing {count} Results
+		</div>
+	);
+};
 
 export const AllCategoryOption = (): JSX.Element => {
-	// const ratingOptions = [
-	// 	{ value: "5.0", label: "5.0", checked: false },
-	// 	{ value: "4.0", label: "4.0 & up", checked: true },
-	// 	{ value: "3.0", label: "3.0 & up", checked: false },
-	// 	{ value: "2.0", label: "2.0 & up", checked: false },
-	// 	{ value: "1.0", label: "1.0 & up", checked: false },
-	// ];
+	const ratingOptions = [
+		{ value: "5.0", label: "5.0", checked: false },
+		{ value: "4.0", label: "4.0 & up", checked: true },
+		{ value: "3.0", label: "3.0 & up", checked: false },
+		{ value: "2.0", label: "2.0 & up", checked: false },
+		{ value: "1.0", label: "1.0 & up", checked: false },
+	];
 
 	return (
 		<CategoryProvider>
 			<div className="min-h-screen w-full bg-white">
 				<HeaderSection />
-
-				{/* Hero Banner */}
 				<div className="relative mt-24 h-[180px] w-full bg-[url(/image.png)] bg-cover bg-center sm:h-[219px]">
 					<h1 className="absolute left-1/2 top-8 -translate-x-1/2 transform text-4xl font-normal text-[#ea518f] [font-family:'Baloo',Helvetica] sm:text-8xl">
 						Category
@@ -60,15 +63,10 @@ export const AllCategoryOption = (): JSX.Element => {
 						priority
 					/>
 				</div>
-
-				{/* Filters + Content */}
 				<div className="flex flex-col px-4 sm:flex-row sm:gap-6">
-					{/* Sidebar */}
-					{/* <div className="mt-8 w-full sm:w-[242px]"> */}
-					{/* <AllCategoriesByAnima1 /> */}
-
-					{/* Price Filter */}
-					{/* <Accordion type="single" collapsible className="w-full">
+					<div className="mt-8 w-full sm:w-[242px]">
+						<AllCategoriesByAnima1 />
+						<Accordion type="single" collapsible className="w-full">
 							<AccordionItem value="price" className="border-b-0 border-t border-[#E5E5E5]">
 								<AccordionTrigger className="py-5 text-lg font-medium text-[#1A1A1A]">Price</AccordionTrigger>
 								<AccordionContent className="pb-6">
@@ -84,10 +82,10 @@ export const AllCategoryOption = (): JSX.Element => {
 									</div>
 								</AccordionContent>
 							</AccordionItem>
-						</Accordion> */}
+						</Accordion>
 
-					{/* Rating Filter */}
-					{/* <Accordion type="single" collapsible className="w-full">
+						{/* Rating Filter */}
+						<Accordion type="single" collapsible className="w-full">
 							<AccordionItem value="rating" className="border-0">
 								<AccordionTrigger className="py-5 text-lg font-medium text-[#1A1A1A]">
 									Rating
@@ -132,12 +130,10 @@ export const AllCategoryOption = (): JSX.Element => {
 									))}
 								</AccordionContent>
 							</AccordionItem>
-						</Accordion> */}
-					{/* </div> */}
-
-					{/* Main Content */}
+						</Accordion>
+					</div>
 					<div className="mt-6 flex-1">
-						{/* <ResultCount /> */}
+						<ResultCount />
 						<FrameByAnima />
 					</div>
 				</div>

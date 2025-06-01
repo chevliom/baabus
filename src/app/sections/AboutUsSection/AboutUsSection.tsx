@@ -104,17 +104,7 @@ export const AboutUsSection = (): JSX.Element => {
 					</div>
 				</div>
 
-				<div className="absolute left-[90px] top-[280px] flex h-[145px] w-[42px] flex-col gap-3">
-					{socialIcons.map(({ Icon, style }, index) => (
-						<div
-							key={index}
-							className="flex h-[42px] w-[42px] items-center justify-center rounded-[50px] border-2 border-dashed p-2.5"
-							style={style}
-						>
-							<Icon className="h-full w-full text-[#e62875]" />
-						</div>
-					))}
-				</div>
+				<div className="absolute left-[90px] top-[280px] flex h-[145px] w-[42px] flex-col gap-3">{/* */}</div>
 			</div>
 		</section>
 	);

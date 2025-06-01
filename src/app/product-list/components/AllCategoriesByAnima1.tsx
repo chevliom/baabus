@@ -1,9 +1,14 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/ui/Accordion";
 import Link from "next/link";
-import Image from "next/image";
 import { fetchCategoriesWithProducts } from "@/lib/graphqlClient";
+import { HeartIcon } from "lucide-react";
+import { Button } from "../../ui/button";
+import { Card, CardContent } from "../../../ui/Card";
+
+// Types
 type Product = {
 	id: string;
 	name: string;
@@ -27,7 +32,6 @@ type Category = {
 	products: {
 		edges: { node: Product }[];
 	};
-	backgroundImage?: { url: string };
 };
 
 interface CategoryEdge {
@@ -57,8 +61,9 @@ export const CategoryProvider = ({ children }: { children: React.ReactNode }) =>
 	useEffect(() => {
 		const load = async () => {
 			try {
-				const data = await fetchCategoriesWithProducts();
-				setCategories(data as CategoryEdge[]);
+				setLoading(true);
+				const data: CategoryEdge[] = await fetchCategoriesWithProducts();
+				setCategories(data);
 				if (data.length > 0 && data[0].node) {
 					setSelectedCategoryId(data[0].node.id);
 				}
@@ -220,8 +225,14 @@ export const AllCategoriesByAnima1 = () => {
 	);
 };
 
+// Product Grid
 export const FrameByAnima = () => {
 	const { categories, selectedCategoryId, loading } = useCategory();
+	const [likedMap, setLikedMap] = useState<Record<string, boolean>>({});
+
+	const toggleLike = (id: string) => {
+		setLikedMap((prev) => ({ ...prev, [id]: !prev[id] }));
+	};
 
 	const products = React.useMemo(() => {
 		if (loading || !categories.length) return [];
@@ -237,7 +248,7 @@ export const FrameByAnima = () => {
 	if (loading) {
 		return (
 			<div className="flex h-64 w-full items-center justify-center">
-				<p className="text-lg font-medium text-gray-600">Loading ...</p>
+				<p className="text-lg font-medium text-gray-600">Loading products...</p>
 			</div>
 		);
 	}
@@ -253,33 +264,72 @@ export const FrameByAnima = () => {
 	}
 
 	return (
-		<div className=" w-full px-0 py-8">
-			<div className="flex flex-wrap items-center justify-center gap-10">
-				{categories.map((categoryEdge) => {
-					const category = categoryEdge.node;
-					return (
-						<Link
-							key={category.id}
-							href={`/productlist?id=${category.id}`}
-							className="group block w-full max-w-[310px] transform transition-transform duration-300 hover:scale-[1.02]"
+		<div className="ml-6 w-full py-8 pr-20">
+			<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+				{products.map((product) => (
+					<Link
+						key={product.id}
+						href={`/productview?id=${product.id}`} // pass id to identify product
+						className="w-full"
+					>
+						<Card
+							key={product.id}
+							className="w-full overflow-hidden rounded-[10px] shadow-[0px_4px_4px_#00000040]"
 						>
-							<div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-								<div className="relative h-48 w-full bg-gray-100">
-									<Image
-										src={category?.backgroundImage?.url || "/placeholder-product.png"}
-										alt={category.name}
-										fill
-										className="object-contain p-4"
+							<div
+								className="relative h-60 bg-cover bg-center"
+								style={{ backgroundImage: `url(/productbg.png)` }}
+							>
+								<button onClick={() => toggleLike(product.id)} className="absolute right-5 top-5 z-10">
+									<HeartIcon
+										size={30}
+										className={likedMap[product.id] ? "text-red-500" : "text-gray-500"}
+										fill={likedMap[product.id] ? "#ef4444" : "none"}
+									/>
+								</button>
+								<div className="flex h-full items-center justify-center">
+									<img
+										src={product.thumbnail?.url || "/placeholder-product.png"}
+										alt={product.name}
+										className="max-h-52 max-w-52 object-contain"
 									/>
 								</div>
-								<div className="p-4 text-center">
-									<h3 className="text-md font-semibold text-gray-800">{category.name}</h3>
-									<p className="text-sm text-gray-500">{category.products.edges.length} Products</p>
-								</div>
 							</div>
-						</Link>
-					);
-				})}
+							<CardContent className="p-4">
+								<h3 className="mb-2 font-['Poppins',Helvetica] text-xl font-semibold text-[#36061a]">
+									{product.name}
+								</h3>
+								<div className="mb-2 flex items-center">
+									<svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="gold" stroke="gold" strokeWidth="1">
+										<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+									</svg>
+									<span className="mr-2 font-['Poppins',Helvetica] text-xs font-light text-[#00000066]">
+										5.0
+									</span>
+									<span className="font-['Poppins',Helvetica] text-xs font-light text-[#00000066]">
+										(1.2k Reviews)
+									</span>
+									<span className="ml-auto font-['Poppins',Helvetica] text-xl font-bold text-black">
+										{product.pricing?.priceRange?.start?.gross?.amount
+											? `${product.pricing.priceRange.start.gross.currency} ${product.pricing.priceRange.start.gross.amount}`
+											: "Price not available"}
+									</span>
+								</div>
+								<div className="mt-4 flex gap-2">
+									<Button
+										variant="outline"
+										className="flex-1 rounded-[10px] border-[#ea518f] font-['Baloo-Regular',Helvetica] text-[13px] font-normal text-[#ea518f]"
+									>
+										Add To Cart
+									</Button>
+									<Button className="flex-1 rounded-[10px] bg-[#ea518f] font-['Baloo-Regular',Helvetica] text-[13px] font-normal text-white shadow-[0px_4px_4px_#00000040]">
+										Buy Now
+									</Button>
+								</div>
+							</CardContent>
+						</Card>
+					</Link>
+				))}
 			</div>
 		</div>
 	);

@@ -44,6 +44,7 @@ const config: CodegenConfig = {
 					Upload: "unknown",
 					WeightScalar: "unknown",
 					_Any: "unknown",
+					Hour: "string",
 				},
 			},
 			presetConfig: {
