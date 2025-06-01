@@ -1,78 +1,60 @@
-"use client";
+"use client"
+import Link from "next/link";
+import React, { useState } from "react";
+import { Button } from "../../ui/Button";
+import { Card, CardContent } from "../../ui/Card";
+import { HeaderSection } from "../sections/HeaderSection";
+import { FrameByAnima } from "../whishlist/components/FrameByAnima";
+import {
+	DashboardNavigationSection,
+	defaultNavigationItems,
+} from "../profile/Section/DashboardNavigationSection ";
 
-import React from "react";
 
-const Profile = () => {
+export const Profile = (): JSX.Element => {
+	const [activeNav, setActiveNav] = useState("Profile Details");
 	return (
-		<main className="space-y-20 bg-white px-6 py-10 text-gray-800">
-			{/* Hero Section */}
-			<section className="text-center">
-				<h1 className="text-4xl font-bold">BaaBus - Baby Care Products</h1>
-				<p className="mt-2 text-lg text-gray-600">Gentle products for delicate beginnings.</p>
-			</section>
+		<main className="flex min-h-screen w-full flex-col bg-white">
+			<header className="w-full">
+				<HeaderSection />
+			</header>
+			<div className="mt-36 flex w-full flex-col md:flex-row">
+				<aside className="w-full md:w-1/5">
+					<DashboardNavigationSection
+						items={defaultNavigationItems}
+						activeLabel={activeNav}
+						onItemClick={(label) => setActiveNav(label)}
+					/>
+				</aside>
+				<div className="flex flex-1 flex-col">
+					<Card className="ml-[72px] h-[278px] w-[1046px] rounded-[0px_8px_8px_0px] border border-solid border-[#e6e6e6]">
+						<CardContent className="relative h-full p-0">
+							<div className="absolute left-[471px] top-[34px] flex h-[100px] w-[100px] items-center justify-center rounded-[50px] bg-[#2873b980]">
+								<span className="font-['Poppins'] text-5xl font-semibold leading-[57.6px] text-[#0083ff]">
+									D
+								</span>
+							</div>
 
-			{/* Product Listing */}
-			<section>
-				<h2 className="mb-4 text-2xl font-semibold">Our Products</h2>
-				<div className="grid gap-6 md:grid-cols-3">
-					{[1, 2, 3].map((id) => (
-						<div key={id} className="rounded-xl border p-4 shadow transition hover:shadow-md">
-							<div className="mb-3 h-40 rounded-lg bg-pink-100" />
-							<h3 className="text-lg font-semibold">Product {id}</h3>
-							<p className="font-bold text-pink-600">$12.99</p>
-						</div>
-					))}
+							<div className="absolute left-[379px] top-[159px] flex w-[286px] flex-col items-center gap-0.5">
+								<h2 className="font-body-XL-body-XL-500 text-gray-scalegray-900 text-center">Dianne Russell</h2>
+								<p className="font-body-small-body-small-400 text-gray-scalegray-500 text-center">Customer</p>
+							</div>
+
+							<Button
+								asChild
+								variant="link"
+								className="font-body-medium-body-medium-500 absolute left-[439px] top-[221px] text-center text-[#ea518f]"
+							>
+								<Link href="./profilefilled">Edit Profile</Link>
+							</Button>
+						</CardContent>
+					</Card>
 				</div>
-			</section>
-
-			{/* Cart Summary */}
-			<section>
-				<h2 className="mb-4 text-2xl font-semibold">Your Cart</h2>
-				<div className="space-y-4">
-					<div className="flex items-center justify-between border-b pb-2">
-						<span>Product 1</span>
-						<span className="font-semibold">$12.99</span>
-					</div>
-					<div className="text-right text-lg font-bold">Total: $12.99</div>
-				</div>
-			</section>
-
-			{/* Checkout Form */}
-			<section>
-				<h2 className="mb-4 text-2xl font-semibold">Checkout</h2>
-				<form className="max-w-md space-y-4">
-					<input type="text" placeholder="Full Name" className="input input-bordered w-full" />
-					<input type="email" placeholder="Email" className="input input-bordered w-full" />
-					<input type="text" placeholder="Shipping Address" className="input input-bordered w-full" />
-					<button type="submit" className="btn w-full bg-pink-500 text-white">
-						Place Order
-					</button>
-				</form>
-			</section>
-
-			{/* Order Confirmation */}
-			<section className="rounded-xl bg-green-50 p-6 text-center">
-				<h2 className="text-2xl font-bold text-green-700">Order Placed!</h2>
-				<p className="mt-2 text-gray-600">Thank you for shopping with BaaBus.</p>
-			</section>
-
-			{/* Profile Info */}
-			<section>
-				<h2 className="mb-4 text-2xl font-semibold">Your Profile</h2>
-				<div className="space-y-2">
-					<p>
-						<strong>Name:</strong> Jane Doe
-					</p>
-					<p>
-						<strong>Email:</strong> jane@example.com
-					</p>
-					<p>
-						<strong>Address:</strong> 123 Baby St, Caretown
-					</p>
-				</div>
-			</section>
+			</div>
+			<div className="mt-36">
+				<FrameByAnima />
+			</div>
 		</main>
 	);
 };
 
-export default Profile;

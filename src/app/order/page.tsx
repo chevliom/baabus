@@ -12,7 +12,6 @@ export default function OrderPage() {
 
 	return (
 		<div className="bg-white text-gray-800">
-			{/* Header */}
 			<HeaderSection />
 			<div
 				className="py-150 mt-28 bg-[url('/image1.png')] bg-cover bg-center bg-no-repeat text-center"
@@ -61,9 +60,8 @@ export default function OrderPage() {
 									className={`h-8 w-8 ${steps[0].active ? "" : "opacity-50"}`}
 								/>
 								<p
-									className={`mt-2 text-center text-sm font-semibold ${
-										steps[0].active ? "text-black" : "text-gray-500"
-									}`}
+									className={`mt-2 text-center text-sm font-semibold ${steps[0].active ? "text-black" : "text-gray-500"
+										}`}
 								>
 									{steps[0].label}
 								</p>
@@ -77,9 +75,8 @@ export default function OrderPage() {
 									className={`h-8 w-8 ${steps[1].active ? "" : "opacity-50"}`}
 								/>
 								<p
-									className={`mt-2 text-center text-sm font-semibold ${
-										steps[1].active ? "text-black" : "text-gray-500"
-									}`}
+									className={`mt-2 text-center text-sm font-semibold ${steps[1].active ? "text-black" : "text-gray-500"
+										}`}
 								>
 									{steps[1].label}
 								</p>
@@ -93,9 +90,8 @@ export default function OrderPage() {
 									className={`h-8 w-8 ${steps[2].active ? "" : "opacity-50"}`}
 								/>
 								<p
-									className={`mt-2 text-center text-sm font-semibold ${
-										steps[2].active ? "text-black" : "text-gray-500"
-									}`}
+									className={`mt-2 text-center text-sm font-semibold ${steps[2].active ? "text-black" : "text-gray-500"
+										}`}
 								>
 									{steps[2].label}
 								</p>
@@ -109,9 +105,8 @@ export default function OrderPage() {
 									className={`h-8 w-8 ${steps[3].active ? "" : "opacity-50"}`}
 								/>
 								<p
-									className={`mt-2 text-center text-sm font-semibold ${
-										steps[3].active ? "text-black" : "text-gray-500"
-									}`}
+									className={`mt-2 text-center text-sm font-semibold ${steps[3].active ? "text-black" : "text-gray-500"
+										}`}
 								>
 									{steps[3].label}
 								</p>

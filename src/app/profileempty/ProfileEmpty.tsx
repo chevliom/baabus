@@ -7,7 +7,7 @@ import {
 	LogOutIcon,
 	SettingsIcon,
 	ShoppingCartIcon,
-	
+
 } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";

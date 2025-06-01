@@ -1,3 +1,4 @@
+'use client';
 import React from "react";
 import { Avatar, AvatarFallback } from "../../ui/avatar";
 import { Button } from "../../ui/button";
@@ -10,6 +11,8 @@ export const UserProfileSection = (): JSX.Element => {
 		role: "Customer",
 		initial: "D",
 	};
+
+
 
 	return (
 		<div className="mx-auto w-full max-w-[538px]">
