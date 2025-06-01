@@ -538,3 +538,48 @@ export async function loginAccount(input: LoginInput): Promise<{
 		}
 	);
 }
+
+export async function uploadDocuments({
+	gstFile,
+	panFile,
+	email,
+}: {
+	gstFile: File;
+	panFile: File;
+	email: string;
+}): Promise<Response> {
+	const formData = new FormData();
+	const operations = {
+		query: `
+      mutation uploadFiles($input: UploadFilesInput!) {
+        uploadFiles(input: $input) {
+          downloadUrls
+        }
+      }
+    `,
+		variables: {
+			input: {
+				email,
+				file1: null,
+				file2: null,
+			},
+		},
+	};
+
+	const map = {
+		"0": ["variables.input.file1"],
+		"1": ["variables.input.file2"],
+	};
+
+	formData.append("operations", JSON.stringify(operations));
+	formData.append("map", JSON.stringify(map));
+	formData.append("0", gstFile);
+	formData.append("1", panFile);
+
+	// 4. Send request
+	return fetch(GRAPHQL_ENDPOINT, {
+		method: "POST",
+		body: formData,
+	});
+}
+
