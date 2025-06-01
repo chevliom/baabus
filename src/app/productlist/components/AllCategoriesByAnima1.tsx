@@ -49,7 +49,7 @@ const CategoryContext = createContext<CategoryContextType>({
 	categories: [],
 	loading: true,
 	selectedCategoryId: null,
-	setSelectedCategoryId: () => {},
+	setSelectedCategoryId: () => { },
 });
 
 export const CategoryProvider = ({ children }: { children: React.ReactNode }) => {
@@ -236,8 +236,9 @@ export const FrameByAnima = () => {
 	const { categories, selectedCategoryId, loading } = useCategory();
 	const [likedMap, setLikedMap] = useState<Record<string, boolean>>({});
 
-	const toggleLike = (id: string) => {
-		setLikedMap((prev) => ({ ...prev, [id]: !prev[id] }));
+	const toggleLike = (product: any) => {
+		console.log(product);
+		setLikedMap((prev) => ({ ...prev, [product.id]: !prev[product.id] }));
 	};
 
 	const products = React.useMemo(() => {
@@ -247,6 +248,8 @@ export const FrameByAnima = () => {
 			const selectedCategory = categories.find((c) => c.node.id === selectedCategoryId);
 			return selectedCategory?.node?.products?.edges.map((e) => e.node) || [];
 		}
+
+
 
 		return categories.flatMap((cat) => cat.node?.products?.edges.map((e) => e.node) || []);
 	}, [categories, selectedCategoryId, loading]);
@@ -273,7 +276,8 @@ export const FrameByAnima = () => {
 		<div className="ml-6 w-full py-8 pr-20">
 			<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 				{products.map((product) => (
-					<div key={product.id} className="w-full">
+					<Link href={`/productview?id=${product.id}`} key={product.id} className="w-full">
+
 						<Card
 							key={product.id}
 							className="w-full overflow-hidden rounded-[10px] shadow-[0px_4px_4px_#00000040]"
@@ -282,23 +286,16 @@ export const FrameByAnima = () => {
 								className="relative h-60 bg-cover bg-center "
 								style={{ backgroundImage: `url(/productbg.png)` }}
 							>
-								<button onClick={() => toggleLike(product.id)} className="absolute right-5 top-5 z-10">
-									<HeartIcon
-										size={30}
-										className={likedMap[product.id] ? "text-red-500" : "text-gray-500"}
-										fill={likedMap[product.id] ? "#ef4444" : "none"}
-									/>
-								</button>
-								<Link href={`/productview?id=${product.id}`}>
-									<Image
-										src={product.thumbnail?.url || "/placeholder-product.png"}
-										alt={product.name}
-										width={208}
-										height={208}
-										style={{ margin: "0 auto" }}
-										className="max-h-[210px] object-contain pt-6"
-									/>
-								</Link>
+
+								<Image
+									src={product.thumbnail?.url || "/placeholder-product.png"}
+									alt={product.name}
+									width={208}
+									height={208}
+									style={{ margin: "0 auto" }}
+									className="max-h-[210px] object-contain pt-6"
+								/>
+
 							</div>
 							<CardContent className="p-4">
 								<h3 className="mb-1 text-lg font-semibold tracking-tight text-[#36061a]">{product.name}</h3>
@@ -317,21 +314,11 @@ export const FrameByAnima = () => {
 											: "Price not available"}
 									</span>
 								</div>
-
-								<div className="mt-6 flex w-full flex-col gap-3 sm:flex-row">
-									<Button
-										variant="outline"
-										className="flex-1 rounded-xl border border-[#ea518f] bg-white px-4 py-2 text-sm font-semibold text-[#ea518f] transition-all duration-200 hover:bg-[#ffe6f0] hover:text-[#d7407e] active:scale-95"
-									>
-										Add To Cart
-									</Button>
-									<Button className="flex-1 rounded-xl bg-[#ea518f] px-4 py-2 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:bg-[#d7407e] active:scale-95">
-										Buy Now
-									</Button>
-								</div>
 							</CardContent>
 						</Card>
-					</div>
+
+					</Link>
+
 				))}
 			</div>
 		</div>

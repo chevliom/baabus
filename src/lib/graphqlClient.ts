@@ -153,6 +153,37 @@ export async function fetchWishlist() {
 	return json.data?.wishlist ?? null;
 }
 
+export async function fetchCategoriesInHome(channel = "default-channel") {
+	const response = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			query: `
+		query getCategories {
+			categories(first: 8) {
+				edges {
+				node {
+					id
+					backgroundImage(size: 1200) {
+					alt
+					url
+					}
+					name
+				}
+				}
+			}
+			}
+	  `,
+			variables: { channel },
+		}),
+	});
+
+	const json = (await response.json()) as CategoriesResponse;
+	return json.data?.categories?.edges ?? [];
+}
+
 export async function fetchCategoriesWithProducts(channel = "default-channel") {
 	const response = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
 		method: "POST",
@@ -162,41 +193,58 @@ export async function fetchCategoriesWithProducts(channel = "default-channel") {
 		body: JSON.stringify({
 			query: `
 		query CategoriesWithProducts($channel: String!) {
-		  categories(first: 10) {
-			edges {
-			  node {
-				id
-				name
-				backgroundImage(format: ORIGINAL, size: 10) {
-		  alt
-		  url
-		}
-				products(first: 5, channel: $channel) {
-				  edges {
-					node {
-					  id
-					  name
-					  slug
-					  thumbnail {
-						url
-					  }
-					  pricing {
-						priceRange {
-						  start {
-							gross {
-							  amount
-							  currency
-							}
-						  }
-						}
-					  }
+			categories(first: 10) {
+				edges {
+				node {
+					id
+					name
+					backgroundImage(format: ORIGINAL, size: 3000) {
+					alt
+					url
 					}
-				  }
+					products(first: 5, channel: $channel) {
+					edges {
+						node {
+						id
+						name
+						slug
+						thumbnail {
+							url
+						}
+						pricing {
+							priceRange {
+							start {
+								gross {
+								amount
+								currency
+								}
+							}
+							}
+						}
+						productVariants(first: 10) {
+							edges {
+							node {
+								id
+								metadata {
+								key
+								value
+								}
+								name
+								images {
+								url
+								alt
+								id
+								}
+							}
+							}
+						}
+						}
+					}
+					}
 				}
-			  }
+				}
 			}
-		  }
-		}
+			}
 	  `,
 			variables: { channel },
 		}),
@@ -205,6 +253,76 @@ export async function fetchCategoriesWithProducts(channel = "default-channel") {
 	const json = (await response.json()) as CategoriesResponse;
 	return json.data?.categories?.edges ?? [];
 }
+
+// export async function fetchCategoriesWithCategoryIdChannel(channel = "default-channel") {
+// 	const response = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
+// 		method: "POST",
+// 		headers: {
+// 			"Content-Type": "application/json",
+// 		},
+// 		body: JSON.stringify({
+// 			query: `
+// 		query CategoriesWithProducts($channel: String!) {
+// 			categories(first: 10) {
+// 				edges {
+// 				node {
+// 					id
+// 					name
+// 					backgroundImage(format: ORIGINAL, size: 3000) {
+// 					alt
+// 					url
+// 					}
+// 					products(first: 5, channel: $channel) {
+// 					edges {
+// 						node {
+// 						id
+// 						name
+// 						slug
+// 						thumbnail {
+// 							url
+// 						}
+// 						pricing {
+// 							priceRange {
+// 							start {
+// 								gross {
+// 								amount
+// 								currency
+// 								}
+// 							}
+// 							}
+// 						}
+// 						productVariants(first: 10) {
+// 							edges {
+// 							node {
+// 								id
+// 								metadata {
+// 								key
+// 								value
+// 								}
+// 								name
+// 								images {
+// 								url
+// 								alt
+// 								id
+// 								}
+// 							}
+// 							}
+// 						}
+// 						}
+// 					}
+// 					}
+// 				}
+// 				}
+// 			}
+// 			}
+// 	  `,
+// 			variables: { channel },
+// 		}),
+// 	});
+
+// 	const json = (await response.json()) as CategoriesResponse;
+// 	return json.data?.categories?.edges ?? [];
+// }
 
 type ProductDetails = {
 	id: string;

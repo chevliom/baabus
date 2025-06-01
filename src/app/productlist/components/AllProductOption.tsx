@@ -43,8 +43,8 @@ export const AllProductOption = (): JSX.Element => {
 				<HeaderSection />
 
 				{/* Hero Banner */}
-				<div className="relative mt-24 h-[180px] w-full bg-[url(/image.png)] bg-cover bg-center sm:h-[219px]">
-					<h1 className="absolute left-1/2 top-8 -translate-x-1/2 transform text-4xl font-normal text-[#ea518f] [font-family:'Baloo',Helvetica] sm:text-8xl">
+				<div className="relative mt-24 flex items-center justify-center h-[180px] w-full bg-[url(/image.png)] bg-cover bg-center sm:h-[219px]">
+					<h1 className="absolute left-1/2 top-12 -translate-x-1/2 transform text-4xl font-normal text-[#ea518f] [font-family:'Baloo',Helvetica] sm:text-8xl">
 						Product List
 					</h1>
 
@@ -101,9 +101,8 @@ export const AllProductOption = (): JSX.Element => {
 									{ratingOptions.map((option, index) => (
 										<div
 											key={option.value}
-											className={`flex items-center gap-2 py-2.5 ${
-												index === ratingOptions.length - 1 ? "pb-6" : ""
-											}`}
+											className={`flex items-center gap-2 py-2.5 ${index === ratingOptions.length - 1 ? "pb-6" : ""
+												}`}
 										>
 											{option.checked ? (
 												<Checkbox

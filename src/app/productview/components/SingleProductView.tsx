@@ -58,46 +58,7 @@ export const SingleProductView = (): JSX.Element => {
 			<div className="container mx-auto mt-40 px-4">
 				{/* Product Gallery and Info */}
 				<div className="mx-auto mt-8 flex max-w-7xl flex-col gap-12 border-b-2 px-4 pb-12 md:flex-row md:items-start">
-					{/* Left: Thumbnails & Main Image */}
-					<div className="flex w-full justify-center md:w-1/2">
-						<div className="flex flex-col gap-8 md:flex-row">
-							<div className="flex gap-4 overflow-x-auto md:flex-col md:gap-7">
-								{thumbnails.map((thumbnail) => (
-									<div
-										key={thumbnail.id}
-										className={`flex h-20 w-[76px] flex-shrink-0 cursor-pointer items-center justify-center rounded-lg transition-all ${
-											mainImage === thumbnail.src ? "bg-[#D9E9F7]" : "bg-white"
-										}`}
-										onClick={() => setMainImage(thumbnail.src)}
-									>
-										<Image
-											loading="lazy"
-											width={70}
-											height={70}
-											className="h-[70px] w-[70px] rounded-lg object-cover"
-											alt={thumbnail.alt}
-											src={thumbnail.src}
-										/>
-									</div>
-								))}
-							</div>
-
-							<div className="relative flex h-[400px] w-full items-center justify-center rounded-lg bg-[url(/image-6.png)] bg-cover bg-center md:h-[500px] md:w-[423px]">
-								<Image
-									loading="lazy"
-									width={279}
-									height={279}
-									className="h-[279px] w-[279px] rounded-lg object-cover"
-									alt="Main Product"
-									src={mainImage}
-								/>
-							</div>
-						</div>
-					</div>
-					{/* Right: Product Info */}
-					<div className="w-full md:w-1/2">
-						<FrameByAnima />
-					</div>
+					<FrameByAnima />
 				</div>
 
 				<Separator className="my-8" />

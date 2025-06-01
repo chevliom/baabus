@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { MinusIcon, PlusIcon, StarHalfIcon, StarIcon } from "lucide-react";
+import { HeartIcon, MinusIcon, PlusIcon, StarHalfIcon, StarIcon } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/ui/Button";
 import { Card, CardContent } from "@/ui/Card";
@@ -13,40 +13,13 @@ const socialIcons = [
 	{ id: 3, src: "/ant-design_twitter-circle-filled.svg", alt: "Twitter" },
 ];
 
-interface ProductColor {
-	color: string;
-	name: string;
-}
-
-interface Product {
-	id: string;
-	name: string;
-	description: string;
-	rating: number;
-	isAvailable: boolean;
-	availableForPurchase: boolean;
-	availableForPurchaseAt: string | null;
-	productType: {
-		name: string;
-	};
-	category: {
-		name: string;
-	};
-}
-
 export const FrameByAnima = (): JSX.Element => {
 	const searchParams = useSearchParams();
 	const id = searchParams.get("id");
 
-	const [productData, setProductData] = useState<Product | null>(null);
-	const [selectedColor, setSelectedColor] = useState<string>("Purple");
+	const [productData, setProductData] = useState<any>(null);
+	const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
 	const [quantity, setQuantity] = useState<number>(1);
-
-	const colors: ProductColor[] = [
-		{ color: "#806df9", name: "Purple" },
-		{ color: "#000000", name: "Black" },
-		{ color: "#D4AF37", name: "Gold" },
-	];
 
 	useEffect(() => {
 		if (!id) return;
@@ -57,25 +30,40 @@ export const FrameByAnima = (): JSX.Element => {
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
 					query: `
-            query GetProduct($id: ID!) {
-              product(id: $id, channel: "default-channel") {
+            query ProductDetails($id: ID!, $channel: String) {
+              product(id: $id, channel: $channel) {
                 id
                 name
                 description
                 rating
                 isAvailable
-                availableForPurchase
                 availableForPurchaseAt
-                productType {
-                  name
-                }
-                category {
-                  name
+                productType { name }
+                category { name }
+                productVariants(first: 10) {
+                  edges {
+                    node {
+                      id
+                      name
+                      pricing {
+                        price {
+                          gross {
+                            amount
+                          }
+                        }
+                      }
+                      images {
+                        id
+                        url(format: ORIGINAL, size: 512)
+                        alt
+                      }
+                    }
+                  }
                 }
               }
             }
           `,
-					variables: { id },
+					variables: { id, channel: "default-channel" },
 				}),
 			});
 
@@ -89,142 +77,152 @@ export const FrameByAnima = (): JSX.Element => {
 	if (!id) return <p className="text-red-500">No product ID in URL.</p>;
 	if (!productData) return <p className="text-gray-500">Loading...</p>;
 
-	const formatDate = (dateString: string | null): string => {
-		if (!dateString) return "N/A";
-		return new Date(dateString).toLocaleDateString();
-	};
+	const selectedVariant = productData?.productVariants?.edges?.[selectedVariantIndex]?.node;
 
 	return (
-		<Card className="w-full max-w-[616px] border-none bg-transparent px-4 shadow-none md:px-0">
-			<CardContent className="p-0">
-				<h1 className="mb-6 font-['Poppins',Helvetica] text-[40px] font-semibold text-black">
-					{productData.name}
-				</h1>
+		<Card className="w-full border-none bg-transparent px-4 shadow-none md:px-0">
+			<CardContent className="flex flex-col md:flex-row gap-10 p-0">
+				<div className="w-full flex flex-col md:flex-row gap-6">
+					<div className="md:w-fit max-w-1/4 w-full flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto">
+						{productData.productVariants.edges.map((variantEdge: any, idx: number) => {
+							const variant = variantEdge.node;
+							const image = variant.images?.[0]?.url;
 
-				<p className="mb-6 font-['Poppins',Helvetica] text-[24px] font-medium text-[#9f9f9f]">
-					Rs. 250,000.00
-				</p>
+							return (
+								<div
+									key={variant.id}
+									onClick={() => setSelectedVariantIndex(idx)}
+									className={`relative border rounded-lg p-1 cursor-pointer transition hover:shadow-md ${idx === selectedVariantIndex ? "border-pink-500" : "border-gray-200"
+										}`}
+								>
+									{image ? (
+										<div className="relative">
+											<Image
+												src={image}
+												alt={variant.images?.[0]?.alt || "variant"}
+												width={80}
+												height={80}
+												className="h-20 w-20 object-contain rounded"
+											/>
 
-				<div className="mb-6 flex items-center">
-					<div className="flex">
-						{Array.from({ length: 4 }, (_, index) => (
-							<StarIcon key={index} className="h-5 w-5 fill-yellow-500 text-yellow-500" />
-						))}
-						<StarHalfIcon className="h-5 w-5 fill-yellow-500 text-yellow-500" />
+										</div>
+									) : (
+										<div className="h-20 w-20 flex items-center justify-center bg-gray-100 text-gray-400 rounded">
+											No Image
+										</div>
+									)}
+								</div>
+							);
+
+						})}
 					</div>
-					<div className="mx-4 h-[30px] w-px bg-gray-300" />
-					<span className="font-['Poppins',Helvetica] text-[13px] text-[#9f9f9f]">
-						{productData.rating ?? 5} Customer Reviews
-					</span>
+
+					{/* Selected Variant Main Image */}
+					<div className="md:w-3/4 w-full relative">
+						{selectedVariant?.images?.[0]?.url && (
+							<div className="relative">
+								<Image
+									src={selectedVariant.images[0].url}
+									alt={selectedVariant.images[0].alt || "Selected variant"}
+									width={600}
+									height={600}
+									className="w-full h-auto rounded-xl object-contain border"
+								/>
+								<HeartIcon onClick={() => {
+									console.log(selectedVariant);
+								}} className="absolute top-3 right-3 h-5 w-5 text-gray-400 hover:text-pink-500 transition" />
+							</div>
+						)}
+					</div>
+
 				</div>
 
-				<p className="mb-6 max-w-[424px] font-['Poppins',Helvetica] text-[13px] text-black">
-					{productData.description}
-				</p>
 
-				<div className="mb-6">
-					<p className="mb-3 font-['Poppins',Helvetica] text-sm text-[#9f9f9f]">Color</p>
-					<div className="flex gap-4">
-						{colors.map((colorOption, index) => (
-							<div
-								key={index}
-								onClick={() => setSelectedColor(colorOption.name)}
-								className={`h-[30px] w-[30px] cursor-pointer rounded-full border-2 ${
-									selectedColor === colorOption.name ? "border-black" : "border-transparent"
-								}`}
-								style={{ backgroundColor: colorOption.color }}
-								aria-label={`Select ${colorOption.name} color`}
-							/>
-						))}
+				{/* Details Section */}
+				<div className="w-full md:w-1/2">
+					<h1 className="mb-4 text-[32px] md:text-[40px] font-semibold text-black">
+						{productData.name}
+					</h1>
+
+					<div className="mb-4 text-xl text-[#9f9f9f]">
+						Rs. {selectedVariant?.pricing?.price?.gross?.amount ?? 0}
 					</div>
-				</div>
 
-				<div className="mt-8 flex flex-wrap items-center gap-6">
-					<div className="flex items-center rounded-full border border-[#e6e6e6] bg-[#f8f8f8]">
-						<Button
-							variant="ghost"
-							size="icon"
-							onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-							className="h-[34px] w-[34px] rounded-full"
-							aria-label="Decrease quantity"
-						>
-							<MinusIcon className="h-3.5 w-3.5" />
-						</Button>
-
-						<span className="w-10 text-center font-['Poppins',Helvetica] text-base font-medium text-black">
-							{quantity}
+					<div className="mb-4 flex items-center">
+						<div className="flex">
+							{[...Array(4)].map((_, i) => (
+								<StarIcon key={i} className="h-5 w-5 fill-yellow-500 text-yellow-500" />
+							))}
+							<StarHalfIcon className="h-5 w-5 fill-yellow-500 text-yellow-500" />
+						</div>
+						<span className="ml-4 text-sm text-[#9f9f9f]">
+							{productData.rating ?? 5} Customer Reviews
 						</span>
-
-						<Button
-							variant="ghost"
-							size="icon"
-							onClick={() => setQuantity((q) => q + 1)}
-							className="h-[34px] w-[34px] rounded-full"
-							aria-label="Increase quantity"
-						>
-							<PlusIcon className="h-3.5 w-3.5" />
-						</Button>
 					</div>
 
-					<Button className="rounded-full bg-[#ea518f] px-10 py-4 text-base font-medium text-white transition hover:bg-[#d93d7a]">
-						Add to Cart
-					</Button>
-				</div>
+					<p className="mb-6 text-sm text-black">{productData.description}</p>
 
-				<div className="mt-12 h-px w-full bg-gray-200" />
+					{/* Quantity & Cart */}
+					<div className="mt-8 flex flex-wrap items-center gap-6">
+						<div className="flex items-center rounded-full border border-[#e6e6e6] bg-[#f8f8f8]">
+							<Button
+								variant="ghost"
+								size="icon"
+								onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+								className="h-[34px] w-[34px] rounded-full"
+							>
+								<MinusIcon className="h-3.5 w-3.5" />
+							</Button>
+							<span className="w-10 text-center text-base font-medium text-black">{quantity}</span>
+							<Button
+								variant="ghost"
+								size="icon"
+								onClick={() => setQuantity((q) => q + 1)}
+								className="h-[34px] w-[34px] rounded-full"
+							>
+								<PlusIcon className="h-3.5 w-3.5" />
+							</Button>
+						</div>
+
+						<Button className="rounded-full bg-[#ea518f] px-10 py-4 text-base font-medium text-white hover:bg-[#d93d7a]">
+							Add to Cart
+						</Button>
+					</div>
+					<div className="mt-8 space-y-4 text-[#9f9f9f] text-base">
+						<div className="flex">
+							<div className="w-24">Type</div>
+							<div>{productData.productType?.name ?? "N/A"}</div>
+						</div>
+						<div className="flex">
+							<div className="w-24">Category</div>
+							<div>{productData.category?.name ?? "N/A"}</div>
+						</div>
+						<div className="flex">
+							<div className="w-24">Available</div>
+							<div>{productData.isAvailable ? "In Stock" : "Out of Stock"}</div>
+						</div>
+						<div className="flex">
+							<div className="w-24">Share</div>
+							<div className="flex gap-4">
+								{socialIcons.map((icon) => (
+									<button key={icon.id} className="h-5 w-5" aria-label={icon.alt}>
+										<Image
+											src={icon.src}
+											alt={icon.alt}
+											width={20}
+											height={20}
+											className="object-contain"
+										/>
+									</button>
+								))}
+							</div>
+						</div>
+					</div>
+				</div>
 			</CardContent>
 
-			{/* Product Details */}
-			<div className="mt-8">
-				<div className="flex flex-col gap-4">
-					<div className="flex">
-						<div className="w-24 font-['Poppins',Helvetica] text-base text-[#9f9f9f]">Type</div>
-						<div className="font-['Poppins',Helvetica] text-base text-[#9f9f9f]">
-							{productData.productType?.name ?? "N/A"}
-						</div>
-					</div>
+			{/* Additional Info */}
 
-					<div className="flex">
-						<div className="w-24 font-['Poppins',Helvetica] text-base text-[#9f9f9f]">Category</div>
-						<div className="font-['Poppins',Helvetica] text-base text-[#9f9f9f]">
-							{productData.category?.name ?? "N/A"}
-						</div>
-					</div>
-
-					<div className="flex">
-						<div className="w-24 font-['Poppins',Helvetica] text-base text-[#9f9f9f]">Available</div>
-						<div className="font-['Poppins',Helvetica] text-base text-[#9f9f9f]">
-							{productData.isAvailable ? "In Stock" : "Out of Stock"}
-						</div>
-					</div>
-
-					{/* <div className="flex">
-						<div className="w-24 font-['Poppins',Helvetica] text-base text-[#9f9f9f]">Purchase At</div>
-						<div className="font-['Poppins',Helvetica] text-base text-[#9f9f9f]">
-							{formatDate(productData.availableForPurchaseAt)}
-						</div>
-					</div> */}
-
-					{/* Social Share */}
-					<div className="flex">
-						<div className="w-24 font-['Poppins',Helvetica] text-base text-[#9f9f9f]">Share</div>
-						<div className="flex gap-4">
-							{socialIcons.map((icon) => (
-								<button key={icon.id} aria-label={`Share on ${icon.alt}`} className="h-5 w-5">
-									<Image
-										loading="lazy"
-										width={20}
-										height={20}
-										alt={icon.alt}
-										src={icon.src}
-										className="object-contain"
-									/>
-								</button>
-							))}
-						</div>
-					</div>
-				</div>
-			</div>
 		</Card>
 	);
 };
