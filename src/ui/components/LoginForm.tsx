@@ -1,10 +1,10 @@
 "use client";
 
-import { loginAccount } from "@/lib/graphqlClient";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { loginAccount } from "@/lib/graphqlClient";
 
 interface TokenCreate {
 	csrfToken: string | null;

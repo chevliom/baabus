@@ -1,12 +1,12 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/ui/Accordion";
 import Link from "next/link";
-import { fetchCategoriesWithProducts } from "@/lib/graphqlClient";
 import { HeartIcon } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Card, CardContent } from "../../../ui/Card";
+import { fetchCategoriesWithProducts } from "@/lib/graphqlClient";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/ui/Accordion";
 
 // Types
 type Product = {

@@ -4,10 +4,10 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import Link from "next/link";
 import { HeartIcon } from "lucide-react";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { Button } from "../../ui/button";
 import { Card, CardContent } from "../../../ui/Card";
 import { fetchCategoriesWithProducts } from "@/lib/graphqlClient";
-import { useSearchParams } from "next/navigation";
 
 type Product = {
 	id: string;
@@ -151,7 +151,7 @@ const CustomRadioStyles = () => {
 
 export const AllCategoriesByAnima1 = () => {
 	const searchParams = useSearchParams();
-	let id = searchParams.get("id");
+	const id = searchParams.get("id");
 	const { categories, loading, selectedCategoryId, setSelectedCategoryId } = useCategory();
 	const [openItem, setOpenItem] = useState("categories");
 
