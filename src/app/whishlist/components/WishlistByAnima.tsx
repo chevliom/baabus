@@ -8,9 +8,12 @@ import { Button } from "@/ui/Button";
 import { Card } from "@/ui/Card";
 import { Separator } from "@/ui/components/separator";
 import { fetchWishlist } from "@/lib/graphqlClient";
+import { toast } from "react-hot-toast";
+import Cookies from "js-cookie";
 
 interface WishlistItem {
 	id: string | number;
+	variantId: string | number;
 	name: string;
 	image: string;
 	price: string;
@@ -25,12 +28,14 @@ interface WishlistItem {
 }
 
 type Props = {
+	items: WishlistItem[];
 	onExploreMore: () => void;
 };
 
 const staticWishlistItems: WishlistItem[] = [
 	{
 		id: 1,
+		variantId: 1,
 		name: "Bus Bottle",
 		image: "/image-7.png",
 		price: "₹14.99",
@@ -45,6 +50,7 @@ const staticWishlistItems: WishlistItem[] = [
 	},
 	{
 		id: 2,
+		variantId: 1,
 		name: "Bus Bottle",
 		image: "/image-7.png",
 		price: "₹45.00",
@@ -56,6 +62,7 @@ const staticWishlistItems: WishlistItem[] = [
 	},
 	{
 		id: 3,
+		variantId: 1,
 		name: "Bus Bottle",
 		image: "/image-7.png",
 		price: "₹09.00",
@@ -67,9 +74,71 @@ const staticWishlistItems: WishlistItem[] = [
 	},
 ];
 
-export function WishlistByAnima({ onExploreMore }: Props): JSX.Element {
+export function WishlistByAnima({ items, onExploreMore }: Props): JSX.Element {
 	const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
+
+	const deleteWithlist = async (variantId: string): Promise<void> => {
+		const query = `
+				mutation WishlistRemoveItem($input:WishlistRemoveItemInput!){
+				wishlistRemoveItem(input: $input){
+					errors{
+						field
+						message
+					}
+					wishlist{
+						id
+						user{
+							email
+						}
+						items{
+							id
+							variant{
+								id
+								channel
+								name
+							}
+						}
+						
+					}
+					
+				}
+			}
+	  `;
+
+		const variables = {
+			input: {
+				variantId,
+			},
+		};
+
+		try {
+			const response = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${Cookies.get("token") || ""}`,
+				},
+				body: JSON.stringify({ query, variables }),
+			});
+
+			const result: any = await response.json();
+
+			if (result.errors?.length) {
+				toast.error("Failed to delete to wishlist.");
+			} else if (result.data?.wishlistRemoveItem.errors?.length) {
+				toast.error(result.data.wishlistRemoveItem.errors[0].message);
+			} else {
+				toast.success("Delete Successfully!");
+				const remainingVariants = result.data.wishlistRemoveItem.wishlist.items.map((item: any) => item.variant.id);
+				setWishlistItems(prev =>
+					prev.filter(item => remainingVariants.includes(item.variantId.toString()))
+				);
+			}
+		} catch (err) {
+			toast.error("Something went wrong.");
+		}
+	};
 
 	useEffect(() => {
 		async function loadWishlist() {
@@ -79,10 +148,11 @@ export function WishlistByAnima({ onExploreMore }: Props): JSX.Element {
 				if (!wishlist || !wishlist.items || wishlist.items.length === 0) {
 					setWishlistItems(staticWishlistItems);
 				} else {
-					const mapped: WishlistItem[] = wishlist.items.map((item: any) => ({
+					const mapped: any = wishlist.items.map((item: any) => ({
 						id: item.id,
-						name: item.variant.name,
-						image: "/image-7.png", // Replace with real image path if available
+						variantId: item?.variant?.id,
+						name: item.variant?.product?.name,
+						image: item?.variant?.images?.[0]?.url || "",
 						price: `₹${item.variant.pricing?.price?.gross?.amount?.toFixed(2) ?? "0.00"}`,
 						originalPrice: undefined,
 						stockStatus: "In Stock",
@@ -94,7 +164,6 @@ export function WishlistByAnima({ onExploreMore }: Props): JSX.Element {
 					setWishlistItems(mapped);
 				}
 			} catch (error) {
-				console.error("Failed to fetch wishlist, using fallback.", error);
 				setWishlistItems(staticWishlistItems);
 			} finally {
 				setIsLoading(false);
@@ -102,6 +171,86 @@ export function WishlistByAnima({ onExploreMore }: Props): JSX.Element {
 		}
 		loadWishlist();
 	}, []);
+
+	const addToCart = async (variantId: string): Promise<void> => {
+		const checkoutId = Cookies.get("use_checkout_id");
+		const quantity = 1;
+
+		if (!checkoutId || !variantId) {
+			toast.error("Missing checkout ID or variant ID.");
+			return;
+		}
+
+		const query = `
+		mutation CheckoutLinesAdd($checkoutId: ID!, $lines: [CheckoutLineInput!]!) {
+			checkoutLinesAdd(id: $checkoutId, lines: $lines) {
+				errors {
+					field
+					code
+					message
+				}
+				checkout {
+					quantity
+					lines {
+						id
+						quantity
+						variant {
+							id
+							name
+						}
+					}
+					totalPrice {
+						gross {
+							amount
+							currency
+						}
+					}
+				}
+			}
+		}
+	`;
+
+		const variables = {
+			checkoutId,
+			lines: [
+				{
+					quantity,
+					variantId,
+				},
+			],
+		};
+
+		try {
+			const response = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${Cookies.get("token") || ""}`,
+				},
+				body: JSON.stringify({ query, variables }),
+			});
+
+			const result: any = await response.json();
+
+			if (result.errors?.length > 0) {
+				toast.error(result.errors[0]?.message || "Unexpected GraphQL error.");
+				return;
+			}
+
+			const gqlErrors = result.data?.checkoutLinesAdd?.errors;
+			if (gqlErrors?.length) {
+				const errorMessage = gqlErrors.map((e: any) => e.message).join(", ");
+				toast.error(errorMessage || "Failed to add item to cart.");
+				return;
+			}
+
+			toast.success("Item added to cart!");
+		} catch (err: any) {
+			console.error("Network error:", err);
+			toast.error("Network error while adding to cart.");
+		}
+	};
+
 
 	return (
 		<Card className="w-full rounded-lg border border-solid border-[#e6e6e6]">
@@ -160,12 +309,18 @@ export function WishlistByAnima({ onExploreMore }: Props): JSX.Element {
 										className="rounded-[43px] px-8 py-3.5"
 										style={{ backgroundColor: item.buttonColor }}
 									>
-										<span className={`${item.buttonTextColor} font-body-small-body-small-600`}>
+										<span className={`${item.buttonTextColor} font-body-small-body-small-600`}
+											onClick={() => {
+												if (item?.variantId) addToCart(item?.variantId.toString());
+											}}
+										>
 											Add to Cart
 										</span>
 									</Button>
-									<button>
-										<X className="h-6 w-6" />
+									<button >
+										<X className="h-6 w-6" onClick={() => {
+											if (item?.variantId) deleteWithlist(item?.variantId.toString());
+										}} />
 									</button>
 								</div>
 							</div>

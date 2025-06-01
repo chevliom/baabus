@@ -3,6 +3,7 @@ import { type ReactNode } from "react";
 // import { Header } from "@/ui/components/Header";
 import "../../../../tailwind.css";
 import { HeaderSection } from "@/app/sections/HeaderSection";
+import ToastProvider from "@/component/ToastProvider";
 export const metadata = {
 	title: "Saleor Storefront example",
 	description: "Starter pack for building performant e-commerce experiences with Saleor.",
@@ -11,8 +12,9 @@ export const metadata = {
 export default function RootLayout(props: { children: ReactNode; params: { channel: string } }) {
 	return (
 		<>
-			<HeaderSection/>
-			<div className="flex min-h-[calc(100dvh-64px)] flex-col mt-12">
+			<HeaderSection />
+			<ToastProvider />
+			<div className="flex min-h-[calc(100dvh-64px)] md:max-w-[1600px]  mx-auto flex-col mt-12">
 				<main className="flex-1">{props.children}</main>
 				{/* <Footer channel={props.params.channel} /> */}
 			</div>

@@ -1,16 +1,33 @@
 "use client"; // Only needed if using in Next.js app router (app directory)
 
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FrameByAnima } from "@/app/whishlist/components/FrameByAnima";
 import { WishlistByAnima } from "@/app/whishlist/components/WishlistByAnima";
 import { WishlistEmpty } from "@/app/whishlist/components/WishlistEmpty";
 import { HeaderSection } from "@/app/sections/HeaderSection";
+import { fetchWishlist } from "@/lib/graphqlClient";
 export const WishlistScreen = (): JSX.Element => {
-	const [isWishlistEmpty, setIsWishlistEmpty] = useState(false);
+	const [wishlistItems, setWishlistItems] = useState([]);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		const loadWishlist = async () => {
+			try {
+				const data: any = await fetchWishlist();
+				setWishlistItems(data?.items || []);
+			} catch (err) {
+				setWishlistItems([]);
+			} finally {
+				setLoading(false);
+			}
+		};
+		loadWishlist();
+	}, []);
+
 	return (
 		<div className="flex min-h-screen w-full flex-col overflow-hidden bg-white">
-			<HeaderSection/>
+			<HeaderSection />
 
 			{/* Header Section with Decorative Background */}
 			{/* Hero Banner */}
@@ -38,10 +55,15 @@ export const WishlistScreen = (): JSX.Element => {
 				/>
 			</div>
 
-			{isWishlistEmpty ? (
-				<WishlistEmpty onStartShopping={() => setIsWishlistEmpty(false)} />
+			{loading ? (
+				<p className="text-center">Loading...</p>
+			) : wishlistItems.length === 0 ? (
+				<WishlistEmpty onStartShopping={() => { }} />
 			) : (
-				<WishlistByAnima onExploreMore={() => setIsWishlistEmpty(true)} />
+				<WishlistByAnima
+					items={wishlistItems}
+					onExploreMore={() => { }}
+				/>
 			)}
 			<FrameByAnima />
 		</div>

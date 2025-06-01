@@ -1,8 +1,14 @@
 "use client";
+
 import React, { useRef, useState } from "react";
-import pdfImage from "../../../../../assets/retailerImage/pdf.png"
-import imageFile from "../../../../../assets/retailerImage/imageFile.png"
 import NextImage from "next/image";
+import { z } from "zod";
+import pdfImage from "../../../../../assets/retailerImage/pdf.png";
+import imageFile from "../../../../../assets/retailerImage/imageFile.png";
+import { registerAccount, uploadDocuments } from "@/lib/graphqlClient";
+import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
+import SpinnerProvider from "@/component/SpinnerProvider";
 
 export const Icon = ({ IconName }: { IconName: string }) => {
     if (IconName == "uploadFile") {
@@ -22,104 +28,249 @@ export const Icon = ({ IconName }: { IconName: string }) => {
 
         )
     }
-
 }
 
+interface PersonalDetails {
+    fullName: string;
+    email: string;
+    businessName: string;
+    contact: string;
+    password: string;
+    channel: string;
+}
+
+interface CompanyDetails {
+    gst: string;
+    productCategories: string[];
+    heardAboutUs: string[];
+    purchaseFrequency: string[];
+    communicationChannels: string[];
+}
+
+interface GraphQLError {
+    message: string;
+    path?: string[];
+    code?: string;
+    field?: string | null;
+}
+
+
+// Zod schema for file validation
+const fileSchema = z
+    .custom<File>((file) => file instanceof File, {
+        message: "Please upload a valid file",
+    })
+    .refine((file) => file.size <= 2 * 1024 * 1024, {
+        message: "File must be 2MB or smaller",
+    })
+    .refine(
+        (file) =>
+            ["application/pdf", "image/jpeg", "image/png"].includes(file.type),
+        {
+            message: "Only PDF or image (jpg/png) files are allowed",
+        }
+    );
+
+const formSchema = z.object({
+    gstFile: fileSchema,
+    panFile: fileSchema,
+});
+
 function GstDocuments() {
+    const router = useRouter();
+    const [gstFile, setGstFile] = useState<File | null>(null);
+    const [panFile, setPanFile] = useState<File | null>(null);
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
+    const [loading, setLoading] = useState(false);
 
-    const [file, setFile] = useState<File | null>(null);
-    const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const panInputRef = useRef<HTMLInputElement>(null);
+    const gstInputRef = useRef<HTMLInputElement>(null);
+
+    const handleFileChange = (
+        e: React.ChangeEvent<HTMLInputElement>,
+        setFile: React.Dispatch<React.SetStateAction<File | null>>
+    ) => {
         const selected = e.target.files?.[0];
-        if (selected && (selected.type === "application/pdf" || selected.type.startsWith("image/"))) {
+        if (selected) {
             setFile(selected);
-        } else {
-            alert("Only PDF or Image files are allowed.");
+        }
+    };
+
+    const handleSubmit = async () => {
+        const result = formSchema.safeParse({ gstFile, panFile });
+
+        if (!result.success) {
+            const fieldErrors: { [key: string]: string } = {};
+            result.error.errors.forEach((err) => {
+                const path = err.path[0] as string;
+                fieldErrors[path] = err.message;
+            });
+            setErrors(fieldErrors);
+            return;
+        }
+
+        setErrors({});
+        setLoading(true);
+        try {
+            const personalDetailsRaw = localStorage.getItem("personalDetails");
+            const companyDetailsRaw = localStorage.getItem("companyDetails");
+
+            if (!personalDetailsRaw || !companyDetailsRaw) {
+                toast.error("Missing details. Please complete all previous steps.");
+                setLoading(false);
+                return;
+            }
+
+            const personalDetails = JSON.parse(personalDetailsRaw) as PersonalDetails;
+            const companyDetails = JSON.parse(companyDetailsRaw) as CompanyDetails;
+
+            const [firstName, ...lastNameParts] = personalDetails.fullName.split(" ");
+            const lastName = lastNameParts.join(" ");
+
+            const registrationPayload = {
+                email: personalDetails.email,
+                password: personalDetails.password,
+                firstName,
+                lastName,
+                channel: personalDetails.channel,
+                metadata: [
+                    { key: "channel", value: personalDetails.channel },
+                    { key: "businessName", value: personalDetails.businessName },
+                    { key: "contact", value: personalDetails.contact },
+                    { key: "gst", value: companyDetails.gst },
+                    { key: "productCategories", value: companyDetails.productCategories.join(", ") },
+                    { key: "heardAboutUs", value: companyDetails.heardAboutUs.join(", ") },
+                    { key: "purchaseFrequency", value: companyDetails.purchaseFrequency.join(", ") },
+                    { key: "communicationChannels", value: companyDetails.communicationChannels.join(", ") },
+                    { key: "web", value: "web" },
+                ],
+            };
+
+            await registerAccount(registrationPayload);
+
+            await uploadDocuments({
+                gstFile: gstFile!,
+                panFile: panFile!,
+                email: personalDetails.email,
+            });
+
+            toast.success("Documents submitted and details saved!");
+            router.push("/default-channel/getreferral");
+            localStorage.removeItem("personalDetails");
+            localStorage.removeItem("companyDetails");
+            localStorage.removeItem("registrationPayload");
+        } catch (error) {
+            toast.error("Something went wrong during submission.");
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div className="border rounded-md bg-white p-6 w-full max-w-3xl">
+
             <h3 className="text-lg font-semibold border-b border-gray-200 pb-4 mb-6">
                 Company Details
             </h3>
 
             <div className="flex flex-col sm:flex-row gap-6 mb-6">
-                {/* GST Upload */}
+                {/* GST File Upload */}
                 <div className="w-full sm:w-1/2">
                     <label className="block text-sm font-medium text-[#2873B9] mb-2">
                         Upload GST Certificate (PDF)
                         <span className="text-red-500 ml-1">*</span>
                     </label>
-                    <div className="custom-dashed-border border-black rounded-[12px] pb-4 text-center text-sm text-gray-600 px-2 h-[110px]">
-                        <div className="flex flex-col items-center justify-center  h-[100px]">
-                            <div className="flex justify-center">
-                                <Icon IconName="blackUploadFile" />
-                            </div>
-                            <p>Drag file here or <span className="text-[#2873B9] cursor-pointer">Browse</span></p>
+                    <div
+                        className="relative custom-dashed-border border-black rounded-[12px] pb-4 text-center text-sm text-gray-600 px-2 h-[110px] cursor-pointer"
+                        onClick={() => gstInputRef.current?.click()}
+                    >
+                        <input
+                            type="file"
+                            accept="application/pdf,image/*"
+                            className="hidden"
+                            ref={gstInputRef}
+                            onChange={(e) => handleFileChange(e, setGstFile)}
+                        />
+                        <div className="flex flex-col justify-center items-center h-full">
+                            {gstFile ? (
+                                <div className="flex items-center gap-2">
+                                    <NextImage
+                                        src={gstFile.type === "application/pdf" ? pdfImage : imageFile}
+                                        className="h-10 w-10"
+                                        alt="File preview"
+                                    />
+                                    <span className="truncate max-w-[180px]">{gstFile.name}</span>
+                                </div>
+                            ) : (
+                                <>
+                                    <Icon IconName="blackUploadFile" />
+                                    <p>Click to upload</p>
+                                </>
+                            )}
                         </div>
-
                     </div>
+                    {errors.gstFile && <p className="text-sm text-red-500 mt-1">{errors.gstFile}</p>}
                 </div>
 
-                {/* PAN Upload */}
+                {/* PAN File Upload */}
                 <div className="w-full sm:w-1/2">
                     <label className="block text-sm font-medium text-[#2873B9] mb-2">
                         Upload PAN (Image or PDF)
                         <span className="text-red-500 ml-1">*</span>
                     </label>
-                    <div className="relative custom-dashed-border border-black rounded-[12px] pb-4 text-center text-sm text-gray-600 px-2" onClick={() => fileInputRef.current?.click()}>
+                    <div
+                        className="relative custom-dashed-border border-black rounded-[12px] pb-4 text-center text-sm text-gray-600 px-2 h-[110px] cursor-pointer"
+                        onClick={() => panInputRef.current?.click()}
+                    >
                         <input
                             type="file"
                             accept="application/pdf,image/*"
                             className="hidden"
-                            ref={fileInputRef}
-                            onChange={handleFileChange}
+                            ref={panInputRef}
+                            onChange={(e) => handleFileChange(e, setPanFile)}
                         />
-                        <div className="min-h-[90px] flex flex-col justify-center items-center">
-                            {file ? (
-                                <div className="mt-2 flex items-center gap-2 text-sm">
-                                    {file.type === "application/pdf" ? (
-                                        <NextImage
-                                            src={pdfImage}
-                                            className="h-10 w-10"
-                                            alt="Background Shape Bottom"
-                                        />
-                                    ) : (
-                                        <NextImage
-                                            src={imageFile}
-                                            className="h-10 w-10"
-                                            alt="Background Shape Bottom"
-                                        />
-                                    )}
-                                    <span className="truncate max-w-[200px]">{file.name}</span>
+                        <div className="flex flex-col justify-center items-center h-full">
+                            {panFile ? (
+                                <div className="flex items-center gap-2">
+                                    <NextImage
+                                        src={panFile.type === "application/pdf" ? pdfImage : imageFile}
+                                        className="h-10 w-10"
+                                        alt="File preview"
+                                    />
+                                    <span className="truncate max-w-[180px]">{panFile.name}</span>
                                 </div>
                             ) : (
                                 <>
-                                    <p className="absolute top-2 left-3 text-xs text-gray-400">
-                                        Upload your PAN (max 2MB)
-                                    </p>
-                                    <div className="mt-6">
-                                        <div className="flex justify-center">
-                                            <Icon IconName="blackUploadFile" />
-                                        </div>
-                                        <p>
-                                            Drag file here or{" "}
-                                            <span className="text-[#2873B9] underline cursor-pointer">Browse</span>
-                                        </p>
-                                    </div>
+                                    <Icon IconName="blackUploadFile" />
+                                    <p>Click to upload</p>
                                 </>
                             )}
                         </div>
                     </div>
+                    {errors.panFile && <p className="text-sm text-red-500 mt-1">{errors.panFile}</p>}
                 </div>
             </div>
 
-            <button className="bg-pink-500 text-white rounded-md px-5 py-2 text-sm font-semibold mt-4 flex items-center gap-2">
-                <Icon IconName="uploadFile" />
-                Submit Application
-            </button>
+            <div className="relative w-fit">
+                <button
+                    onClick={handleSubmit}
+                    disabled={loading}
+                    className="bg-pink-500 text-white rounded-md px-5 py-2 text-sm font-semibold mt-4 flex items-center justify-center gap-2 w-full"
+                >
+                    <Icon IconName="uploadFile" />
+                    Submit Application
+                </button>
+
+                {loading && (
+                    <div className="mt-2 flex justify-center">
+                        <SpinnerProvider />
+                    </div>
+                )}
+            </div>
+
+
+
         </div>
     );
 }

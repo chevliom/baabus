@@ -1,11 +1,15 @@
+"use client";
 import { Suspense } from "react";
 import NextImage from "next/image";
 import { Loader } from "@/ui/atoms/Loader";
 import ServicesBanner from "@/ui/components/ServicesBanner";
 import referralImage from "@/assets/authImage/referral.png";
 import egoImage from "@/assets/authImage/ego.png";
+import { useRouter } from "next/navigation";
 
 export default function GetReferralPage() {
+	const router = useRouter();
+
 	return (
 		<Suspense fallback={<Loader />}>
 			<section className="relative z-0 h-[calc(100vh-100px)] w-full overflow-hidden mb-10 flex items-center justify-center px-4">
@@ -35,7 +39,7 @@ export default function GetReferralPage() {
 						</button>
 					</div>
 
-					<button className="text-sm text-[#2873B9] underline">Skip</button>
+					<button className="text-sm text-[#2873B9] underline" onClick={() => router.push("/default-channel")}>Skip</button>
 				</div>
 			</section>
 			<ServicesBanner />

@@ -1,16 +1,121 @@
 "use client";
-import React, { useState } from "react";
-import Link from "next/link";
+import React, { useEffect, useState } from "react";
 import { HeaderSection } from "../sections/HeaderSection";
+import Cookies from "js-cookie";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const CartPage = () => {
-	const [cartItems, setCartItems] = useState([
-		{ id: 1, name: "Bus Bottle", price: 14.0, quantity: 5, image: "/bus-bottle.png" },
-		{ id: 2, name: "Bus Bottle", price: 14.0, quantity: 5, image: "/bus-bottle.png" },
-	]);
+	const [cartItems, setCartItems] = useState<any[]>([]);
+	const [loading, setLoading] = useState(true);
+	const router = useRouter();
+
+	const CHECKOUT_QUERY = `
+		query Checkout($id: ID!) {
+			checkout(id: $id) {
+				id
+				token
+				isShippingRequired
+				totalPrice {
+					gross {
+						amount
+					}
+				}
+				giftCards { id isActive }
+				shippingMethods {
+					id
+					name
+					price { amount }
+					active
+					message
+				}
+				lines {
+					id
+					variant {
+						id
+						name
+						images {
+							url(format: ORIGINAL)
+							id
+							alt
+						}
+						product { name }
+					}
+					quantity
+					totalPrice {
+						net { amount currency }
+						gross { amount currency }
+						currency
+					}
+					unitPrice {
+						currency
+						gross { amount currency }
+					}
+				}
+				shippingAddress {
+					id
+					isDefaultShippingAddress
+					isDefaultBillingAddress
+					streetAddress1
+				}
+				deliveryMethod {
+					... on Warehouse {
+						id
+						email
+					}
+					... on ShippingMethod {
+						id
+						name
+						active
+					}
+				}
+			}
+		}
+	`;
+
+	useEffect(() => {
+		const fetchCheckout = async () => {
+			const checkoutId = Cookies.get("use_checkout_id");
+			if (!checkoutId) return;
+
+			try {
+				const response = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${Cookies.get("token") || ""}`,
+					},
+					body: JSON.stringify({
+						query: CHECKOUT_QUERY,
+						variables: { id: checkoutId },
+					}),
+				});
+
+				const result: any = await response.json();
+				const lines = result.data.checkout?.lines || [];
+
+				const mappedItems = lines.map((line: any) => ({
+					id: line.id,
+					variantId: line.variant.id,
+					name: line.variant.product.name,
+					price: line.unitPrice.gross.amount,
+					quantity: line.quantity,
+					image: line.variant.images?.[0]?.url || "/placeholder.png",
+				}));
+
+				setCartItems(mappedItems);
+			} catch (error) {
+				console.error("Error fetching checkout:", error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchCheckout();
+	}, []);
 
 	const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-	const discount = 21.0;
+	const discount = 0;
 	const total = subtotal - discount;
 
 	const handleQuantityChange = (id: number, type: "inc" | "dec") => {
@@ -18,17 +123,126 @@ const CartPage = () => {
 			prev.map((item) =>
 				item.id === id
 					? {
-							...item,
-							quantity: type === "inc" ? item.quantity + 1 : Math.max(1, item.quantity - 1),
-						}
+						...item,
+						quantity: type === "inc" ? item.quantity + 1 : Math.max(1, item.quantity - 1),
+					}
 					: item,
 			),
 		);
 	};
 
-	const handleRemoveItem = (id: number) => {
-		setCartItems((prev) => prev.filter((item) => item.id !== id));
+	const handleRemoveItem = async (lineId: string) => {
+		const checkoutId = Cookies.get("use_checkout_id");
+		if (!checkoutId) return;
+
+		const query = `
+			mutation CheckoutLinesDelete($checkoutId: ID!, $lines: [ID!]!) {
+				checkoutLinesDelete(id: $checkoutId, linesIds: $lines) {
+					errors {
+						code
+						message
+					}
+					checkout {
+						lines {
+							id
+							variant {
+								name
+							}
+							quantity
+						}
+						totalPrice {
+							gross {
+								currency
+								amount
+							}
+						}
+					}
+				}
+			}
+		`;
+
+		const variables = {
+			checkoutId,
+			lines: [lineId],
+		};
+
+		try {
+			await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${Cookies.get("token") || ""}`,
+				},
+				body: JSON.stringify({ query, variables }),
+			});
+			toast.success('Item Delete Successfully')
+			setCartItems((prev) => prev.filter((item) => item.id !== lineId));
+		} catch (error: any) {
+			toast.error("Failed to delete line from checkout:", error);
+		}
 	};
+
+	const handleProceedToCheckout = async () => {
+		const checkoutId = Cookies.get("use_checkout_id");
+		if (!checkoutId) return;
+
+		const lines = cartItems.map((item) => ({
+			variantId: item.variantId,
+			quantity: item.quantity,
+		}));
+
+		console.log(lines)
+
+		try {
+			const response = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${Cookies.get("token") || ""}`,
+				},
+				body: JSON.stringify({
+					query: `
+						mutation CheckoutLinesUpdate($checkoutId: ID!, $lines: [CheckoutLineUpdateInput!]!) {
+							checkoutLinesUpdate(id: $checkoutId, lines: $lines) {
+								errors {
+									code
+									message
+								}
+								checkout {
+									lines {
+										id
+										variant {
+											name
+										}
+										quantity
+									}
+									totalPrice {
+										gross {
+											currency
+											amount
+										}
+									}
+								}
+							}
+						}
+					`,
+					variables: { checkoutId, lines },
+				}),
+			});
+
+			const result: any = await response.json();
+
+			if (result.errors?.length || result.data?.checkoutLinesUpdate?.errors?.length) {
+				const errorMsg = result.data?.checkoutLinesUpdate?.errors?.[0]?.message || result.errors?.[0]?.message || "Failed to update cart before checkout";
+				toast.error(errorMsg);
+				return;
+			}
+			router.push("/checkout");
+		} catch (err) {
+			toast.error("Checkout update failed");
+		}
+	};
+
 
 	return (
 		<div>
@@ -96,7 +310,7 @@ const CartPage = () => {
 												onClick={() => handleRemoveItem(item.id)}
 												className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 p-0 text-xl text-gray-500 hover:text-black"
 											>
-												×
+												x
 											</button>
 										</div>
 									</div>
@@ -149,11 +363,11 @@ const CartPage = () => {
 									<span>₹{total.toFixed(2)}</span>
 								</div>
 							</div>
-							<Link href="/checkout">
-								<button className="w-full rounded-full bg-[#FF4BAC] px-4 py-3 font-semibold text-white transition hover:bg-[#e34291]">
-									Proceed to checkout
-								</button>
-							</Link>
+							<button className="w-full rounded-full bg-[#FF4BAC] px-4 py-3 font-semibold text-white transition hover:bg-[#e34291]"
+								onClick={handleProceedToCheckout}
+							>
+								Proceed to checkout
+							</button>
 						</div>
 					</div>
 				</div>

@@ -3,6 +3,7 @@ import "./globals.css";
 import { type ReactNode } from "react";
 import { type Metadata } from "next";
 import { DraftModeNotification } from "@/ui/components/DraftModeNotification";
+import ToastProvider from "@/component/ToastProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,6 +20,7 @@ export default function RootLayout(props: { children: ReactNode }) {
 
 	return (
 		<html lang="en" className="min-h-dvh">
+			<ToastProvider />
 			<body className={`${inter.className} min-h-dvh`}>
 				{children}
 				<DraftModeNotification />

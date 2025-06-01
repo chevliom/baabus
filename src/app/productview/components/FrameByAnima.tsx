@@ -6,6 +6,8 @@ import { HeartIcon, MinusIcon, PlusIcon, StarHalfIcon, StarIcon } from "lucide-r
 import Image from "next/image";
 import { Button } from "@/ui/Button";
 import { Card, CardContent } from "@/ui/Card";
+import Cookies from "js-cookie";
+import { toast } from "react-hot-toast";
 
 const socialIcons = [
 	{ id: 1, src: "/akar-icons_facebook-fill.svg", alt: "Facebook" },
@@ -20,6 +22,64 @@ export const FrameByAnima = (): JSX.Element => {
 	const [productData, setProductData] = useState<any>(null);
 	const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
 	const [quantity, setQuantity] = useState<number>(1);
+
+	const addToWishlist = async (variantId: string): Promise<void> => {
+		const query = `
+			mutation WishlistAddItem($input: WishlistAddItemInput!) {
+			wishlistAddItem(input: $input) {
+				errors {
+				field
+				message
+				}
+				wishlist {
+				id
+				user {
+					email
+				}
+				items {
+					id
+					variant {
+						id
+						channel
+						name
+					}
+				}
+				}
+			}
+			}
+  `;
+
+		const variables = {
+			input: {
+				variantId,
+			},
+		};
+
+		try {
+			const response = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${Cookies.get("token") || ""}`,
+				},
+				body: JSON.stringify({ query, variables }),
+			});
+
+			const result: any = await response.json();
+
+			if (result.errors?.length) {
+				toast.error("Failed to add to wishlist.");
+			} else if (result.data?.wishlistAddItem.errors?.length) {
+				toast.error(result.data.wishlistAddItem.errors[0].message);
+			} else {
+				toast.success("Item added to wishlist!");
+			}
+		} catch (err) {
+			toast.error("Something went wrong.");
+		}
+	};
+
+
 
 	useEffect(() => {
 		if (!id) return;
@@ -67,7 +127,7 @@ export const FrameByAnima = (): JSX.Element => {
 				}),
 			});
 
-			const json = await res.json();
+			const json: any = await res.json();
 			setProductData(json.data.product);
 		};
 
@@ -78,6 +138,83 @@ export const FrameByAnima = (): JSX.Element => {
 	if (!productData) return <p className="text-gray-500">Loading...</p>;
 
 	const selectedVariant = productData?.productVariants?.edges?.[selectedVariantIndex]?.node;
+
+	const addToCart = async () => {
+		const checkoutId = Cookies.get("use_checkout_id");
+		const variantId = selectedVariant?.id;
+
+		if (!checkoutId || !variantId) {
+			toast.error("Missing checkout ID or variant ID.");
+			return;
+		}
+
+		const query = `
+		mutation CheckoutLinesAdd($checkoutId: ID!, $lines: [CheckoutLineInput!]!) {
+			checkoutLinesAdd(id: $checkoutId, lines: $lines) {
+				errors {
+					field
+					code
+					message
+				}
+				checkout {
+					quantity
+					lines {
+						id
+						quantity
+						variant {
+							id
+							name
+						}
+					}
+					totalPrice {
+						gross {
+							amount
+							currency
+						}
+					}
+				}
+			}
+		}
+	`;
+
+		const variables = {
+			checkoutId,
+			lines: [
+				{
+					quantity,
+					variantId,
+				},
+			],
+		};
+
+		try {
+			const response = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${Cookies.get("token") || ""}`,
+				},
+				body: JSON.stringify({ query, variables }),
+			});
+
+			const result: any = await response.json();
+
+			if (result.errors?.length > 0) {
+				toast.error(result.errors[0]?.message || "Unexpected GraphQL error.");
+				return;
+			}
+
+			const gqlErrors = result.data?.checkoutLinesAdd?.errors;
+			if (gqlErrors?.length) {
+				const errorMessage = gqlErrors.map((e: any) => e.message).join(", ");
+				toast.error(errorMessage || "Failed to add item to cart.");
+				return;
+			}
+			toast.success("Item added to cart!");
+		} catch (err) {
+			toast.error("Something went wrong.");
+		}
+	};
 
 	return (
 		<Card className="w-full border-none bg-transparent px-4 shadow-none md:px-0">
@@ -129,8 +266,8 @@ export const FrameByAnima = (): JSX.Element => {
 									className="w-full h-auto rounded-xl object-contain border"
 								/>
 								<HeartIcon onClick={() => {
-									console.log(selectedVariant);
-								}} className="absolute top-3 right-3 h-5 w-5 text-gray-400 hover:text-pink-500 transition" />
+									if (selectedVariant?.id) addToWishlist(selectedVariant.id);
+								}} className="absolute top-3 right-3 h-5 w-5 text-gray-400 hover:text-pink-500 transition cursor-pointer" />
 							</div>
 						)}
 					</div>
@@ -184,7 +321,9 @@ export const FrameByAnima = (): JSX.Element => {
 							</Button>
 						</div>
 
-						<Button className="rounded-full bg-[#ea518f] px-10 py-4 text-base font-medium text-white hover:bg-[#d93d7a]">
+						<Button className="rounded-full bg-[#ea518f] px-10 py-4 text-base font-medium text-white hover:bg-[#d93d7a]"
+							onClick={addToCart}
+						>
 							Add to Cart
 						</Button>
 					</div>

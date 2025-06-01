@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import { type SetStateAction } from "react";
 
 type Product = {
@@ -111,40 +112,45 @@ export async function fetchWishlist() {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
+			Authorization: `Bearer ${Cookies.get("token") || ""}`,
 		},
 		body: JSON.stringify({
 			query: `
 		  query Wishlist {
 			wishlist {
-			  id
-			  items {
+				id
+				items {
 				id
 				variant {
-				  id
-				  name
-				  pricing {
+					id
+					name
+					pricing {
 					price {
-					  gross {
+						gross {
 						amount
-					  }
-					  net {
+						}
+						net {
 						amount
-					  }
+						}
 					}
-				  }
-				  product {
+					}
+					product {
 					channel
 					id
 					name
-				  }
+					
+					}
+					images {
+					url(format: ORIGINAL)
+					}
 				}
-			  }
-			  user {
+				}
+				user {
 				email
 				id
-			  }
+				}
 			}
-		  }
+			}
 		`,
 		}),
 	});
