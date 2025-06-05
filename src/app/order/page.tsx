@@ -29,7 +29,7 @@ export default function OrderPage() {
 			</div>
 
 			{/* Main Content */}
-			<div className="min-h-screen font-sans text-gray-800">
+			<div className="min-h-screen  font-sans text-gray-800">
 				<main className="mx-auto max-w-4xl px-4 py-8">
 					{/* Order Info */}
 					<div className="mb-6 flex items-center justify-between rounded border border-yellow-200 bg-yellow-50 p-4">

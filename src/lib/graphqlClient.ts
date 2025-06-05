@@ -589,3 +589,61 @@ export async function uploadDocuments({
 	});
 }
 
+
+export async function fetchMe() {
+	const response = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			"Authorization": Cookies.get("Token") || ""
+		},
+		body: JSON.stringify({
+			query: `
+		{
+			me {
+				id
+				email
+				firstName
+				lastName
+				isActive
+				metadata {
+				key
+				value
+				}
+				defaultBillingAddress {
+				isDefaultBillingAddress
+				isDefaultShippingAddress
+				}
+				addresses {
+				city
+				cityArea
+				country {
+					code
+					country
+				}
+				countryArea
+				postalCode
+				streetAddress1
+				streetAddress2
+				phone
+				firstName
+				lastName
+				companyName
+				metadata {
+					key
+					value
+				}
+				}
+			}
+		}
+	  `
+		}),
+	});
+
+	const json = (await response.json()) as ProductResponse;
+	return json.data ?? null;
+}
+
+
+
+
