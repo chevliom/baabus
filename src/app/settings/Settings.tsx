@@ -28,7 +28,7 @@ export const Settings = (): JSX.Element => {
 			{/* Header */}
 			<HeaderSection />
 
-			<div className="mt-36 flex">
+			<div className="mt-36 px-12 flex">
 				{/* Sidebar Navigation */}
 				<aside className="w-full md:w-1/5">
 					<DashboardNavigationSection

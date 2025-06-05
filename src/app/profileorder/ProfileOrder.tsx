@@ -18,7 +18,7 @@ export const ProfileOrder = (): JSX.Element => {
 			<HeaderSection />
 
 			{/* Main Layout */}
-			<div className="mt-36 flex flex-1">
+			<div className="mt-36 px-12 flex flex-1">
 				{/* Sidebar Navigation */}
 				<aside className="w-full md:w-1/5">
 					<DashboardNavigationSection

@@ -30,26 +30,33 @@ export const DashboardNavigationSection = ({
 	onItemClick,
 }: DashboardNavigationSectionProps): JSX.Element => {
 	return (
-		<Card className="flex flex-col rounded-lg border border-solid border-[#e6e6e6] bg-white">
-			<CardHeader className="px-5 pb-4 pt-6">
+		<Card className="rounded-lg border border-[#e6e6e6] bg-white">
+			{/* Header */}
+			<CardHeader className="px-5 pt-6 pb-4">
 				<CardTitle className="text-xl font-semibold text-gray-900">Navigation</CardTitle>
 			</CardHeader>
+
+			{/* Navigation */}
 			<CardContent className="p-0">
 				<nav>
-					<ul className="flex flex-col">
+					<ul className="flex flex-row md:flex-col overflow-x-auto md:overflow-visible">
 						{items.map((item, index) => {
 							const isActive = item.label === activeLabel;
 							return (
-								<li key={index} onClick={() => onItemClick?.(item.label)}>
+								<li
+									key={index}
+									onClick={() => onItemClick?.(item.label)}
+									className="flex-shrink-0 w-auto md:w-full"
+								>
 									<Link
 										href={item.path}
-										className={`flex items-center gap-2.5 px-5 py-4 transition-colors duration-200 ${isActive
+										className={`flex items-center md:justify-start justify-center gap-2 px-4 md:px-5 py-3 md:py-4 transition-colors duration-200 text-sm md:text-base ${isActive
 											? "bg-[#f7bfd5] text-gray-900 shadow-[inset_3px_0px_0px_#ea518f]"
 											: "text-gray-600 hover:bg-gray-100"
 											}`}
 									>
 										{item.icon}
-										<span className="text-base font-medium">{item.label}</span>
+										<span className="hidden md:inline font-medium">{item.label}</span>
 									</Link>
 								</li>
 							);
@@ -61,7 +68,7 @@ export const DashboardNavigationSection = ({
 	);
 };
 
-// Export static nav items
+// Default Navigation Items
 export const defaultNavigationItems: NavigationItem[] = [
 	{
 		icon: <LayoutDashboardIcon className="h-6 w-6" />,

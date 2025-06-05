@@ -22,7 +22,7 @@ export const ProfileFilled = (): JSX.Element => {
 			</header>
 
 			{/* Main content area */}
-			<div className="mt-36 flex w-full flex-col md:flex-row">
+			<div className="mt-36 flex px-12 w-full flex-col md:flex-row">
 				{/* Left sidebar */}
 				<aside className="w-full md:w-1/5">
 					<DashboardNavigationSection
@@ -35,11 +35,11 @@ export const ProfileFilled = (): JSX.Element => {
 				{/* Main content */}
 				<div className="flex flex-1 flex-col">
 					{/* User profile and billing details row */}
-					<div className="flex w-full flex-col md:flex-row">
-						<div className="flex-1  md:mr-4">
+					<div className="flex w-full flex-col md:flex-row gap-0">
+						<div className="flex-1 ">
 							<UserProfileSection />
 						</div>
-						<div className="flex-1 md:ml-4">
+						<div className="flex-1">
 							<BillingDetailsSection />
 						</div>
 					</div>

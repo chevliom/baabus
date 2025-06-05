@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import {
@@ -9,54 +9,77 @@ import {
 	TableHeader,
 	TableRow,
 } from "../../ui/table";
+import Cookies from "js-cookie";
 
-// Order data for mapping
-const orders = [
-	{
-		id: "738",
-		date: "8 Sep, 2020",
-		total: "₹135.00",
-		products: "5 Products",
-		status: "Processing",
-	},
-	{
-		id: "703",
-		date: "24 May, 2020",
-		total: "₹25.00",
-		products: "1 Product",
-		status: "on the way",
-	},
-	{
-		id: "130",
-		date: "22 Oct, 2020",
-		total: "₹250.00",
-		products: "4 Products",
-		status: "Completed",
-	},
-	{
-		id: "561",
-		date: "1 Feb, 2020",
-		total: "₹35.00",
-		products: "1 Products",
-		status: "Completed",
-	},
-	{
-		id: "536",
-		date: "21 Sep, 2020",
-		total: "₹578.00",
-		products: "13 Products",
-		status: "Completed",
-	},
-	{
-		id: "492",
-		date: "22 Oct, 2020",
-		total: "₹345.00",
-		products: "7 Products",
-		status: "Completed",
-	},
-];
+interface Order {
+	id: string;
+	date: string;
+	total: string;
+	products: string;
+	status: string;
+}
 
 export const OrderHistorySection = (): JSX.Element => {
+	const [orders, setOrders] = useState<Order[]>([]);
+
+	useEffect(() => {
+		const fetchOrders = async () => {
+			const token = Cookies.get("token");
+			if (!token) return;
+
+			const res = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify({
+					query: `{
+            me {
+              orders(first: 10) {
+                edges {
+                  node {
+                    id
+                    created
+                    total {
+                      gross {
+                        amount
+                        currency
+                      }
+                    }
+                    status
+                    lines {
+                      quantity
+                    }
+                  }
+                }
+              }
+            }
+          }`,
+				}),
+			});
+
+			const json = await res.json();
+			const rawOrders = json?.data?.me?.orders?.edges || [];
+
+			const formattedOrders = rawOrders.map(({ node }: any) => ({
+				id: node.id,
+				date: new Date(node.created).toLocaleDateString("en-IN", {
+					day: "numeric",
+					month: "short",
+					year: "numeric",
+				}),
+				total: `₹${node.total.gross.amount.toFixed(2)}`,
+				products: `${node.lines.reduce((sum: number, l: any) => sum + l.quantity, 0)} Products`,
+				status: node.status,
+			}));
+
+			setOrders(formattedOrders);
+		};
+
+		fetchOrders();
+	}, []);
+
 	return (
 		<section className="w-full">
 			<Card className="rounded-lg border border-solid border-[#e6e6e6]">
@@ -75,16 +98,16 @@ export const OrderHistorySection = (): JSX.Element => {
 					<Table>
 						<TableHeader>
 							<TableRow className="bg-gray-scalegray-50">
-								<TableHead className="font-CAPS-LOCK-small-caps-lock text-gray-scalegray-700 pl-6 text-[length:var(--CAPS-LOCK-small-caps-lock-font-size)] font-[number:var(--CAPS-LOCK-small-caps-lock-font-weight)] leading-[var(--CAPS-LOCK-small-caps-lock-line-height)] tracking-[var(--CAPS-LOCK-small-caps-lock-letter-spacing)]">
+								<TableHead className="font-CAPS-LOCK-small-caps-lock text-gray-scalegray-700 pl-6">
 									ORDER ID
 								</TableHead>
-								<TableHead className="font-CAPS-LOCK-small-caps-lock text-gray-scalegray-700 text-[length:var(--CAPS-LOCK-small-caps-lock-font-size)] font-[number:var(--CAPS-LOCK-small-caps-lock-font-weight)] leading-[var(--CAPS-LOCK-small-caps-lock-line-height)] tracking-[var(--CAPS-LOCK-small-caps-lock-letter-spacing)]">
+								<TableHead className="font-CAPS-LOCK-small-caps-lock text-gray-scalegray-700">
 									DATE
 								</TableHead>
-								<TableHead className="font-CAPS-LOCK-small-caps-lock text-gray-scalegray-700 text-[length:var(--CAPS-LOCK-small-caps-lock-font-size)] font-[number:var(--CAPS-LOCK-small-caps-lock-font-weight)] leading-[var(--CAPS-LOCK-small-caps-lock-line-height)] tracking-[var(--CAPS-LOCK-small-caps-lock-letter-spacing)]">
+								<TableHead className="font-CAPS-LOCK-small-caps-lock text-gray-scalegray-700">
 									TOTAL
 								</TableHead>
-								<TableHead className="font-CAPS-LOCK-small-caps-lock text-gray-scalegray-700 text-[length:var(--CAPS-LOCK-small-caps-lock-font-size)] font-[number:var(--CAPS-LOCK-small-caps-lock-font-weight)] leading-[var(--CAPS-LOCK-small-caps-lock-line-height)] tracking-[var(--CAPS-LOCK-small-caps-lock-letter-spacing)]">
+								<TableHead className="font-CAPS-LOCK-small-caps-lock text-gray-scalegray-700">
 									STATUS
 								</TableHead>
 								<TableHead></TableHead>
@@ -95,27 +118,27 @@ export const OrderHistorySection = (): JSX.Element => {
 								<TableRow key={order.id} className="h-[45px]">
 									<TableCell className="py-3 pl-6">
 										<div className="inline-flex items-start">
-											<span className="font-body-small-body-small-400 text-gray-scalegray-800 text-[length:var(--body-small-body-small-400-font-size)] leading-[var(--body-small-body-small-400-line-height)] tracking-[var(--body-small-body-small-400-letter-spacing)]">
+											<span className="font-body-small-body-small-400 text-gray-scalegray-800">
 												#{order.id}
 											</span>
 										</div>
 									</TableCell>
-									<TableCell className="font-body-small-body-small-400 text-gray-scalegray-800 text-[length:var(--body-small-body-small-400-font-size)] leading-[var(--body-small-body-small-400-line-height)] tracking-[var(--body-small-body-small-400-letter-spacing)]">
+									<TableCell className="font-body-small-body-small-400 text-gray-scalegray-800">
 										{order.date}
 									</TableCell>
 									<TableCell className="text-gray-scalegray-800 text-sm font-normal">
-										<span className="font-body-small-body-small-500 text-[length:var(--body-small-body-small-500-font-size)] font-[number:var(--body-small-body-small-500-font-weight)] leading-[var(--body-small-body-small-500-line-height)] tracking-[var(--body-small-body-small-500-letter-spacing)]">
+										<span className="font-body-small-body-small-500">
 											{order.total}
 										</span>
 										<span className="leading-[21px]"> ({order.products})</span>
 									</TableCell>
-									<TableCell className="font-body-small-body-small-400 text-gray-scalegray-800 text-[length:var(--body-small-body-small-400-font-size)] leading-[var(--body-small-body-small-400-line-height)] tracking-[var(--body-small-body-small-400-letter-spacing)]">
+									<TableCell className="font-body-small-body-small-400 text-gray-scalegray-800">
 										{order.status}
 									</TableCell>
 									<TableCell>
 										<Button
 											variant="link"
-											className="font-body-small-body-small-500 p-0 text-[length:var(--body-small-body-small-500-font-size)] leading-[var(--body-small-body-small-500-line-height)] tracking-[var(--body-small-body-small-500-letter-spacing)] text-[#ea518f]"
+											className="font-body-small-body-small-500 p-0 text-[#ea518f]"
 										>
 											View Details
 										</Button>
