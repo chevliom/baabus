@@ -42,7 +42,7 @@ const staticWishlistItems: WishlistItem[] = [
 		originalPrice: "₹20.99",
 		stockStatus: "In Stock",
 		stockStatusColor: "#5f0b2d",
-		stockStatusBg: "#f7bfd5",
+		stockStatusBg: "#600B2E",
 		buttonColor: "#ea518f",
 		buttonTextColor: "text-gray-scalewhite",
 		lowStock: true,
@@ -56,7 +56,7 @@ const staticWishlistItems: WishlistItem[] = [
 		price: "₹45.00",
 		stockStatus: "In Stock",
 		stockStatusColor: "#5f0b2d",
-		stockStatusBg: "#f7bfd5",
+		stockStatusBg: "#F8BFD6",
 		buttonColor: "#ea518f",
 		buttonTextColor: "text-gray-scalewhite",
 	},
@@ -159,7 +159,7 @@ export function WishlistByAnima({ items, onExploreMore }: Props): JSX.Element {
 						stockStatusColor: "#5f0b2d",
 						stockStatusBg: "#f7bfd5",
 						buttonColor: "#ea518f",
-						buttonTextColor: "text-gray-scalewhite",
+						buttonTextColor: "text-[#FFFFFF]",
 					}));
 					setWishlistItems(mapped);
 				}
@@ -253,47 +253,52 @@ export function WishlistByAnima({ items, onExploreMore }: Props): JSX.Element {
 
 
 	return (
-		<Card className="w-full rounded-lg border border-solid border-[#e6e6e6]">
-			<div className="p-6">
+		<Card className="mx-auto w-[95%] max-w-[98%] rounded-xl border border-[#e6e6e6] bg-white overflow-hidden mt-10 mb-8">
+			{/* Full-width top border */}
+			<div className="w-full border-t border-gray-200" />
+
+			{/* Card content */}
+			<div className="">
 				{/* Header */}
-				<div className="mb-4 flex">
-					<div className="w-[535px]">
-						<span className="font-CAPS-LOCK-medium-caps-lock text-gray-scalegray-500">PRODUCT</span>
+				<div className="md:p-4 hidden md:flex">
+					<div className="w-1/2">
+						<span className="text-sm font-semibold text-gray-500">PRODUCT</span>
 					</div>
-					<div className="w-[336px]">
-						<span className="font-CAPS-LOCK-medium-caps-lock text-gray-scalegray-500">PRICE</span>
+					<div className="w-1/4">
+						<span className="text-sm font-semibold text-gray-500">PRICE</span>
 					</div>
-					<div>
-						<span className="font-CAPS-LOCK-medium-caps-lock text-gray-scalegray-500">STOCK STATUS</span>
+					<div className="w-1/4">
+						<span className="text-sm font-semibold text-gray-500">STOCK STATUS</span>
+					</div>
+					<div className="w-1/4">
+						<span className="text-sm font-semibold text-gray-500"></span>
 					</div>
 				</div>
 
-				<Separator className="mb-6 w-full" />
-
-				{wishlistItems.map((item, index) => (
+				{/* Wishlist items */}
+				{wishlistItems.map((item) => (
 					<div key={item.id}>
-						<div className="mb-5 flex items-center">
-							<div className="flex w-[535px] items-center gap-5">
-								<div className="relative h-[100px] w-[100px]">
-									<Image src={item.image} alt={`${item.name} image`} fill className="object-cover" />
+						<div className="md:p-4 flex flex-col md:flex-row md:items-center gap-4 md:gap-6 py-4 border-t border-gray-200 hidden md:flex">
+							{/* Product Info */}
+							<div className="flex items-center gap-4 md:w-1/2">
+								<div className="relative h-[80px] w-[80px] md:h-[100px] md:w-[100px] flex-shrink-0">
+									<Image src={item.image} alt={item.name} fill className="object-cover rounded" />
 								</div>
-								<span className="font-body-medium-body-medium-400 text-gray-scalegray-900">{item.name}</span>
+								<span className="text-gray-900 font-medium">{item.name}</span>
 							</div>
 
-							<div className="w-[336px]">
-								<div className="flex items-start gap-0.5">
-									<span className="font-body-medium-body-medium-500 text-gray-scalegray-900">
-										{item.price}
-									</span>
-									{item.originalPrice && (
-										<span className="text-gray-scalegray-400 text-base line-through">
-											{item.originalPrice}
-										</span>
-									)}
-								</div>
+							{/* Price */}
+							<div className="md:w-1/4 flex md:justify-start items-center gap-2">
+								<span className="text-gray-900 font-semibold">{item.price}</span>
+								{item.originalPrice && (
+									<span className="text-gray-400 line-through text-sm">{item.originalPrice}</span>
+								)}
 							</div>
 
-							<div className="flex items-center gap-6">
+							{/* Actions */}
+
+
+							<div className="md:w-1/4 flex items-center justify-between md:justify-start gap-3">
 								<Badge
 									className="rounded px-2 py-1"
 									style={{
@@ -301,55 +306,125 @@ export function WishlistByAnima({ items, onExploreMore }: Props): JSX.Element {
 										color: item.stockStatusColor,
 									}}
 								>
-									<span className="font-body-small-body-small-400">{item.stockStatus}</span>
+									<span className="text-sm">{item.stockStatus}</span>
 								</Badge>
+							</div>
 
-								<div className="ml-auto flex items-center gap-6">
-									<Button
-										className="rounded-[43px] px-8 py-3.5"
-										style={{ backgroundColor: item.buttonColor }}
-									>
-										<span className={`${item.buttonTextColor} font-body-small-body-small-600`}
-											onClick={() => {
-												if (item?.variantId) addToCart(item?.variantId.toString());
-											}}
-										>
-											Add to Cart
-										</span>
-									</Button>
-									<button >
-										<X className="h-6 w-6" onClick={() => {
-											if (item?.variantId) deleteWithlist(item?.variantId.toString());
-										}} />
-									</button>
-								</div>
+							<div className="md:w-1/4 flex items-center justify-between md:justify-start gap-3">
+								<Button
+									disabled={item.stockStatus === 'Out of Stock'}
+									onClick={() => {
+										if (item?.variantId) addToCart(item?.variantId.toString());
+									}}
+									className={`rounded-full px-6 py-2 text-sm ${item.stockStatus === 'Out of Stock' ? 'bg-gray-200 text-gray-500' : ''
+										}`}
+									style={{
+										backgroundColor: item.stockStatus !== 'Out of Stock' ? item.buttonColor : undefined,
+									}}
+								>
+									<span className={`${item.buttonTextColor} font-semibold`}>
+										Add to Cart
+									</span>
+								</Button>
+
+								<button
+									onClick={() => deleteWithlist(item.variantId.toString())}
+									className="p-1 border border-gray-300 rounded-full cursor-pointer hover:bg-gray-100"
+									aria-label="Remove item"
+								>
+									<X className="h-4 w-4 text-gray-500" />
+								</button>
 							</div>
 						</div>
 
-						{item.lowStock && (
-							<div className="mb-5 text-sm font-medium text-[#61ab59]">{item.lowStockMessage}</div>
-						)}
+						{/* Mobile Responsive */}
+						<div className="md:p-4 flex flex-col md:flex-row md:items-center gap-4 md:gap-6 py-4 border-t border-gray-200 md:hidden">
+							<div className="flex items-center gap-12 md:w-1/2 ml-4">
+								<div className="relative h-[80px] w-[80px] md:h-[100px] md:w-[100px] flex-shrink-0">
+									<Image src={item.image} alt={item.name} fill className="object-cover rounded" />
+								</div>
 
-						{index < wishlistItems.length - 1 && <Separator className="mb-5 w-full" />}
+								<div className="gap-2 flex">
+									<div className="md:w-1/4 flex items-center justify-between md:justify-start gap-3">
+										<Badge
+											className="rounded "
+											style={{
+												backgroundColor: item.stockStatusBg,
+												color: item.stockStatusColor,
+											}}
+										>
+											<span className="text-sm">{item.stockStatus}</span>
+										</Badge>
+									</div>
+
+									<div className="md:w-1/4 flex items-center justify-between md:justify-start gap-3">
+										<Button
+											disabled={item.stockStatus === 'Out of Stock'}
+											onClick={() => {
+												if (item?.variantId) addToCart(item?.variantId.toString());
+											}}
+											className={`rounded-full  text-sm ${item.stockStatus === 'Out of Stock' ? 'bg-gray-200 text-gray-500' : ''
+												}`}
+											style={{
+												backgroundColor: item.stockStatus !== 'Out of Stock' ? item.buttonColor : undefined,
+											}}
+										>
+											<span className={`${item.buttonTextColor} font-semibold`}>
+												Add to Cart
+											</span>
+										</Button>
+
+										<button
+											onClick={() => deleteWithlist(item.variantId.toString())}
+											className="p-1 border border-gray-300 rounded-full cursor-pointer hover:bg-gray-100"
+											aria-label="Remove item"
+										>
+											<X className="h-4 w-4 text-gray-500" />
+										</button>
+									</div>
+								</div>
+
+							</div>
+
+							{/* Price */}
+							<div className="md:w-1/4 flex md:justify-start items-center gap-2 ml-4">
+								<span className="text-gray-900 font-medium">{item.name}</span>
+								<span className="text-gray-900 font-semibold">{item.price}</span>
+								{item.originalPrice && (
+									<span className="text-gray-400 line-through text-sm">{item.originalPrice}</span>
+								)}
+							</div>
+						</div>
+
+						{/* Low stock message */}
+						{item.lowStock && (
+							<div className="px-2 pb-4 text-sm font-medium text-green-600">
+								{item.lowStockMessage}
+							</div>
+						)}
 					</div>
 				))}
 
-				<Separator className="my-6 w-full" />
-
 				{/* Footer */}
-				<div className="flex items-center justify-between">
-					<div className="text-xl font-normal text-[#f188b2]">
+				<div className="md:p-4 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-gray-200 pt-4 mt-6 mb-4 md:mb-0">
+					<div className="text-center md:text-left text-pink-500 text-sm md:text-base font-semibold">
 						Love it? Someone else does too! Buy before it&apos;s too late.
 					</div>
+
 					<Button
 						onClick={onExploreMore}
 						variant="outline"
-						className="bg-gray-scalegray-50 rounded-[43px] px-8 py-3.5"
+						className="bg-gray-50 rounded-full px-6 py-2 text-sm border border-gray-300"
 					>
-						<span className="text-gray-scalegray-700 font-body-small-body-small-600">Explore More</span>
+						<span className="text-gray-700 font-semibold">Explore More</span>
 					</Button>
 				</div>
+
 			</div>
 		</Card>
+
+
+
+
 	);
 }

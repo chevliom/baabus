@@ -31,7 +31,31 @@ export const WishlistScreen = (): JSX.Element => {
 
 			{/* Header Section with Decorative Background */}
 			{/* Hero Banner */}
-			<div className="relative h-[219px] w-full bg-[url(/image.png)] bg-cover bg-[50%_50%] mt-24">
+
+			<div className="relative h-[180px] md:h-[219px] w-full bg-[url(/image.png)] bg-cover bg-center mt-16 md:mt-24">
+				<h1 className="absolute mt-[85px] md:mt-[70px] left-1/2 -translate-x-1/2 transform text-4xl md:text-8xl font-normal leading-none text-[#ea518f] text-center [font-family:'Baloo',Helvetica]">
+					Wishlist
+				</h1>
+
+				<Image
+					className="absolute right-2 md:right-[22px] w-[100px] h-[130px] md:w-[160px] md:h-[211px] object-cover mt-[30px] md:mt-0"
+					alt="Decorative image"
+					src="/image-71.png"
+					width={160}
+					height={211}
+					priority
+				/>
+				<Image
+					className="absolute left-2 md:left-[22px] w-[100px] h-[130px] md:w-[160px] md:h-[211px] object-cover mt-[30px] md:mt-0"
+					alt="Decorative image"
+					src="/image-71.png"
+					width={160}
+					height={211}
+					priority
+				/>
+			</div>
+
+			{/* <div className="relative h-[219px] w-full bg-[url(/image.png)] bg-cover bg-[50%_50%] mt-24">
 				<h1 className="absolute left-1/2 top-[33px] -translate-x-1/2 transform text-8xl font-normal leading-[normal] tracking-[0] text-[#ea518f] [font-family:'Baloo',Helvetica]">
 					Whishlist
 				</h1>
@@ -53,7 +77,7 @@ export const WishlistScreen = (): JSX.Element => {
 					height={211} // matches h-[211px]
 					priority // optional: preload for performance if above-the-fold
 				/>
-			</div>
+			</div> */}
 
 			{loading ? (
 				<p className="text-center">Loading...</p>
