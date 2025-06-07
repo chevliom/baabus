@@ -59,7 +59,7 @@ export const OrderHistorySection = (): JSX.Element => {
 				}),
 			});
 
-			const json = await res.json();
+			const json: any = await res.json();
 			const rawOrders = json?.data?.me?.orders?.edges || [];
 
 			const formattedOrders = rawOrders.map(({ node }: any) => ({

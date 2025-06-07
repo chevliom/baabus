@@ -11,6 +11,9 @@ import {
 	ShoppingCartIcon,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 interface NavigationItem {
 	icon: JSX.Element;
@@ -29,6 +32,18 @@ export const DashboardNavigationSection = ({
 	activeLabel,
 	onItemClick,
 }: DashboardNavigationSectionProps): JSX.Element => {
+
+	const router = useRouter();
+	const handleLogout = () => {
+		Cookies.remove("token");
+		Cookies.remove("refreshToken");
+		Cookies.remove("csrfToken");
+		Cookies.remove("use_checkout_id");
+		router.push("/");
+		toast.success("Logged out successfully");
+	};
+
+
 	return (
 		<Card className="rounded-lg border border-[#e6e6e6] bg-white">
 			{/* Header */}
@@ -42,6 +57,23 @@ export const DashboardNavigationSection = ({
 					<ul className="flex flex-row md:flex-col overflow-x-auto md:overflow-visible">
 						{items.map((item, index) => {
 							const isActive = item.label === activeLabel;
+							if (item.label === "Log-out") {
+								return (
+									<li key={index} className="flex-shrink-0 w-auto md:w-full">
+										<button
+											onClick={handleLogout}
+											className={`flex items-center md:justify-start justify-center gap-2 px-4 md:px-5 py-3 md:py-4 transition-colors duration-200 text-sm md:text-base ${isActive
+												? "bg-[#f7bfd5] text-gray-900 shadow-[inset_3px_0px_0px_#ea518f]"
+												: "text-gray-600 hover:bg-gray-100"
+												}`}
+										>
+											{item.icon}
+											<span className="hidden md:inline font-medium">{item.label}</span>
+										</button>
+									</li>
+								);
+							}
+
 							return (
 								<li
 									key={index}

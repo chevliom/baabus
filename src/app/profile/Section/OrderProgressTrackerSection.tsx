@@ -40,11 +40,10 @@ export const OrderProgressTrackerSection = (): JSX.Element => {
 
 							{/* Step label */}
 							<div
-								className={`mt-3 text-center text-sm ${
-									step.status === "completed" || step.status === "current"
-										? "font-medium text-[#b61556]"
-										: "text-gray-scalegray-800 font-normal"
-								}`}
+								className={`mt-3 text-center text-sm ${step.status === "completed" || step.status === "current"
+									? "font-medium text-[#b61556]"
+									: "text-gray-scalegray-800 font-normal"
+									}`}
 							>
 								{step.label}
 							</div>

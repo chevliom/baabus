@@ -7,7 +7,7 @@ import Cookies from "js-cookie";
 import Link from "next/link";
 
 interface Order {
-	id: string;
+	number: string;
 	created: string;
 	status: string;
 	total: {
@@ -43,6 +43,7 @@ export const OrderHistorySection = (): JSX.Element => {
                   edges {
                     node {
                       id
+					  number
                       created
                       total {
                         gross {
@@ -63,11 +64,11 @@ export const OrderHistorySection = (): JSX.Element => {
 				}),
 			});
 
-			const json = await response.json();
+			const json: any = await response.json();
 			const rawOrders = json?.data?.me?.orders?.edges || [];
 
 			const formattedOrders = rawOrders.map(({ node }: { node: Order }) => ({
-				id: node.id,
+				id: node.number,
 				date: new Date(node.created).toLocaleDateString("en-IN", {
 					day: "numeric",
 					month: "short",
@@ -86,6 +87,7 @@ export const OrderHistorySection = (): JSX.Element => {
 								: "text-[#ffca24]",
 			}));
 
+
 			setOrders(formattedOrders);
 		};
 
@@ -93,38 +95,38 @@ export const OrderHistorySection = (): JSX.Element => {
 	}, []);
 
 	return (
-		<div className="mx-auto w-full max-w-[986px]">
-			<Card className="rounded-lg border border-solid border-[#e6e6e6]">
-				<CardContent className="p-6">
-					<h2 className="font-body-XL-body-XL-500 text-gray-scalegray-900 mb-8">
+		<div className="w-full max-w-[2054px] ml-4">
+			<Card className="rounded-lg border border-[#e6e6e6] shadow-none">
+				<CardContent className="">
+					<h2 className="text-[20px] font-semibold text-[#1a1a1a] mb-8">
 						Order History
 					</h2>
 
-					<div className="w-full overflow-y-auto max-h-[500px]">
-						<table className="w-full">
-							<thead className="bg-gray-scalegray-50">
+					<div className="w-full overflow-x-auto">
+						<table className="w-full text-left border-collapse min-w-[800px]">
+							<thead className="bg-[#f5f5f5] text-[#4d4d4d] text-sm font-medium">
 								<tr>
-									<th className="text-left text-gray-scalegray-700">ORDER ID</th>
-									<th className="text-left text-gray-scalegray-700">DATE</th>
-									<th className="text-left text-gray-scalegray-700">TOTAL</th>
-									<th className="text-left text-gray-scalegray-700">STATUS</th>
-									<th className="text-right"></th>
+									<th className="py-3 px-4">ORDER ID</th>
+									<th className="py-3 px-4">DATE</th>
+									<th className="py-3 px-4">TOTAL</th>
+									<th className="py-3 px-4">STATUS</th>
+									<th className="py-3 px-4 text-right"></th>
 								</tr>
 							</thead>
 							<tbody>
 								{orders.map((order) => (
-									<tr key={order.id} className="border-t text-sm text-gray-700">
-										<td className="py-3">#{order.id}</td>
-										<td>{order.date}</td>
-										<td>
-											{order.total} ({order.products} {order.products === 1 ? "Product" : "Products"})
+									<tr key={order.id} className="border-t text-[#1a1a1a] text-sm">
+										<td className="py-4 px-4">#{order.id}</td>
+										<td className="py-4 px-4">{order.date}</td>
+										<td className="py-4 px-4">
+											₹{order.total}.00 ({order.products} {order.products === 1 ? "Product" : "Products"})
 										</td>
 										<td className={`${order.statusColor}`}>{order.status}</td>
-										<td className="text-right">
+										<td className="py-4 px-4 text-right">
 											<Button
 												asChild
 												variant="link"
-												className="text-[#ea518f] text-sm p-0"
+												className="text-[#ea518f] text-sm p-0 underline"
 											>
 												<Link href="/trackorder">View Details</Link>
 											</Button>
@@ -134,8 +136,22 @@ export const OrderHistorySection = (): JSX.Element => {
 							</tbody>
 						</table>
 					</div>
+
+					{/* Pagination Controls */}
+					<div className="flex justify-center items-center gap-2 mt-6">
+						<button className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-400">
+							&lt;
+						</button>
+						<button className="w-8 h-8 rounded-full bg-[#ea518f] text-white text-sm">1</button>
+						<button className="w-8 h-8 rounded-full border border-gray-300 text-sm text-gray-700">2</button>
+						<button className="w-8 h-8 rounded-full border border-gray-300 text-sm text-gray-700">3</button>
+						<button className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-400">
+							&gt;
+						</button>
+					</div>
 				</CardContent>
 			</Card>
 		</div>
+
 	);
 };

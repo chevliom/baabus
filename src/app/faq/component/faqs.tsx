@@ -42,55 +42,14 @@ const faqItems = [
 	},
 ];
 
-// // Benefits data for mapping
-// const benefitsData = [
-// 	{
-// 		icon: "/group.png",
-// 		title: "High Quality",
-// 		description: "crafted from top materials",
-// 	},
-// 	{
-// 		icon: "/group-1.png",
-// 		title: "Warranty Protection",
-// 		description: "Over 2 years",
-// 	},
-// 	{
-// 		icon: "/shipping.svg",
-// 		title: "Free Shipping",
-// 		description: "Order over 150 $",
-// 	},
-// 	{
-// 		icon: "/customer-support.svg",
-// 		title: "24 / 7 Support",
-// 		description: "Dedicated support",
-// 	},
-// ];
-
-// Navigation items
-// const navItems = ["Home", "Categories", "About", "Contact Us"];
 
 export const Faqs = (): JSX.Element => {
 	const [openItem, setOpenItem] = useState<string | null>(null);
 	return (
 		<div className="relative bg-white">
 			<HeaderSection />
-			{/* FAQ Title Section */}
-			<div className="mb-16 mt-32 flex flex-col items-center">
-				<h1 className="text-8xl font-normal text-[#ea518f] [font-family:'Baloo-Regular',Helvetica]">FAQs</h1>
-
-				<div className="mt-8 flex items-center">
-					<span className="text-base font-medium text-black [font-family:'Poppins',Helvetica]">Home</span>
-					<ChevronRightIcon className="mx-2 h-5 w-5" />
-					<span className="text-base font-light text-black [font-family:'Poppins',Helvetica]">FAQs</span>
-				</div>
-			</div>
-
 			{/* FAQ Content Section */}
 			<div className="mx-auto flex w-full max-w-[1368px] flex-col gap-10 px-9 pb-20 pt-5">
-				<h2 className="text-header text-[38px] font-bold leading-[45.6px] [font-family:'Poppins',Helvetica]">
-					FAQ&apos;S
-				</h2>
-
 				<Accordion
 					type="single"
 					collapsible

@@ -56,15 +56,13 @@ export const SidebarSection = (): JSX.Element => {
 				{navigationItems.map((item, index) => (
 					<div
 						key={index}
-						className={`flex w-full cursor-pointer items-center gap-2.5 px-5 py-4 ${
-							item.active ? "bg-[#f7bfd5] shadow-[inset_3px_0px_0px_#ea518f]" : ""
-						}`}
+						className={`flex w-full cursor-pointer items-center gap-2.5 px-5 py-4 ${item.active ? "bg-[#f7bfd5] shadow-[inset_3px_0px_0px_#ea518f]" : ""
+							}`}
 					>
 						{item.icon}
 						<span
-							className={`font-body-medium-body-medium-400 text-[length:var(--body-medium-body-medium-400-font-size)] leading-[var(--body-medium-body-medium-400-line-height)] tracking-[var(--body-medium-body-medium-400-letter-spacing)] ${
-								item.active || index === 0 ? "text-gray-scalegray-900" : "text-gray-scalegray-600"
-							}`}
+							className={`font-body-medium-body-medium-400 text-[length:var(--body-medium-body-medium-400-font-size)] leading-[var(--body-medium-body-medium-400-line-height)] tracking-[var(--body-medium-body-medium-400-letter-spacing)] ${item.active || index === 0 ? "text-gray-scalegray-900" : "text-gray-scalegray-600"
+								}`}
 						>
 							{item.label}
 						</span>

@@ -13,6 +13,7 @@ interface TokenCreate {
 	user: {
 		id: string;
 		email: string;
+		metadata?: { key: string; value: string }[];
 		checkoutIds?: string[];
 	} | null;
 	errors: {
@@ -75,6 +76,11 @@ export function LoginForm() {
 				Cookies.set("use_checkout_id", result.user.checkoutIds[0], { expires: 365 });
 			}
 
+			const channelMetadata: any = result.user?.metadata?.find((meta) => meta.key === "channel");
+			if (channelMetadata?.value) {
+				Cookies.set("channel", channelMetadata.value, { expires: 365 });
+			}
+
 			router.push("/category");
 		} catch (e) {
 			setErrors({ general: "Something went wrong. Please try again." });
@@ -115,7 +121,7 @@ export function LoginForm() {
 						<span>Remember me</span>
 					</label>
 					<Link href="/default-channel/forgotpassword" className="text-[#666666] hover:underline">
-						Forget Password
+						Forgot Password
 					</Link>
 				</div>
 

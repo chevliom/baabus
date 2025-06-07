@@ -523,6 +523,10 @@ export async function loginAccount(input: LoginInput): Promise<{
 				user {
 				  id
 				  email
+				   metadata {
+					key
+					value
+				}
 				  checkoutIds
 				}
 			  }
