@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import { Button } from "../../ui/button";
 import { Card, CardContent } from "../../ui/card";
 import Cookies from "js-cookie";
+import SpinnerProvider from "@/component/SpinnerProvider";
+import { toast } from "react-hot-toast";
 
 interface MetadataItem {
 	key: string;
@@ -33,12 +35,16 @@ interface Address {
 	isDefaultShippingAddress?: boolean;
 }
 
+
+
 export const BillingDetailsSection = (): JSX.Element => {
 	const [addresses, setAddresses] = useState<Address[]>([]);
 	const [email, setEmail] = useState<string | null>(null);
 	const [showModal, setShowModal] = useState(false);
 	const [editAddressIndex, setEditAddressIndex] = useState<number | null>(null);
 	const [billingName, setBillingName] = useState<string>("");
+	const [showAddModel, setShowAddModel] = useState(false);
+	const [formData, setFormData] = useState<Partial<Address>>({});
 
 	useEffect(() => {
 		const fetchUserData = async () => {
@@ -96,6 +102,14 @@ export const BillingDetailsSection = (): JSX.Element => {
 		setEditAddressIndex(index);
 		setBillingName(target.metadata.find((m) => m.key === "billing_name")?.value || "");
 		setShowModal(true);
+	};
+
+	const openAddModal = () => {
+		setShowAddModel(true);
+	};
+
+	const handleAddChange = (field: keyof Address, value: string | boolean) => {
+		setFormData((prev) => ({ ...prev, [field]: value }));
 	};
 
 	const handleChange = (field: keyof Address, value: string) => {
@@ -159,16 +173,90 @@ export const BillingDetailsSection = (): JSX.Element => {
 		setShowModal(false);
 	};
 
-	if (addresses.length === 0) {
-		return (
-			<div className="text-center">
-				<p className="text-sm text-gray-500 mb-4">No billing address found.</p>
-				<Button className="bg-[#ea518f] text-white px-4 py-2 rounded text-sm">
-					+ Add Billing Address
-				</Button>
-			</div>
+	const handleAddAddress = async () => {
+		const token = Cookies.get("token");
+		if (!token) return;
+
+		const addressType = formData.isDefaultBillingAddress
+			? "BILLING"
+			: formData.isDefaultShippingAddress
+				? "SHIPPING"
+				: null;
+
+		if (!addressType) {
+			alert("Please select an address type.");
+			return;
+		}
+
+		const input = {
+			firstName: formData.firstName || "",
+			lastName: formData.lastName || "",
+			companyName: formData.companyName || "",
+			phone: formData.phone || "",
+			streetAddress1: formData.streetAddress1 || "",
+			streetAddress2: formData.streetAddress2 || "",
+			city: formData.city || "",
+			cityArea: formData.cityArea || "",
+			countryArea: formData.countryArea || "",
+			postalCode: formData.postalCode || "",
+			country: formData.country?.code || "IN",
+			metadata: [
+				{ key: "billing_name", value: billingName },
+				{
+					key: "TYPE",
+					value: addressType === "BILLING" ? "Billing" : "Shipping",
+				},
+			],
+		};
+
+		const response = await fetch(
+			"https://baabusbabycare.visiobyte.in/graphql/",
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify({
+					query: `
+					mutation AccountAddressCreate($input: AddressInput!, $type: AddressTypeEnum!) {
+						accountAddressCreate(input: $input, type: $type) {
+						address {
+							id
+							country {
+							code
+							}
+							metadata {
+							key
+							value
+							}
+						}
+						errors {
+							field
+							message
+							code
+						}
+						}
+					}
+					`,
+					variables: {
+						input,
+						type: addressType,
+					},
+				}),
+			}
 		);
-	}
+
+		const result: any = await response.json();
+
+		const errors = result?.data?.accountAddressCreate?.errors;
+		if (errors && errors.length > 0) {
+			toast.error(errors.map((e: any) => `${e.field}: ${e.message}`).join("\n"));
+			return;
+		}
+		setShowAddModel(false);
+	};
+
 
 	const deleteAddress = async (id: string | undefined) => {
 		if (!id) return;
@@ -196,60 +284,131 @@ export const BillingDetailsSection = (): JSX.Element => {
 		setAddresses((prev) => prev.filter((addr) => addr.id !== id));
 	};
 	return (
-		<div className="max-h-[340px] overflow-y-auto space-y-4 pr-2">
-			{addresses.map((addr, index) => {
-				const billing = addr.metadata.find((m) => m.key === "billing_name")?.value || `${addr.firstName} ${addr.lastName}`;
-				const fullAddress = `${addr.streetAddress1}, ${addr.streetAddress2}, ${addr.city}, ${addr.countryArea}, ${addr.postalCode}, ${addr.country?.country}`;
-				const phone = addr.phone || "N/A";
-				const addressType = addr.metadata.find((m) => m.key === "TYPE")?.value || "N/A";
+		<>
+			<div className="max-h-[340px] overflow-y-auto space-y-4 pr-2">
+				{addresses.length === 0 ? (
+					<div className="flex flex-col items-center justify-center py-8 text-center w-full">
+						<p className="text-sm text-gray-500 mb-4">No billing address found.</p>
+						<Button
+							onClick={openAddModal}
+							className="bg-[#ea518f] text-white px-4 py-2 rounded text-sm hover:bg-[#d64680] hover:text-white transition"
+						>
+							+ Add Billing Address
+						</Button>
+					</div>
+				) : (
+					<>
+						{addresses.map((addr, index) => {
+							const billing = addr.metadata.find((m) => m.key === "billing_name")?.value || `${addr.firstName} ${addr.lastName}`;
+							const fullAddress = `${addr.streetAddress1}, ${addr.streetAddress2}, ${addr.city}, ${addr.countryArea}, ${addr.postalCode}, ${addr.country?.country}`;
+							const phone = addr.phone || "N/A";
+							const addressType = addr.metadata.find((m) => m.key === "TYPE")?.value || "N/A";
 
-				return (
-					<Card key={index} className="rounded-md border border-gray-200 shadow-sm w-full">
-						<CardContent className="p-4">
-							<div className="flex flex-col space-y-2">
-								<div className="flex items-center justify-between">
-									<p className="text-sm font-semibold text-gray-900 truncate max-w-[180px]">{billing}</p>
-									<div className="flex gap-1 text-[10px] font-medium text-white">
-										{addr.isDefaultBillingAddress && (
-											<span className="rounded bg-green-500 px-1 py-0.5">Billing</span>
-										)}
-										{addr.isDefaultShippingAddress && (
-											<span className="rounded bg-blue-500 px-1 py-0.5">Shipping</span>
-										)}
-									</div>
-								</div>
-								<p className="text-xs text-gray-600 line-clamp-2">{fullAddress}</p>
-								<p className="text-xs text-gray-800">{email}</p>
-								<p className="text-xs text-gray-800">{phone}</p>
-								<p className="text-[10px] text-gray-500">Type: {addressType}</p>
-								<div className="flex items-center justify gap-4">
-									<Button
-										variant="link"
-										onClick={() => openEditModal(index)}
-										className="h-auto w-fit p-0 text-xs text-[#ea518f]"
-									>
-										Edit
-									</Button>
-									<Button
-										variant="link"
-										onClick={() => deleteAddress(addr.id)}
-										className="h-auto w-fit p-0 text-xs text-red-500"
-									>
-										Delete
-									</Button>
-								</div>
+							return (
+								<Card key={index} className="rounded-md border border-gray-200 shadow-sm w-full">
+									<CardContent className="p-4">
+										<div className="flex flex-col space-y-2">
+											<div className="flex items-center justify-between">
+												<p className="text-sm font-semibold text-gray-900 truncate max-w-[180px]">{billing}</p>
+												<div className="flex gap-1 text-[10px] font-medium text-white">
+													{addr.isDefaultBillingAddress && (
+														<span className="rounded bg-green-500 px-1 py-0.5">Billing</span>
+													)}
+													{addr.isDefaultShippingAddress && (
+														<span className="rounded bg-blue-500 px-1 py-0.5">Shipping</span>
+													)}
+												</div>
+											</div>
+											<p className="text-xs text-gray-600 line-clamp-2">{fullAddress}</p>
+											<p className="text-xs text-gray-800">{email}</p>
+											<p className="text-xs text-gray-800">{phone}</p>
+											<p className="text-[10px] text-gray-500">Type: {addressType}</p>
+											<div className="flex items-center justify gap-4">
+												<Button
+													variant="link"
+													onClick={() => openEditModal(index)}
+													className="h-auto w-fit p-0 text-xs text-[#ea518f]"
+												>
+													Edit
+												</Button>
+												<Button
+													variant="link"
+													onClick={() => deleteAddress(addr.id)}
+													className="h-auto w-fit p-0 text-xs text-red-500"
+												>
+													Delete
+												</Button>
+											</div>
+										</div>
+									</CardContent>
+								</Card>
+							);
+						})}
+
+						<div className="text-right mt-4">
+							<Button
+								onClick={openAddModal}
+								className="bg-[#ea518f] text-white px-4 py-2 rounded text-sm hover:bg-[#d64680] hover:text-white transition"
+							>
+								+ Add Billing Address
+							</Button>
+						</div>
+					</>
+				)}
+
+
+				{showModal && editAddressIndex !== null && (
+					<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+						<div className="bg-white w-[90%] max-w-lg rounded-lg shadow-lg p-6 space-y-4">
+							<div className="flex justify-between items-center">
+								<h2 className="text-lg font-semibold">Edit Billing Address</h2>
+								<button onClick={() => setShowModal(false)} className="text-gray-500 hover:text-red-500 text-lg font-bold">×</button>
 							</div>
-						</CardContent>
-					</Card>
-				);
-			})}
+							<div className="grid grid-cols-2 gap-4 text-sm text-gray-800">
+								<input
+									type="text"
+									value={billingName}
+									onChange={(e) => setBillingName(e.target.value)}
+									className="col-span-2 border rounded p-2"
+									placeholder="Billing Name"
+								/>
+								{(["phone", "streetAddress1", "streetAddress2", "city", "countryArea", "postalCode"] as (keyof Address)[]).map((field) => (
+									<input
+										key={field}
+										type="text"
+										value={
+											typeof addresses[editAddressIndex][field] === "string"
+												? (addresses[editAddressIndex][field] as string)
+												: addresses[editAddressIndex][field] != null
+													? String(addresses[editAddressIndex][field])
+													: ""
+										}
+										onChange={(e) => handleChange(field, e.target.value)}
+										className="col-span-2 border rounded p-2"
+										placeholder={field.replace(/([A-Z])/g, ' $1')}
+									/>
+								))}
+							</div>
+							<div className="flex justify-end gap-3 pt-4">
+								<Button onClick={() => setShowModal(false)} variant="outline">
+									Cancel
+								</Button>
+								<Button className="bg-[#ea518f] hover:bg-[#d84780] text-white" onClick={saveChanges}>
+									Save Changes
+								</Button>
+							</div>
+						</div>
+					</div>
+				)}
 
-			{showModal && editAddressIndex !== null && (
+
+			</div>
+			{showAddModel && (
 				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
 					<div className="bg-white w-[90%] max-w-lg rounded-lg shadow-lg p-6 space-y-4">
 						<div className="flex justify-between items-center">
-							<h2 className="text-lg font-semibold">Edit Billing Address</h2>
-							<button onClick={() => setShowModal(false)} className="text-gray-500 hover:text-red-500 text-lg font-bold">×</button>
+							<h2 className="text-lg font-semibold">Add Billing Address</h2>
+							<button onClick={() => setShowAddModel(false)} className="text-gray-500 hover:text-red-500 text-lg font-bold">×</button>
 						</div>
 						<div className="grid grid-cols-2 gap-4 text-sm text-gray-800">
 							<input
@@ -263,30 +422,62 @@ export const BillingDetailsSection = (): JSX.Element => {
 								<input
 									key={field}
 									type="text"
-									value={
-										typeof addresses[editAddressIndex][field] === "string"
-											? (addresses[editAddressIndex][field] as string)
-											: addresses[editAddressIndex][field] != null
-												? String(addresses[editAddressIndex][field])
-												: ""
-									}
-									onChange={(e) => handleChange(field, e.target.value)}
+									value={String(formData[field] ?? "")}
+									onChange={(e) => handleAddChange(field, e.target.value)}
 									className="col-span-2 border rounded p-2"
 									placeholder={field.replace(/([A-Z])/g, ' $1')}
 								/>
 							))}
 						</div>
+
+						<div className="col-span-2 flex items-center gap-6 pt-2">
+							<label className="flex items-center gap-2">
+								<input
+									type="radio"
+									name="addressType"
+									value="billing"
+									checked={formData.isDefaultBillingAddress === true}
+									onChange={() =>
+										setFormData((prev) => ({
+											...prev,
+											isDefaultBillingAddress: true,
+											isDefaultShippingAddress: false,
+										}))
+									}
+								/>
+								Billing
+							</label>
+							<label className="flex items-center gap-2">
+								<input
+									type="radio"
+									name="addressType"
+									value="shipping"
+									checked={formData.isDefaultShippingAddress === true}
+									onChange={() =>
+										setFormData((prev) => ({
+											...prev,
+											isDefaultBillingAddress: false,
+											isDefaultShippingAddress: true,
+										}))
+									}
+								/>
+								Shipping
+							</label>
+						</div>
+
+
+
 						<div className="flex justify-end gap-3 pt-4">
-							<Button onClick={() => setShowModal(false)} variant="outline">
+							<Button onClick={() => setShowAddModel(false)} variant="outline">
 								Cancel
 							</Button>
-							<Button className="bg-[#ea518f] hover:bg-[#d84780] text-white" onClick={saveChanges}>
+							<Button className="bg-[#ea518f] hover:bg-[#d84780] text-white" onClick={handleAddAddress}>
 								Save Changes
 							</Button>
 						</div>
 					</div>
-				</div>
+				</div >
 			)}
-		</div>
+		</>
 	);
 };

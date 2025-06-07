@@ -24,59 +24,119 @@ interface User {
 	metadata: MetadataItem[];
 }
 
-async function fetchMe(): Promise<User | null> {
+async function refreshToken() {
 	const response = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			Authorization: `Bearer ${Cookies.get("token") || ""}`,
 		},
 		body: JSON.stringify({
 			query: `
-				{
-				me {
-					id
-					email
-					firstName
-					lastName
-					isActive
-					metadata {
-					key
-					value
-					}
-					defaultBillingAddress {
-					isDefaultBillingAddress
-					isDefaultShippingAddress
-					}
-					addresses {
-					city
-					cityArea
-					country {
-						code
-						country
-					}
-					countryArea
-					postalCode
-					streetAddress1
-					streetAddress2
-					phone
-					firstName
-					lastName
-					companyName
-					metadata {
-						key
-						value
-					}
-					}
-				}
-				}
-			`,
+        mutation RefreshToken($refreshToken: String!, $csrfToken: String) {
+          tokenRefresh(refreshToken: $refreshToken, csrfToken: $csrfToken) {
+            token
+            user {
+              id
+              email
+            }
+            errors {
+              code
+              message
+            }
+          }
+        }`,
+			variables: {
+				refreshToken: Cookies.get("refreshToken"),
+				csrfToken: Cookies.get("csrfToken"),
+			},
 		}),
 	});
 
-	const json = (await response.json()) as { data?: { me?: User } };
+	const json: any = await response.json();
+	const token = json?.data?.tokenRefresh?.token;
+
+	if (token) {
+		Cookies.set("token", token);
+		return token;
+	}
+
+	throw new Error("Failed to refresh token");
+}
+
+async function fetchMe(): Promise<User | null> {
+	let token = Cookies.get("token");
+
+	const makeRequest = async (authToken: string) => {
+		return fetch("https://baabusbabycare.visiobyte.in/graphql/", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${authToken}`,
+			},
+			body: JSON.stringify({
+				query: `
+          {
+            me {
+              id
+              email
+              firstName
+              lastName
+              isActive
+              metadata {
+                key
+                value
+              }
+              defaultBillingAddress {
+                isDefaultBillingAddress
+                isDefaultShippingAddress
+              }
+              addresses {
+                city
+                cityArea
+                country {
+                  code
+                  country
+                }
+                countryArea
+                postalCode
+                streetAddress1
+                streetAddress2
+                phone
+                firstName
+                lastName
+                companyName
+                metadata {
+                  key
+                  value
+                }
+              }
+            }
+          }
+        `,
+			}),
+		});
+	};
+
+	let response = await makeRequest(token || "");
+	let json: any = await response.json();
+
+	if (
+		json.errors &&
+		json.errors[0]?.message === "Signature has expired"
+	) {
+		try {
+			const newToken = await refreshToken();
+			response = await makeRequest(newToken);
+			json = await response.json();
+		} catch (e) {
+			console.error("Token refresh failed:", e);
+			return null;
+		}
+	}
+
 	return json?.data?.me || null;
 }
+
 
 export const Profile = (): JSX.Element => {
 	const [activeNav, setActiveNav] = useState("Profile Details");
