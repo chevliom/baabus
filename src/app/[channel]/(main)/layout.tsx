@@ -14,7 +14,7 @@ export default function RootLayout(props: { children: ReactNode; params: { chann
 		<>
 			<HeaderSection />
 			<ToastProvider />
-			<div className="flex min-h-[calc(100dvh-64px)] md:max-w-[1600px]  mx-auto flex-col mt-12">
+			<div className="flex min-h-[calc(100dvh-64px)] md:max-w-[1800px]  mx-auto flex-col mt-12">
 				<main className="flex-1">{props.children}</main>
 				{/* <Footer channel={props.params.channel} /> */}
 			</div>

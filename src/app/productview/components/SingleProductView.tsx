@@ -71,15 +71,15 @@ export const SingleProductView = (): JSX.Element => {
 								key={tab}
 								value={tab}
 								className="rounded-none border-0 bg-transparent px-0
-        pb-4
-        font-['Poppins']
-        text-lg
-        font-medium
-        text-[#9F9F9F]
-        shadow-none
-        data-[state=active]:bg-transparent
-        data-[state=active]:text-black
-        data-[state=active]:shadow-none"
+								pb-4
+								font-['Poppins']
+								text-lg
+								font-medium
+								text-[#9F9F9F]
+								shadow-none
+								data-[state=active]:bg-transparent
+								data-[state=active]:text-black
+								data-[state=active]:shadow-none"
 							>
 								{tab === "description" && "Description"}
 								{tab === "additional" && "Additional information"}

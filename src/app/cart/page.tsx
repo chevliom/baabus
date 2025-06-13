@@ -255,7 +255,7 @@ const CartPage = () => {
 				<div className="pt-16 text-center">
 					<h1 className="font-baloo text-6xl font-extrabold text-[#EB5190]">Cart</h1>
 					<div className="mt-2 text-sm text-[#333]">
-						<span className="font-semibold">Home</span> <span className="mx-1">›</span> <span>Cart</span>
+						<span onClick={() => { router.push('/default-channel') }} className="cursor-pointer font-semibold">Home</span> <span className="mx-1">›</span> <span>Cart</span>
 					</div>
 				</div>
 			</div>
@@ -318,7 +318,7 @@ const CartPage = () => {
 							)}
 
 							<div className="flex justify-end pt-6">
-								<button className="rounded-full bg-[#F4F4F4] px-6 py-2 text-sm font-medium text-[#4D4D4D] hover:bg-[#EAEAEA]">
+								<button onClick={() => { router.push('/category') }} className="rounded-full bg-[#F4F4F4] px-6 py-2 text-sm font-medium text-[#4D4D4D] hover:bg-[#EAEAEA]">
 									Return to shop
 								</button>
 							</div>

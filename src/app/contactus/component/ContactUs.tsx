@@ -6,9 +6,12 @@ import { ContactInfoByAnima } from "./ContactInfoByAnima";
 import { JustSayHelloByAnima } from "./JustSayHelloByAnima";
 import { HeaderSection } from "@/app/sections/HeaderSection";
 import { FrameByAnima } from "@/app/whishlist/components/FrameByAnima";
+import { useRouter } from "next/navigation";
+
 
 export const ContactUs = (): JSX.Element => {
-  return (
+	const router = useRouter();
+	return (
 		<div className="flex w-full flex-col bg-white">
 			{/* Navigation Bar */}
 			<HeaderSection />
@@ -18,7 +21,7 @@ export const ContactUs = (): JSX.Element => {
 				<h1 className="font-baloo text-8xl text-[#ea518f] font-extrabold">Contact Us</h1>
 
 				<div className="mt-8 flex items-center">
-					<span className="text-base font-medium text-black [font-family:'Poppins',Helvetica]">Home</span>
+					<span onClick={() => { router.push('/default-channel') }} className="text-base font-medium text-black [font-family:'Poppins',Helvetica]">Home</span>
 					<ChevronRightIcon className="mx-2 h-5 w-5" />
 					<span className="text-base font-light text-black [font-family:'Poppins',Helvetica]">Contact</span>
 				</div>

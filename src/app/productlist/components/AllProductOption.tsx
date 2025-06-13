@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/ui/Accordion";
 import { Checkbox } from "@/ui/Checkbox";
@@ -36,6 +36,13 @@ export const AllProductOption = (): JSX.Element => {
 		{ value: "2.0", label: "2.0 & up", checked: false },
 		{ value: "1.0", label: "1.0 & up", checked: false },
 	];
+	const [selectedRating, setSelectedRating] = useState<string>("4.0");
+	const [minPrice, setMinPrice] = useState<number>(50);
+	const [maxPrice, setMaxPrice] = useState<number>(1500);
+
+	const minLimit: number = 0;
+	const maxLimit: number = 2000;
+
 
 	return (
 		<CategoryProvider>
@@ -76,22 +83,101 @@ export const AllProductOption = (): JSX.Element => {
 						<Accordion type="single" collapsible className="w-full">
 							<AccordionItem value="price" className="border-b-0 border-t border-[#E5E5E5]">
 								<AccordionTrigger className="py-5 text-lg font-medium text-[#1A1A1A]">Price</AccordionTrigger>
-								<AccordionContent className="pb-6">
-									<div className="relative mb-4 h-[18px] w-full">
-										<div className="absolute left-0 top-[6px] h-[6px] w-full rounded-full border border-[#EA518F] bg-[#F2F2F2]" />
-										<div className="absolute left-[33px] top-[6px] h-[6px] w-[155px] rounded-full bg-[#EA518F]" />
-										<div className="absolute left-[26px] top-0 h-[18px] w-[14px] rounded-full border-2 border-[#EA518F] bg-white" />
-										<div className="absolute left-[179px] top-0 h-[18px] w-[14px] rounded-full border-2 border-[#EA518F] bg-white" />
+								<AccordionContent className="py-2">
+									<div className="mb-8">
+										{/* Track background */}
+										<div className="relative h-2 rounded-full bg-[#F2F2F2]">
+											<div
+												className="absolute top-0 h-2 bg-[#EA518F] rounded-full"
+												style={{
+													left: `${((minPrice - minLimit) / (maxLimit - minLimit)) * 100}%`,
+													width: `${((maxPrice - minPrice) / (maxLimit - minLimit)) * 100}%`,
+												}}
+											/>
+										</div>
+
+										{/* Dual sliders */}
+										<div className="relative -mt-2">
+											{/* Min Range */}
+											<input
+												type="range"
+												min={minLimit}
+												max={maxLimit}
+												value={minPrice}
+												onChange={(e) => {
+													const val = Math.min(Number(e.target.value), maxPrice - 50);
+													setMinPrice(val);
+												}}
+												className="thumb-range absolute w-full appearance-none bg-transparent z-30 pointer-events-auto"
+											/>
+
+											{/* Max Range */}
+											<input
+												type="range"
+												min={minLimit}
+												max={maxLimit}
+												value={maxPrice}
+												onChange={(e) => {
+													const val = Math.max(Number(e.target.value), minPrice + 50);
+													setMaxPrice(val);
+												}}
+												className="thumb-range absolute w-full appearance-none bg-transparent z-20 pointer-events-auto"
+											/>
+										</div>
 									</div>
+
 									<div className="text-sm text-[#4C4C4C]">
 										Price:
-										<span className="ml-1 font-medium text-[#191919]">50 — 1,500</span>
+										<span className="ml-1 font-medium text-[#191919]">
+											₹{minPrice} — ₹{maxPrice}
+										</span>
 									</div>
+
+									<style jsx>{`
+										.thumb-range::-webkit-slider-thumb {
+										-webkit-appearance: none;
+										appearance: none;
+										height: 18px;
+										width: 18px;
+										border-radius: 50%;
+										background: white;
+										border: 2px solid #EA518F;
+										margin-top: -6px;
+										cursor: pointer;
+										position: relative;
+										z-index: 50;
+										}
+
+										.thumb-range::-moz-range-thumb {
+										height: 18px;
+										width: 18px;
+										border-radius: 50%;
+										background: white;
+										border: 2px solid #EA518F;
+										cursor: pointer;
+										z-index:20;
+										}
+
+										.thumb-range::-webkit-slider-runnable-track {
+										height: 2px;
+										background: transparent;
+										z-index:20;
+										}
+
+										.thumb-range::-moz-range-track {
+										height: 2px;
+										background: transparent;
+										z-index:20;
+
+										}
+									`}</style>
 								</AccordionContent>
+
+
+
 							</AccordionItem>
 						</Accordion>
 
-						{/* Rating Filter */}
 						<Accordion type="single" collapsible className="w-full">
 							<AccordionItem value="rating" className="border-0">
 								<AccordionTrigger className="py-5 text-lg font-medium text-[#1A1A1A]">
@@ -104,17 +190,16 @@ export const AllProductOption = (): JSX.Element => {
 											className={`flex items-center gap-2 py-2.5 ${index === ratingOptions.length - 1 ? "pb-6" : ""
 												}`}
 										>
-											{option.checked ? (
-												<Checkbox
-													id={`rating-${option.value}`}
-													checked={option.checked}
-													className="h-5 w-5 rounded-[3px] border data-[state=checked]:bg-[#00B207] data-[state=unchecked]:bg-white"
-												/>
-											) : (
-												<div className="h-5 w-5 rounded-[3px] border border-[#CCCCCC] bg-white" />
-											)}
-
-											<div className="flex items-center gap-2">
+											<Checkbox
+												id={`rating-${option.value}`}
+												checked={selectedRating === option.value}
+												onCheckedChange={() => setSelectedRating(option.value)}
+												className="h-5 w-5 rounded-[3px] border data-[state=checked]:bg-[#00B207] data-[state=unchecked]:bg-white"
+											/>
+											<label
+												htmlFor={`rating-${option.value}`}
+												className="flex items-center gap-2 cursor-pointer"
+											>
 												{Array.from({ length: 5 }, (_, i) => (
 													<Image
 														key={i}
@@ -125,14 +210,10 @@ export const AllProductOption = (): JSX.Element => {
 														className="h-[14px] w-[15px]"
 													/>
 												))}
-												<label
-													htmlFor={`rating-${option.value}`}
-													className="cursor-pointer text-sm text-[#1A1A1A]"
-												>
-													{option.label}
-												</label>
-											</div>
+												<span className="text-sm text-[#1A1A1A]">{option.label}</span>
+											</label>
 										</div>
+
 									))}
 								</AccordionContent>
 							</AccordionItem>

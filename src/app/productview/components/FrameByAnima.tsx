@@ -123,7 +123,7 @@ export const FrameByAnima = (): JSX.Element => {
               }
             }
           `,
-					variables: { id, channel: "default-channel" },
+					variables: { id, channel: Cookies.get("channel") || "default-channel" },
 				}),
 			});
 
@@ -297,7 +297,24 @@ export const FrameByAnima = (): JSX.Element => {
 						</span>
 					</div>
 
-					<p className="mb-6 text-sm text-black">{productData.description}</p>
+					<p className="mb-6 text-sm text-black">
+						{(() => {
+							try {
+								const desc = JSON.parse(productData?.description) as any;
+								if (
+									typeof desc === "object" &&
+									desc !== null &&
+									Array.isArray(desc.blocks) &&
+									desc.blocks[0]?.data?.text
+								) {
+									return desc.blocks[0].data.text;
+								}
+							} catch {
+								// ignore parse errors
+							}
+							return '';
+						})()}
+					</p>
 
 					{/* Quantity & Cart */}
 					<div className="mt-8 flex flex-wrap items-center gap-6">
