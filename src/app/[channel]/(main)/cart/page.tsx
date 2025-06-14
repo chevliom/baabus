@@ -18,9 +18,9 @@ const CartPage = () => {
 			prev.map((item) =>
 				item.id === id
 					? {
-							...item,
-							quantity: type === "inc" ? item.quantity + 1 : Math.max(1, item.quantity - 1),
-						}
+						...item,
+						quantity: type === "inc" ? item.quantity + 1 : Math.max(1, item.quantity - 1),
+					}
 					: item,
 			),
 		);

@@ -266,49 +266,49 @@ const CartPage = () => {
 
 				<div className="flex flex-col gap-8 lg:flex-row">
 					{/* Cart Items */}
-					<div className="overflow-hidden rounded-xl border border-[#EAEAEA] bg-white p-6 shadow lg:w-2/3">
+					<div className="overflow-hidden rounded-xl border border-[#EAEAEA] bg-white p-3 md:p-6 shadow lg:w-2/3">
 						<div className="w-full">
 							<div className="grid grid-cols-5 border-b border-[#EAEAEA] pb-4 text-sm text-[#808080]">
-								<div className="col-span-2">PRODUCT</div>
-								<div className="text-center">PRICE</div>
-								<div className="text-center">QUANTITY</div>
-								<div className="text-right">SUBTOTAL</div>
+								<div className="col-span-2 md:text-[18px] text-[12px]">PRODUCT</div>
+								<div className="text-center md:text-[18px] text-[12px]">PRICE</div>
+								<div className="text-center md:text-[18px] text-[12px]">QUANTITY</div>
+								<div className="text-center md:text-[18px] text-[12px]">SUBTOTAL</div>
 							</div>
 
 							{cartItems.length === 0 ? (
 								<div className="py-10 text-center text-gray-500">Your cart is empty</div>
 							) : (
 								cartItems.map((item) => (
-									<div key={item.id} className="grid grid-cols-5 items-center border-b border-[#EAEAEA] py-6">
-										<div className="col-span-2 flex items-center gap-4">
-											<img src={item.image} alt={item.name} className="h-16 w-16 object-contain" />
-											<span className="text-[#1A1A1A]">{item.name}</span>
+									<div key={item.id} className="grid grid-cols-5 items-center border-b border-[#EAEAEA] py-6 relative">
+										<div className="col-span-2 flex items-center gap-2">
+											<img src={item.image} alt={item.name} className="w-10 h-10 md:h-12 md:w-12 lg:h-16 lg:w-16 object-contain" />
+											<span className="text-[#1A1A1A] text-[10px] md:text-[18px]">{item.name}</span>
 										</div>
-										<div className="text-center text-[#1A1A1A]">₹{item.price.toFixed(2)}</div>
+										<div className="text-center text-[#1A1A1A] text-[10px] md:text-[18px]">₹{item.price.toFixed(2)}</div>
 										<div className="flex justify-center">
-											<div className="flex h-[40px] w-[110px] items-center justify-center rounded-full border border-[#EAEAEA] bg-white px-2">
+											<div className="flex h-[40px] w-[110px] text-[10px] md:text-[18px] items-center justify-center rounded-full border border-[#EAEAEA] bg-white px-1 md:px-2">
 												<button
 													onClick={() => handleQuantityChange(item.id, "dec")}
-													className="rounded-full bg-[#F2F2F2] px-3 py-0.5 text-lg text-[#333]"
+													className="rounded-full bg-[#F2F2F2] px-2 md:px-3 py-0.3 md:py-0.5 text-lg text-[#333]"
 												>
 													−
 												</button>
 												<span className="mx-2 font-medium text-[#1A1A1A]">{item.quantity}</span>
 												<button
 													onClick={() => handleQuantityChange(item.id, "inc")}
-													className="rounded-full bg-[#F2F2F2] px-3 py-0.5 text-lg text-[#333]"
+													className="rounded-full bg-[#F2F2F2]  px-2 md:px-3 py-0.3 md:py-0.5 text-lg text-[#333]"
 												>
 													+
 												</button>
 											</div>
 										</div>
-										<div className="flex items-center justify-end gap-4">
-											<span className="font-semibold text-[#1A1A1A]">
+										<div className="flex items-center justify-end gap-2 md:gap-4 md:flex-row flex-col-reverse">
+											<span className="font-semibold text-[#1A1A1A] text-[10px] md:text-[18px]">
 												₹{(item.price * item.quantity).toFixed(2)}
 											</span>
 											<button
 												onClick={() => handleRemoveItem(item.id)}
-												className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 p-0 text-xl text-gray-500 hover:text-black"
+												className="flex h-5 w-5 md:h-8 md:w-8 items-center justify-center rounded-full border border-gray-300 p-0 text-[12px] md:text-xl text-gray-500 hover:text-black absolute md:relative md:top-0 top-2 right-1"
 											>
 												x
 											</button>
@@ -335,9 +335,9 @@ const CartPage = () => {
 								<input
 									type="text"
 									placeholder="Enter code"
-									className="flex-1 rounded-full border border-[#EAEAEA] px-2 py-2 pr-20 focus:outline-none focus:ring-1 focus:ring-[#FF4BAC]"
+									className="flex-1 rounded-full border border-[#EAEAEA] px-2 py-2 pr-20 focus:outline-none focus:ring-1 focus:ring-[#FF4BAC] w-[230px] md:w-[auto] text-[14px]"
 								/>
-								<button className="absolute right-2 rounded-full bg-black px-4 py-3 text-sm font-medium text-white hover:bg-[#333]">
+								<button className="absolute right-2 rounded-full bg-black px-4 py-3 md:text-sm font-medium text-white hover:bg-[#333] text-[13px]">
 									Apply Coupon
 								</button>
 							</div>
