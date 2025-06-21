@@ -1,3 +1,4 @@
+'use client'
 import { MailIcon, MapPinIcon, PhoneIcon } from "lucide-react";
 import React from "react";
 import { Card, CardContent } from "../../ui/card";

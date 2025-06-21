@@ -1,3 +1,4 @@
+'use client'
 // import { AllCategoryOption } from "@/app/category/components/AllCategoryOption";
 import { ContactUs } from "./component/ContactUs";
 

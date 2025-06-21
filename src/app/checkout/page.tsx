@@ -8,6 +8,23 @@ import busImage from "../assets/bus.png";
 import { HeaderSection } from "../sections/HeaderSection";
 import { FrameByAnima } from "../whishlist/components/FrameByAnima";
 import Cookies from "js-cookie";
+import { any } from "zod";
+
+declare global {
+	interface Window {
+		Razorpay: any;
+	}
+}
+
+const loadRazorpayScript = (): Promise<boolean> => {
+	return new Promise((resolve) => {
+		const script = document.createElement("script");
+		script.src = "https://checkout.razorpay.com/v1/checkout.js";
+		script.onload = () => resolve(true);
+		script.onerror = () => resolve(false);
+		document.body.appendChild(script);
+	});
+};
 
 interface MetadataItem {
 	key: string;
@@ -35,6 +52,31 @@ interface Address {
 	metadata: MetadataItem[];
 	isDefaultBillingAddress?: boolean;
 	isDefaultShippingAddress?: boolean;
+}
+
+interface RazorpayResponse {
+	razorpay_payment_id: string;
+	razorpay_order_id?: string;
+	razorpay_signature?: string;
+}
+
+interface RazorpayOptions {
+	key: string;
+	amount: number;
+	currency: string;
+	name: string;
+	description: string;
+	image?: string;
+	order_id?: string;
+	handler: (response: RazorpayResponse) => void;
+	prefill?: {
+		name?: string;
+		email?: string;
+		contact?: string;
+	};
+	theme?: {
+		color?: string;
+	};
 }
 
 
@@ -65,6 +107,42 @@ export default function CheckoutPage() {
 		email: "",
 		phone: ""
 	});
+
+	const handlePlaceOrder = async () => {
+		const res = await loadRazorpayScript();
+		if (!res) {
+			alert("Razorpay SDK failed to load. Please check your internet.");
+			return;
+		}
+
+		const options: RazorpayOptions = {
+			key: "rzp_test_1ogW6Wcoazu0cr", // Replace with your Razorpay Test Key
+			amount: total * 100, // amount in paise
+			currency: "INR",
+			name: "Babus",
+			description: "Order Payment",
+			// image: "",
+			handler: function (response) {
+				alert("Payment successful!");
+				console.log("Payment ID:", response.razorpay_payment_id);
+				console.log("Order ID:", response.razorpay_order_id);
+				console.log("Signature:", response.razorpay_signature);
+				router.push('/success');
+			},
+			prefill: {
+				name: formData.firstName + " " + formData.lastName,
+				email: formData.email,
+				contact: formData.phone,
+			},
+			theme: {
+				color: "#ec4899",
+			},
+		};
+
+		const rzp = new (window as any).Razorpay(options);
+		rzp.open();
+	};
+
 
 	const handleGiftInputChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -295,7 +373,6 @@ export default function CheckoutPage() {
 			<HeaderSection />
 			<main className="flex-grow">
 				<div className="mx-auto max-w-6xl px-4 py-8">
-					{/* Checkout Header */}
 					<div className="mb-8 text-center">
 						<h1 className="text-5xl font-bold text-pink-500">Checkout</h1>
 						<div className="mt-2 flex items-center justify-center text-sm">
@@ -309,7 +386,6 @@ export default function CheckoutPage() {
 
 					<form onSubmit={handleSubmit}>
 						<div className="flex flex-col gap-8 md:flex-row">
-							{/* Billing Information */}
 							<div className="w-full md:w-2/3">
 								<div className="mb-6">
 									<h2 className="mb-4 text-xl font-semibold">Billing Information</h2>
@@ -575,7 +651,6 @@ export default function CheckoutPage() {
 												<option value="">Select</option>
 												<option value="MH">Maharashtra</option>
 												<option value="GJ">Gujarat</option>
-												{/* ... add all Indian states */}
 											</select>
 										</div>
 
@@ -609,8 +684,6 @@ export default function CheckoutPage() {
 										</div>
 									</div>
 								)}
-
-
 								<div>
 									<h2 className="mb-4 text-xl font-semibold">Additional Info</h2>
 									<div className="mb-4">
@@ -629,8 +702,6 @@ export default function CheckoutPage() {
 									</div>
 								</div>
 							</div>
-
-							{/* Order Summary */}
 							<div className="w-full md:w-5/12">
 								<div className="mb-6">
 									<h2 className="mb-4 text-xl font-semibold">Order Summary</h2>
@@ -720,6 +791,7 @@ export default function CheckoutPage() {
 
 										<button
 											type="submit"
+											onClick={handlePlaceOrder}
 											className="w-full rounded-lg bg-pink-500 py-3 font-medium text-white transition-colors hover:bg-pink-600"
 										>
 											Place Order
@@ -729,10 +801,8 @@ export default function CheckoutPage() {
 							</div>
 						</div>
 					</form>
-
-					{/* Benefits Section */}
-					<FrameByAnima />
 				</div>
+				<FrameByAnima />
 			</main>
 		</div>
 	);
