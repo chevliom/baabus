@@ -38,13 +38,13 @@ export const AllCategoryOption = (): JSX.Element => {
 				<HeaderSection />
 
 				{/* Hero Banner */}
-				<div className="relative mt-24 h-[180px] w-full bg-[url(/image.png)] bg-cover bg-center sm:h-[219px]">
-					<h1 className="absolute left-1/2 top-8 -translate-x-1/2 transform text-4xl font-normal text-[#ea518f] [font-family:'Baloo',Helvetica] sm:text-8xl">
+				<div className="relative mt-24 h-[140px] md:h-[180px] w-full bg-[url(/image.png)] bg-cover bg-center sm:h-[219px]">
+					<h1 className="absolute left-1/2 top-8 md:top-14 -translate-x-1/2 transform text-4xl font-normal text-[#ea518f] [font-family:'Baloo',Helvetica] sm:text-8xl mt-8 md:mt-0">
 						Category
 					</h1>
 
 					<Image
-						className="absolute left-4 top-0 h-auto w-28 object-cover sm:w-40"
+						className="absolute left-1 md:left-4 top-0 h-auto w-[100px] md:w-28 object-cover sm:w-40"
 						alt="Decorative left"
 						src="/image-71.png"
 						width={160}
@@ -52,7 +52,7 @@ export const AllCategoryOption = (): JSX.Element => {
 						priority
 					/>
 					<Image
-						className="absolute right-4 top-0 h-auto w-28 object-cover sm:w-40"
+						className="absolute right-1 md:right-4 top-0 h-auto w-[100px] md:w-28 object-cover sm:w-40"
 						alt="Decorative right"
 						src="/image-71.png"
 						width={160}

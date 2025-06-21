@@ -94,9 +94,8 @@ export const AllCategoryOption = (): JSX.Element => {
 									{ratingOptions.map((option, index) => (
 										<div
 											key={option.value}
-											className={`flex items-center gap-2 py-2.5 ${
-												index === ratingOptions.length - 1 ? "pb-6" : ""
-											}`}
+											className={`flex items-center gap-2 py-2.5 ${index === ratingOptions.length - 1 ? "pb-6" : ""
+												}`}
 										>
 											{option.checked ? (
 												<Checkbox

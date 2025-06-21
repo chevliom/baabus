@@ -20,6 +20,7 @@ export const FrameByAnima = (): JSX.Element => {
 	const id = searchParams.get("id");
 
 	const [productData, setProductData] = useState<any>(null);
+	const [wishlistVariantIds, setWishlistVariantIds] = useState<string[]>([]);
 	const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
 	const [quantity, setQuantity] = useState<number>(1);
 
@@ -83,7 +84,6 @@ export const FrameByAnima = (): JSX.Element => {
 
 	useEffect(() => {
 		if (!id) return;
-
 		const fetchProduct = async () => {
 			const res = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
 				method: "POST",
@@ -133,6 +133,59 @@ export const FrameByAnima = (): JSX.Element => {
 
 		fetchProduct();
 	}, [id]);
+
+	useEffect(() => {
+		const fetchWishlist = async () => {
+			const query = `
+      query Wishlist {
+        wishlist {
+          id
+          items {
+            id
+            variant {
+              id
+              name
+              pricing {
+                price {
+                  gross { amount }
+                  net { amount }
+                }
+              }
+              product {
+                channel
+                id
+                name
+              }
+            }
+          }
+          user {
+            email
+            id
+          }
+        }
+      }
+    `;
+
+			try {
+				const res = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${Cookies.get("token") || ""}`,
+					},
+					body: JSON.stringify({ query }),
+				});
+				const json: any = await res.json();
+				const variantIds = json.data?.wishlist?.items?.map((item: any) => item.variant.id) || [];
+				setWishlistVariantIds(variantIds);
+			} catch (error) {
+				console.error("Failed to fetch wishlist", error);
+			}
+		};
+
+		fetchWishlist();
+	}, []);
+
 
 	if (!id) return <p className="text-red-500">No product ID in URL.</p>;
 	if (!productData) return <p className="text-gray-500">Loading...</p>;
@@ -216,6 +269,54 @@ export const FrameByAnima = (): JSX.Element => {
 		}
 	};
 
+	const removeFromWishlist = async (variantId: string): Promise<void> => {
+		const query = `
+		mutation WishlistRemoveItem($input: WishlistRemoveItemInput!) {
+			wishlistRemoveItem(input: $input) {
+				errors {
+					field
+					message
+				}
+				wishlist {
+					id
+					items {
+						variant {
+							id
+						}
+					}
+				}
+			}
+		}
+	`;
+
+		const variables = {
+			input: { variantId },
+		};
+
+		try {
+			const response = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${Cookies.get("token") || ""}`,
+				},
+				body: JSON.stringify({ query, variables }),
+			});
+
+			const result: any = await response.json();
+
+			if (result.errors?.length) {
+				toast.error("Failed to remove from wishlist.");
+			} else if (result.data?.wishlistRemoveItem?.errors?.length) {
+				toast.error(result.data.wishlistRemoveItem.errors[0].message);
+			} else {
+				toast.success("Item removed from wishlist!");
+			}
+		} catch (err) {
+			toast.error("Something went wrong.");
+		}
+	};
+
 	return (
 		<Card className="w-full border-none bg-transparent px-4 shadow-none md:px-0">
 			<CardContent className="flex flex-col md:flex-row gap-10 p-0">
@@ -254,6 +355,7 @@ export const FrameByAnima = (): JSX.Element => {
 						})}
 					</div>
 
+
 					{/* Selected Variant Main Image */}
 					<div className="md:w-3/4 w-full relative">
 						{selectedVariant?.images?.[0]?.url && (
@@ -265,9 +367,28 @@ export const FrameByAnima = (): JSX.Element => {
 									height={600}
 									className="w-full h-auto rounded-xl object-contain border"
 								/>
-								<HeartIcon onClick={() => {
-									if (selectedVariant?.id) addToWishlist(selectedVariant.id);
-								}} className="absolute top-3 right-3 h-5 w-5 text-gray-400 hover:text-pink-500 transition cursor-pointer" />
+
+								<HeartIcon
+									onClick={async () => {
+										if (!selectedVariant?.id) return;
+										const isInWishlist = wishlistVariantIds.includes(selectedVariant.id);
+
+										if (isInWishlist) {
+											await removeFromWishlist(selectedVariant.id);
+											setWishlistVariantIds((prev) => prev.filter((v) => v !== selectedVariant.id));
+										} else {
+											await addToWishlist(selectedVariant.id);
+											setWishlistVariantIds((prev) => [...prev, selectedVariant.id]);
+										}
+									}}
+									className={`absolute top-3 right-3 h-5 w-5 transition cursor-pointer 
+											${wishlistVariantIds.includes(selectedVariant?.id)
+											? "text-pink-500 fill-pink-500"
+											: "text-gray-400 hover:text-pink-500"
+										}`}
+								/>
+
+
 							</div>
 						)}
 					</div>

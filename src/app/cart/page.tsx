@@ -191,7 +191,6 @@ const CartPage = () => {
 			quantity: item.quantity,
 		}));
 
-		console.log(lines)
 
 		try {
 			const response = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {

@@ -339,24 +339,12 @@ export function WishlistByAnima({ items, onExploreMore }: Props): JSX.Element {
 
 						{/* Mobile Responsive */}
 						<div className="md:p-4 flex flex-col md:flex-row md:items-center gap-4 md:gap-6 py-4 border-t border-gray-200 md:hidden">
-							<div className="flex items-center gap-12 md:w-1/2 ml-4">
+							<div className="flex items-center gap-12 md:w-1/2 ml-4 justify-between mr-2">
 								<div className="relative h-[80px] w-[80px] md:h-[100px] md:w-[100px] flex-shrink-0">
 									<Image src={item.image} alt={item.name} fill className="object-cover rounded" />
 								</div>
 
 								<div className="gap-2 flex">
-									<div className="md:w-1/4 flex items-center justify-between md:justify-start gap-3">
-										<Badge
-											className="rounded "
-											style={{
-												backgroundColor: item.stockStatusBg,
-												color: item.stockStatusColor,
-											}}
-										>
-											<span className="text-sm">{item.stockStatus}</span>
-										</Badge>
-									</div>
-
 									<div className="md:w-1/4 flex items-center justify-between md:justify-start gap-3">
 										<Button
 											disabled={item.stockStatus === 'Out of Stock'}

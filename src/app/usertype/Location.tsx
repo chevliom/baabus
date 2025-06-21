@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent } from "../../ui/Card";
 import { FrameByAnima } from "../whishlist/components/FrameByAnima";
 import { HeaderSection } from "../sections/HeaderSection";
+import Cookies from "js-cookie";
 
 export const Location = (): JSX.Element => {
 	const [selectedType, setSelectedType] = useState<string | null>(null);
@@ -27,8 +28,14 @@ export const Location = (): JSX.Element => {
 	];
 
 	const handleSelect = (userType: (typeof userTypes)[number]) => {
-		setSelectedType(userType.title); // Optional: briefly show checkmark before redirect
-		router.push(userType.navigateTo);
+		const token = Cookies.get("token");
+
+		if (userType.title === "Customer" && token) {
+			router.push("/category");
+		} else {
+			setSelectedType(userType.title);
+			router.push(userType.navigateTo);
+		}
 	};
 
 	return (
@@ -47,17 +54,15 @@ export const Location = (): JSX.Element => {
 						return (
 							<div
 								key={index}
-								className={`relative cursor-pointer transition-all duration-300 ${
-									isSelected ? "shadow-lg" : "hover:shadow-md"
-								}`}
+								className={`relative cursor-pointer transition-all duration-300 ${isSelected ? "shadow-lg" : "hover:shadow-md"
+									}`}
 								onClick={() => handleSelect(userType)}
 							>
 								<Card
-									className={`w-full overflow-hidden rounded-[20px] transition-all duration-300 ${
-										isSelected
-											? "border-2 border-[#6ca7df] bg-[#d9e8f6] shadow-[0px_0px_0px_4px_#ffffff]"
-											: "border border-gray-200 bg-[#f5f9fd]"
-									}`}
+									className={`w-full overflow-hidden rounded-[20px] transition-all duration-300 ${isSelected
+										? "border-2 border-[#6ca7df] bg-[#d9e8f6] shadow-[0px_0px_0px_4px_#ffffff]"
+										: "border border-gray-200 bg-[#f5f9fd]"
+										}`}
 								>
 									<CardContent className="flex items-center p-8">
 										<img

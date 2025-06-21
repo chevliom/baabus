@@ -237,7 +237,6 @@ export const FrameByAnima = () => {
 	const [likedMap, setLikedMap] = useState<Record<string, boolean>>({});
 
 	const toggleLike = (product: any) => {
-		console.log(product);
 		setLikedMap((prev) => ({ ...prev, [product.id]: !prev[product.id] }));
 	};
 

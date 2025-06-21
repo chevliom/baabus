@@ -9,6 +9,7 @@ import { HeaderSection } from "../sections/HeaderSection";
 import { FrameByAnima } from "../whishlist/components/FrameByAnima";
 import Cookies from "js-cookie";
 import { any } from "zod";
+import toast from "react-hot-toast";
 
 declare global {
 	interface Window {
@@ -93,6 +94,7 @@ export default function CheckoutPage() {
 		country: "",
 		state: "",
 		phone: "",
+		postalCode: "",
 		shipToDifferentAddress: false,
 		orderNotes: "",
 		isGift: false,
@@ -105,7 +107,8 @@ export default function CheckoutPage() {
 		streetAddress: "",
 		state: "",
 		email: "",
-		phone: ""
+		phone: "",
+		postalCode: "",
 	});
 
 	const handlePlaceOrder = async () => {
@@ -122,7 +125,7 @@ export default function CheckoutPage() {
 			name: "Babus",
 			description: "Order Payment",
 			// image: "",
-			handler: function (response) {
+			handler: async function (response) {
 				alert("Payment successful!");
 				console.log("Payment ID:", response.razorpay_payment_id);
 				console.log("Order ID:", response.razorpay_order_id);
@@ -172,14 +175,723 @@ export default function CheckoutPage() {
 		});
 	};
 
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault(); // Prevent the default form submission
-		console.log("Form submitted:", formData);
-		console.log("Payment method:", paymentMethod);
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
 
-		// Navigate to the order page after form submission
-		router.push("/order");
+		const checkoutId = Cookies.get("use_checkout_id");
+		const token = Cookies.get("token");
+		const graphqlEndpoint = "https://baabusbabycare.visiobyte.in/graphql/";
+
+		if (!checkoutId || !token) {
+			toast.error("Missing checkout ID or token.");
+			return;
+		}
+
+		const billingAddress = {
+			firstName: formData.firstName,
+			lastName: formData.lastName,
+			companyName: formData.companyName || "",
+			streetAddress1: formData.streetAddress,
+			streetAddress2: "",
+			city: formData.state,
+			postalCode: formData.postalCode,
+			country: "IN",
+			countryArea: formData.state,
+			phone: formData.phone,
+		};
+
+		const shippingAddress = formData.isGift
+			? {
+				firstName: giftFormData.firstName,
+				lastName: giftFormData.lastName,
+				companyName: giftFormData.companyName || "",
+				streetAddress1: giftFormData.streetAddress,
+				streetAddress2: "",
+				city: giftFormData.state,
+				postalCode: giftFormData.postalCode,
+				country: "IN",
+				countryArea: giftFormData.state,
+				phone: giftFormData.phone,
+			}
+			: billingAddress;
+
+		const sendGraphQL = async (query: string, variables: any) => {
+			const res = await fetch(graphqlEndpoint, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify({ query, variables }),
+			});
+			return res.json();
+		};
+
+		const billingMutation = `mutation UpdateCheckoutBillingAddress($checkoutId: ID!, $billingAddress: AddressInput!) {
+		checkoutBillingAddressUpdate(id: $checkoutId, billingAddress: $billingAddress) {
+			errors: checkoutErrors {
+			...CheckoutError
+			
+			}
+			checkout {
+			...Checkout
+			
+			}
+			
+		}
+		}
+
+		fragment Price on TaxedMoney {
+		gross {
+			amount
+			currency
+			
+		}
+		net {
+			amount
+			currency
+			
+		}
+		
+		}
+
+		fragment ProductVariant on ProductVariant {
+		id
+		name
+		sku
+		quantityAvailable
+		pricing {
+			onSale
+			priceUndiscounted {
+			...Price
+			
+			}
+			price {
+			...Price
+			
+			}
+			
+		}
+		attributes {
+			attribute {
+			id
+			name
+			
+			}
+			values {
+			id
+			name
+			value: name
+			
+			}
+			
+		}
+		product {
+			id
+			name
+			slug
+			thumbnail {
+			url
+			alt
+			
+			}
+			thumbnail2x: thumbnail(size: 510) {
+			url
+			
+			}
+			productType {
+			id
+			isShippingRequired
+			
+			}
+			
+		}
+		
+		}
+
+		fragment CheckoutLine on CheckoutLine {
+		id
+		quantity
+		totalPrice {
+			...Price
+			
+		}
+		variant {
+			...ProductVariant
+			
+		}
+		
+		}
+
+		fragment Address on Address {
+		id
+		firstName
+		lastName
+		companyName
+		streetAddress1
+		streetAddress2
+		city
+		postalCode
+		country {
+			code
+			country
+			
+		}
+		countryArea
+		phone
+		isDefaultBillingAddress
+		isDefaultShippingAddress
+		
+		}
+
+		fragment ShippingMethod on ShippingMethod {
+		id
+		name
+		price {
+			currency
+			amount
+			
+		}
+		
+		}
+
+		fragment PaymentGateway on PaymentGateway {
+		id
+		name
+		config {
+			field
+			value
+			
+		}
+		currencies
+		
+		}
+
+		fragment Checkout on Checkout {
+		token
+		id
+		totalPrice {
+			...Price
+			
+		}
+		subtotalPrice {
+			...Price
+			
+		}
+		billingAddress {
+			...Address
+			
+		}
+		shippingAddress {
+			...Address
+			
+		}
+		email
+		availableShippingMethods {
+			...ShippingMethod
+			
+		}
+		shippingMethod {
+			...ShippingMethod
+			
+		}
+		shippingPrice {
+			...Price
+			
+		}
+		lines {
+			...CheckoutLine
+			
+		}
+		isShippingRequired
+		discount {
+			currency
+			amount
+			
+		}
+		discountName
+		translatedDiscountName
+		voucherCode
+		availablePaymentGateways {
+			...PaymentGateway
+			
+		}
+		
+		}
+
+		fragment CheckoutError on CheckoutError {
+		code
+		field
+		message
+		
+		}
+
+		`;
+		const shippingMutation = `mutation UpdateCheckoutShippingAddress($checkoutId: ID!, $shippingAddress: AddressInput!) {
+		checkoutShippingAddressUpdate(id: $checkoutId, shippingAddress: $shippingAddress) {
+			errors: checkoutErrors {
+			...CheckoutError
+			
+			}
+			checkout {
+			...Checkout
+			
+			}
+			
+		}
+		}
+
+		fragment Price on TaxedMoney {
+		gross {
+			amount
+			currency
+			
+		}
+		net {
+			amount
+			currency
+			
+		}
+		tax{
+			amount
+		}
+		
+		}
+
+		fragment ProductVariant on ProductVariant {
+		id
+		name
+		sku
+		quantityAvailable
+		pricing {
+			onSale
+			priceUndiscounted {
+			...Price
+			
+			}
+			price {
+			...Price
+			
+			}
+			
+		}
+		attributes {
+			attribute {
+			id
+			name
+			
+			}
+			values {
+			id
+			name
+			value: name
+			
+			}
+			
+		}
+		product {
+			id
+			name
+			slug
+			thumbnail {
+			url
+			alt
+			
+			}
+			thumbnail2x: thumbnail(size: 510) {
+			url
+			
+			}
+			productType {
+			id
+			isShippingRequired
+			
+			}
+			
+		}
+		
+		}
+
+		fragment CheckoutLine on CheckoutLine {
+		id
+		quantity
+		totalPrice {
+			...Price
+			
+		}
+		variant {
+			...ProductVariant
+			
+		}
+		
+		}
+
+		fragment Address on Address {
+		id
+		firstName
+		lastName
+		companyName
+		streetAddress1
+		streetAddress2
+		city
+		postalCode
+		country {
+			code
+			country
+			
+		}
+		countryArea
+		phone
+		isDefaultBillingAddress
+		isDefaultShippingAddress
+		
+		}
+
+		fragment ShippingMethod on ShippingMethod {
+		id
+		name
+		price {
+			currency
+			amount
+			
+		}
+		
+		}
+
+
+
+
+		fragment Checkout on Checkout {
+		token
+		id
+		totalPrice {
+			...Price
+			
+		}
+		subtotalPrice {
+			...Price
+			
+		}
+		billingAddress {
+			...Address
+			
+		}
+		shippingAddress {
+			...Address
+			
+		}
+		email
+		availableShippingMethods {
+			...ShippingMethod
+			
+		}
+		shippingMethod {
+			...ShippingMethod
+			
+		}
+		shippingPrice {
+			...Price
+			
+		}
+		lines {
+			...CheckoutLine
+			
+		}
+		isShippingRequired
+		discount {
+			currency
+			amount
+			
+		}
+		discountName
+		translatedDiscountName
+		voucherCode
+
+		
+		}
+
+		fragment CheckoutError on CheckoutError {
+		code
+		field
+		message
+		
+		}
+
+		`;
+		const availableShippingQuery = `query AvailableShippingMethods($checkoutId: ID!){
+		checkout(id: $checkoutId) {
+			shippingMethods {
+			id
+			name
+			active
+			price {
+				currency
+				amount
+			}
+			}
+			availableCollectionPoints {
+			id
+			name
+			clickAndCollectOption
+			}
+		}
+		}`;
+		const setShippingMethodMutation = `mutation UpdateCheckoutShippingMethod($checkoutId: ID!, $shippingMethodId: ID!) {
+			checkoutShippingMethodUpdate(
+				id: $checkoutId, 
+				shippingMethodId: $shippingMethodId) 
+				{
+				checkout {
+				...Checkout
+				
+				}
+				errors: checkoutErrors {
+				...CheckoutError
+				
+				}
+				
+			}
+			}
+
+			fragment Price on TaxedMoney {
+			gross {
+				amount
+				currency
+				
+			}
+			net {
+				amount
+				currency
+				
+			}
+			
+			}
+
+			fragment ProductVariant on ProductVariant {
+			id
+			name
+			sku
+			quantityAvailable
+			pricing {
+				onSale
+				priceUndiscounted {
+				...Price
+				
+				}
+				price {
+				...Price
+				
+				}
+				
+			}
+			attributes {
+				attribute {
+				id
+				name
+				
+				}
+				values {
+				id
+				name
+				value: name
+				
+				}
+				
+			}
+			product {
+				id
+				name
+				slug
+				thumbnail {
+				url
+				alt
+				
+				}
+				thumbnail2x: thumbnail(size: 510) {
+				url
+				
+				}
+				productType {
+				id
+				isShippingRequired
+				
+				}
+				
+			}
+			
+			}
+
+			fragment CheckoutLine on CheckoutLine {
+			id
+			quantity
+			totalPrice {
+				...Price
+				
+			}
+			variant {
+				...ProductVariant
+				
+			}
+			
+			}
+
+			fragment Address on Address {
+			id
+			firstName
+			lastName
+			companyName
+			streetAddress1
+			streetAddress2
+			city
+			postalCode
+			country {
+				code
+				country
+				
+			}
+			countryArea
+			phone
+			isDefaultBillingAddress
+			isDefaultShippingAddress
+			
+			}
+
+			fragment ShippingMethod on ShippingMethod {
+			id
+			name
+			price {
+				currency
+				amount
+				
+			}
+			
+			}
+
+			fragment PaymentGateway on PaymentGateway {
+			id
+			name
+			config {
+				field
+				value
+				
+			}
+			currencies
+			
+			}
+
+			fragment Checkout on Checkout {
+			token
+			id
+			totalPrice {
+				...Price
+				
+			}
+			subtotalPrice {
+				...Price
+				
+			}
+			billingAddress {
+				...Address
+				
+			}
+			shippingAddress {
+				...Address
+				
+			}
+			email
+			availableShippingMethods {
+				...ShippingMethod
+				
+			}
+			shippingMethod {
+				...ShippingMethod
+				
+			}
+			shippingPrice {
+				...Price
+				
+			}
+			lines {
+				...CheckoutLine
+				
+			}
+			isShippingRequired
+			discount {
+				currency
+				amount
+				
+			}
+			discountName
+			translatedDiscountName
+			voucherCode
+			availablePaymentGateways {
+				...PaymentGateway
+				
+			}
+			
+			}
+
+			fragment CheckoutError on CheckoutError {
+			code
+			field
+			message
+			
+			}
+			`;
+
+		try {
+			const billingRes: any = await sendGraphQL(billingMutation, {
+				checkoutId,
+				billingAddress,
+			});
+			if (billingRes.data?.checkoutBillingAddressUpdate?.errors?.length) {
+				billingRes.data.checkoutBillingAddressUpdate.errors.forEach((err: any) =>
+					toast.error(`${err.field || ""}: ${err.message}`)
+				);
+				return;
+			}
+
+			const shippingRes: any = await sendGraphQL(shippingMutation, {
+				checkoutId,
+				shippingAddress,
+			});
+			if (shippingRes.data?.checkoutShippingAddressUpdate?.errors?.length) {
+				shippingRes.data.checkoutShippingAddressUpdate.errors.forEach((err: any) =>
+					toast.error(`${err.field || ""}: ${err.message}`)
+				);
+				return;
+			}
+
+			const shippingMethodsRes: any = await sendGraphQL(availableShippingQuery, {
+				checkoutId,
+			});
+			const shippingMethods = shippingMethodsRes.data?.checkout?.shippingMethods;
+			if (!shippingMethods || shippingMethods.length === 0) {
+				toast.error("No shipping methods available.");
+				return;
+			}
+
+			const shippingMethodId = shippingMethods[0].id;
+
+			const updateShippingMethodRes: any = await sendGraphQL(setShippingMethodMutation, {
+				checkoutId,
+				shippingMethodId,
+			});
+			if (updateShippingMethodRes.data?.checkoutShippingMethodUpdate?.errors?.length) {
+				updateShippingMethodRes.data.checkoutShippingMethodUpdate.errors.forEach((err: any) =>
+					toast.error(`${err.field || ""}: ${err.message}`)
+				);
+				return;
+			}
+
+			router.push("/order");
+		} catch (err) {
+			console.error(err);
+			toast.error("Something went wrong during submission.");
+		}
 	};
+
+
 
 	const [cartItems, setCartItems] = useState<any[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -452,7 +1164,7 @@ export default function CheckoutPage() {
 										/>
 									</div>
 
-									<div className="mb-4">
+									<div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
 										<div>
 											<label htmlFor="state" className="mb-1 block text-sm text-gray-600">
 												States
@@ -467,42 +1179,42 @@ export default function CheckoutPage() {
 													required
 												>
 													<option value="">Select</option>
-													<option value="AN">Andaman and Nicobar Islands</option>
-													<option value="AP">Andhra Pradesh</option>
-													<option value="AR">Arunachal Pradesh</option>
-													<option value="AS">Assam</option>
-													<option value="BR">Bihar</option>
-													<option value="CH">Chandigarh</option>
-													<option value="CT">Chhattisgarh</option>
-													<option value="DN">Dadra and Nagar Haveli and Daman and Diu</option>
-													<option value="DL">Delhi</option>
-													<option value="GA">Goa</option>
-													<option value="GJ">Gujarat</option>
-													<option value="HR">Haryana</option>
-													<option value="HP">Himachal Pradesh</option>
-													<option value="JK">Jammu and Kashmir</option>
-													<option value="JH">Jharkhand</option>
-													<option value="KA">Karnataka</option>
-													<option value="KL">Kerala</option>
-													<option value="LA">Ladakh</option>
-													<option value="LD">Lakshadweep</option>
-													<option value="MP">Madhya Pradesh</option>
-													<option value="MH">Maharashtra</option>
-													<option value="MN">Manipur</option>
-													<option value="ML">Meghalaya</option>
-													<option value="MZ">Mizoram</option>
-													<option value="NL">Nagaland</option>
-													<option value="OR">Odisha</option>
-													<option value="PY">Puducherry</option>
-													<option value="PB">Punjab</option>
-													<option value="RJ">Rajasthan</option>
-													<option value="SK">Sikkim</option>
-													<option value="TN">Tamil Nadu</option>
-													<option value="TS">Telangana</option>
-													<option value="TR">Tripura</option>
-													<option value="UP">Uttar Pradesh</option>
-													<option value="UK">Uttarakhand</option>
-													<option value="WB">West Bengal</option>
+													<option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+													<option value="Andhra Pradesh">Andhra Pradesh</option>
+													<option value="Arunachal Pradesh">Arunachal Pradesh</option>
+													<option value="Assam">Assam</option>
+													<option value="Bihar">Bihar</option>
+													<option value="Chandigarh">Chandigarh</option>
+													<option value="Chhattisgarh">Chhattisgarh</option>
+													<option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+													<option value="Delhi">Delhi</option>
+													<option value="Goa">Goa</option>
+													<option value="Gujarat">Gujarat</option>
+													<option value="Haryana">Haryana</option>
+													<option value="Himachal Pradesh">Himachal Pradesh</option>
+													<option value="Jammu and Kashmir">Jammu and Kashmir</option>
+													<option value="Jharkhand">Jharkhand</option>
+													<option value="Karnataka">Karnataka</option>
+													<option value="Kerala">Kerala</option>
+													<option value="Ladakh">Ladakh</option>
+													<option value="Lakshadweep">Lakshadweep</option>
+													<option value="Madhya Pradesh">Madhya Pradesh</option>
+													<option value="Maharashtra">Maharashtra</option>
+													<option value="Manipur">Manipur</option>
+													<option value="Meghalaya">Meghalaya</option>
+													<option value="Mizoram">Mizoram</option>
+													<option value="Nagaland">Nagaland</option>
+													<option value="Odisha">Odisha</option>
+													<option value="Puducherry">Puducherry</option>
+													<option value="Punjab">Punjab</option>
+													<option value="Rajasthan">Rajasthan</option>
+													<option value="Sikkim">Sikkim</option>
+													<option value="Tamil Nadu">Tamil Nadu</option>
+													<option value="Telangana">Telangana</option>
+													<option value="Tripura">Tripura</option>
+													<option value="Uttar Pradesh">Uttar Pradesh</option>
+													<option value="Uttarakhand">Uttarakhand</option>
+													<option value="West Bengal">West Bengal</option>
 
 												</select>
 												<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
@@ -511,6 +1223,21 @@ export default function CheckoutPage() {
 													</svg>
 												</div>
 											</div>
+										</div>
+										<div>
+											<label htmlFor="postalCode" className="mb-1 block text-sm text-gray-600">
+												Postal Code
+											</label>
+											<input
+												type="tel"
+												id="postalCode"
+												name="postalCode"
+												placeholder="Postal Code"
+												className="w-full rounded border border-gray-300 p-2"
+												value={formData.postalCode}
+												onChange={handleInputChange}
+												required
+											/>
 										</div>
 									</div>
 
@@ -547,7 +1274,7 @@ export default function CheckoutPage() {
 										</div>
 									</div>
 
-									<div className="mb-4">
+									{/* <div className="mb-4">
 										<div className="flex items-center">
 											<input
 												type="checkbox"
@@ -561,7 +1288,7 @@ export default function CheckoutPage() {
 												Ship to a different address
 											</label>
 										</div>
-									</div>
+									</div> */}
 
 									<div className="mb-4">
 										<div className="flex items-center">
@@ -638,7 +1365,7 @@ export default function CheckoutPage() {
 											/>
 										</div>
 
-										<div className="mb-4">
+										{/* <div className="mb-4">
 											<label htmlFor="giftState" className="mb-1 block text-sm text-gray-600">State</label>
 											<select
 												id="giftState"
@@ -652,6 +1379,82 @@ export default function CheckoutPage() {
 												<option value="MH">Maharashtra</option>
 												<option value="GJ">Gujarat</option>
 											</select>
+										</div> */}
+
+										<div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+											<div>
+												<label htmlFor="giftState" className="mb-1 block text-sm text-gray-600">
+													States
+												</label>
+												<div className="relative">
+													<select
+														id="giftState"
+														name="state"
+														className="w-full appearance-none rounded border border-gray-300 p-2 pr-8"
+														value={giftFormData.state}
+														onChange={handleGiftInputChange}
+														required
+													>
+														<option value="">Select</option>
+														<option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+														<option value="Andhra Pradesh">Andhra Pradesh</option>
+														<option value="Arunachal Pradesh">Arunachal Pradesh</option>
+														<option value="Assam">Assam</option>
+														<option value="Bihar">Bihar</option>
+														<option value="Chandigarh">Chandigarh</option>
+														<option value="Chhattisgarh">Chhattisgarh</option>
+														<option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+														<option value="Delhi">Delhi</option>
+														<option value="Goa">Goa</option>
+														<option value="Gujarat">Gujarat</option>
+														<option value="Haryana">Haryana</option>
+														<option value="Himachal Pradesh">Himachal Pradesh</option>
+														<option value="Jammu and Kashmir">Jammu and Kashmir</option>
+														<option value="Jharkhand">Jharkhand</option>
+														<option value="Karnataka">Karnataka</option>
+														<option value="Kerala">Kerala</option>
+														<option value="Ladakh">Ladakh</option>
+														<option value="Lakshadweep">Lakshadweep</option>
+														<option value="Madhya Pradesh">Madhya Pradesh</option>
+														<option value="Maharashtra">Maharashtra</option>
+														<option value="Manipur">Manipur</option>
+														<option value="Meghalaya">Meghalaya</option>
+														<option value="Mizoram">Mizoram</option>
+														<option value="Nagaland">Nagaland</option>
+														<option value="Odisha">Odisha</option>
+														<option value="Puducherry">Puducherry</option>
+														<option value="Punjab">Punjab</option>
+														<option value="Rajasthan">Rajasthan</option>
+														<option value="Sikkim">Sikkim</option>
+														<option value="Tamil Nadu">Tamil Nadu</option>
+														<option value="Telangana">Telangana</option>
+														<option value="Tripura">Tripura</option>
+														<option value="Uttar Pradesh">Uttar Pradesh</option>
+														<option value="Uttarakhand">Uttarakhand</option>
+														<option value="West Bengal">West Bengal</option>
+
+													</select>
+													<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
+														<svg className="h-4 w-4 fill-current text-gray-500" viewBox="0 0 20 20">
+															<path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+														</svg>
+													</div>
+												</div>
+											</div>
+											<div>
+												<label htmlFor="giftPostalCode" className="mb-1 block text-sm text-gray-600">
+													Postal Code
+												</label>
+												<input
+													id="giftPostalCode"
+													name="postalCode"
+													placeholder="Postal Code"
+													className="w-full rounded border border-gray-300 p-2"
+													value={giftFormData.postalCode}
+													onChange={handleGiftInputChange}
+													required
+												/>
+											</div>
 										</div>
 
 										<div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -791,7 +1594,6 @@ export default function CheckoutPage() {
 
 										<button
 											type="submit"
-											onClick={handlePlaceOrder}
 											className="w-full rounded-lg bg-pink-500 py-3 font-medium text-white transition-colors hover:bg-pink-600"
 										>
 											Place Order

@@ -5,6 +5,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { loginAccount } from "@/lib/graphqlClient";
+import { FaFacebook } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
+import toast from "react-hot-toast";
 
 interface TokenCreate {
 	csrfToken: string | null;
@@ -88,6 +91,163 @@ export function LoginForm() {
 		}
 	}
 
+	const handleGoogleLogin = async () => {
+		const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/auth?client_id=336207498941-88eer06tjtvnppqdefc6v5dvoknvn1sl.apps.googleusercontent.com&redirect_uri=http://localhost:3000&response_type=token&scope=email%20profile&prompt=consent`;
+		const authWindow = window.open(GoogleAuthUrl, "_blank", "width=600,height=700");
+
+		const interval = setInterval(() => {
+			try {
+				const redirectedUrl = authWindow?.location.href;
+				if (redirectedUrl && redirectedUrl.includes("access_token")) {
+					const params = new URLSearchParams(redirectedUrl.split("#")[1]);
+					const accessToken = params.get("access_token");
+
+					if (accessToken) {
+						clearInterval(interval);
+						authWindow?.close();
+						loginWithGoogleToken(accessToken);
+					}
+				}
+			} catch (e) {
+			}
+		}, 1000);
+	};
+
+	const loginWithGoogleToken = async (accessToken: string) => {
+		const mutation = `
+			mutation oauthTokenCreate($accessToken: String!, $backend: String!) {
+			oauthTokenCreate(accessToken: $accessToken, backend: $backend) {
+				isNewUser
+				channel
+				status
+				token
+				refreshToken
+				user {
+				id
+				email
+				firstName
+				lastName
+				metadata {
+					key
+					value
+				}
+				}
+			}
+			}
+		`;
+
+		const variables = {
+			accessToken,
+			backend: "google-oauth2",
+		};
+
+		try {
+			const response = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					query: mutation,
+					variables,
+				}),
+			});
+
+			const result: any = await response.json();
+			const oauthData = result?.data?.oauthTokenCreate;
+			if (oauthData) {
+				Cookies.set("token", oauthData.token);
+				Cookies.set("refreshToken", oauthData.refreshToken);
+				toast.success("Login successful!");
+				router.push("/usertype");
+			} else {
+				toast.error("Login failed. Please try again.");
+			}
+		} catch (error) {
+			toast.error("Login failed. Please try again.");
+		}
+	};
+
+	const handleFacebookLogin = async () => {
+		const FacebookAuthUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=1063071115871926&redirect_uri=http://localhost:3000&scope=email,public_profile&response_type=token`;
+		const authWindow = window.open(FacebookAuthUrl, "_blank", "width=600,height=700");
+
+		const interval = setInterval(() => {
+			try {
+				const redirectedUrl = authWindow?.location.href;
+				if (redirectedUrl && redirectedUrl.includes("access_token")) {
+					const params = new URLSearchParams(redirectedUrl.split("#")[1]);
+					const accessToken = params.get("access_token");
+
+					if (accessToken) {
+						clearInterval(interval);
+						authWindow?.close();
+						loginWithFacebookToken(accessToken);
+					}
+				}
+			} catch (e) {
+			}
+		}, 1000);
+	};
+
+	const loginWithFacebookToken = async (accessToken: string) => {
+		const mutation = `
+			mutation oauthTokenCreate($accessToken: String!, $backend: String!) {
+			oauthTokenCreate(accessToken: $accessToken, backend: $backend) {
+				isNewUser
+				channel
+				status
+				token
+				refreshToken
+				user {
+				id
+				email
+				firstName
+				lastName
+				metadata {
+					key
+					value
+				}
+				}
+			}
+			}
+		`;
+
+		const variables = {
+			accessToken,
+			backend: "facebook",
+		};
+
+		try {
+			const response = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					query: mutation,
+					variables,
+				}),
+			});
+
+			const result: any = await response.json();
+			const oauthData = result?.data?.oauthTokenCreate;
+			if (oauthData) {
+				Cookies.set("token", oauthData.token);
+				Cookies.set("refreshToken", oauthData.refreshToken);
+				toast.success("Login successful!");
+				router.push("/usertype");
+			} else {
+				toast.error("Login failed. Please try again.");
+			}
+		} catch (error) {
+			toast.error("Login failed. Please try again.");
+		}
+	};
+
+
+
+
 	return (
 		<div className="mx-auto mt-16 w-full max-w-lg">
 			<form className="rounded-lg border border-[#f0f0f0] bg-white px-6 py-6 shadow-xl" action={handleSubmit}>
@@ -132,6 +292,22 @@ export function LoginForm() {
 				>
 					{loading ? "Logging in..." : "Login"}
 				</button>
+
+				<div className="my-6 text-center w-[85%] mx-auto">
+					<div className="flex items-center justify-center mb-6">
+						<hr className="flex-grow border-t border-gray-300" />
+						<span className="mx-3 text-gray-500 text-sm">Or sign in with</span>
+						<hr className="flex-grow border-t border-gray-300" />
+					</div>
+					<div className="flex justify-center space-x-10">
+						<button className="p-3 border rounded-full" onClick={handleGoogleLogin}>
+							<FcGoogle size={30} />
+						</button>
+						<button className="p-3 border rounded-full text-blue-600" onClick={handleFacebookLogin}>
+							<FaFacebook size={30} />
+						</button>
+					</div>
+				</div>
 
 				<p className="mt-6 text-center text-sm text-[#999]">
 					Don’t have account?{" "}
