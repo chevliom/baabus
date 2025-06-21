@@ -8,7 +8,6 @@ import { HeaderSection } from "@/app/sections/HeaderSection";
 import { FrameByAnima } from "@/app/whishlist/components/FrameByAnima";
 import { useRouter } from "next/navigation";
 
-
 export const ContactUs = (): JSX.Element => {
 	const router = useRouter();
 	return (
