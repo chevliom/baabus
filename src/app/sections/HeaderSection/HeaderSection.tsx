@@ -17,7 +17,7 @@ export const HeaderSection = (): JSX.Element => {
 	const isLoggedIn = Cookies.get("token");
 
 	return (
-		<header className="fixed top-0 left-0 z-50 w-full bg-white shadow-md">
+		<header className="fixed top-0 left-0 z-50 w-full bg-white shadow-md mx-auto">
 			<div className="mx-auto flex h-[95px] max-w-screen-xl items-center justify-between px-4 ">
 				<Link href="/" className="shrink-0">
 					<Image
