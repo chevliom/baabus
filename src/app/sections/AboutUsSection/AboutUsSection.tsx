@@ -34,11 +34,11 @@ export const AboutUsSection = (): JSX.Element => {
 		<section className="relative z-40 ml-6 h-[518px] w-full">
 			{/* Background fill for empty bottom space */}
 			<div className="absolute inset-0 z-0 -ml-6 -mt-20 w-full bg-[#d9e9f7]" />
-			<div className="absolute -left-20 -top-[106px] h-[693px] w-[1608px] rounded-[500px] bg-[url(/rectangle-12-3.svg)] bg-[100%_100%]">
-				<div className="absolute left-[188px] top-72 w-[582px] font-baloo text-[64px] font-extrabold leading-[115%]">
+			<div className="absolute -left-20 -top-[106px] h-[693px] w-[1608px] rounded-[500px] bg-[url(/rectangle-12-3.svg)] bg-[100%_100%] ">
+				<div className="absolute left-[150px] md:left-[188px] top-72 w-[582px] font-baloo text-[20px] md:text-[64px]  font-extrabold leading-[115%]">
 					<span className="text-white">Best </span>
 					<span className="text-[#f8bfd6]">Toys</span>
-					<span className="text-white"> for Your Kids to Play</span>
+					<span className="text-white"> for  Your Kids to Play</span>
 				</div>
 
 				<Button className="absolute left-48 top-[445px] mt-4 rounded-[30px] border-2 border-dashed border-[#e62875] bg-[#fafeaa] hover:bg-[#fafeaa]">
@@ -54,7 +54,7 @@ export const AboutUsSection = (): JSX.Element => {
 					<Image width={61} height={10} className="object-cover" alt="Frame" src="/frame-131267.svg" />
 				</div>
 
-				<div className="absolute left-[877px] top-[165px] h-[458px] w-[643px]">
+				<div className="absolute left-[300px] w-[200px] md:left-[877px] top-[165px] h-[458px] md:w-[643px]">
 					<div className="absolute left-4 top-80 z-10 h-[31px] w-[33px]">
 						<Image width={33} height={31} className="object-cover" alt="cat image" src="/cat.png" />
 					</div>
