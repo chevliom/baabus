@@ -62,8 +62,8 @@ export const MainContentSection = (): JSX.Element => {
 	return (
 		<section className="relative w-full overflow-hidden bg-white pt-16">
 			{/* Title */}
-			<div className="mb-12">
-				<h2 className="text-center text-6xl font-bold">
+			<div className="md:mb-8 lg:mb-12">
+				<h2 className="text-center md:text-4xl lg:text-6xl font-bold">
 					<span className="text-blue-500">Kids</span>
 					<span className="text-pink-500"> Gallery</span>
 				</h2>

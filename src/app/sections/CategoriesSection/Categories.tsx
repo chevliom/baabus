@@ -87,7 +87,7 @@ export const Categories: React.FC = () => {
 	);
 
 	return (
-		<div className="relative -mt-8 overflow-hidden bg-[#d9e9f7] pb-40 pt-20">
+		<div className="relative -mt-8 overflow-hidden bg-[#d9e9f7] md:pb-30 lg:pb-40 pt-20">
 			<div className="absolute bottom-10 left-10 z-40 mb-3 hidden opacity-70 sm:block">
 				<img src="./image-16-1.png" alt="Baby shoes" className="h-24 w-24 object-contain" />
 			</div>
@@ -96,8 +96,8 @@ export const Categories: React.FC = () => {
 				<img src="./image-16.png" alt="Pacifier" className="h-16 w-16 object-contain" />
 			</div>
 
-			<div className="container mx-auto px-4 py-8">
-				<h2 className="mb-12 text-center font-baloo text-5xl font-extrabold text-pink-600">Categories</h2>
+			<div className="container mx-auto lg:px-4 lg:py-8">
+				<h2 className="md:mb-4 md:mt-6 md:text-[30px] lg:mb-12 text-center font-baloo text-5xl font-extrabold text-pink-600">Categories</h2>
 				{!loading ? (<>
 					<div className="relative flex items-center">
 						<img
@@ -117,7 +117,7 @@ export const Categories: React.FC = () => {
 
 						<div
 							ref={scrollRef}
-							className="-ml-6 flex overflow-x-auto px-10 py-8"
+							className="md:-ml-10 lg:-ml-6 flex overflow-x-auto md:px-5 md:py-4 lg:px-10 lg:py-8"
 							onScroll={handleScroll}
 							style={{
 								scrollbarWidth: "none",

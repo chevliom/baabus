@@ -146,7 +146,7 @@ export const FooterSection = (): JSX.Element => {
 	const starRatings = [0, 1, 2, 3, 4]; // 5 stars
 
 	return (
-		<section className="w-full overflow-hidden py-16">
+		<section className="md:hidden lg:block w-full overflow-hidden py-16">
 			<div className="container mx-auto px-4">
 				<h1 className="mb-12 text-left text-5xl leading-tight md:text-6xl lg:text-[70px]">
 					<span className="font-baloo font-extrabold text-black">What </span>

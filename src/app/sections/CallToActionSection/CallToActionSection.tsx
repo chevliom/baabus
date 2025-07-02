@@ -38,10 +38,10 @@ export const CallToActionSection = (): JSX.Element => {
 	];
 
 	return (
-		<section className="relative mx-auto w-full max-w-[1396px] pb-20 pt-8">
+		<section className="relative mx-auto w-full max-w-[1396px] md:pb-16 lg:pb-20 pt-8 md:pl-4 md:pr-4">
 			<div className="mb-12">
 				<p className="font-baloo text-2xl font-extrabold text-[#ea518f]">Our Products</p>
-				<h2 className="mt-2 font-baloo text-5xl font-extrabold">
+				<h2 className="mt-2 font-baloo md:text-3xl lg:text-5xl font-extrabold">
 					<span className="text-[#ea518f]">Our </span>
 					<span className="text-[#5398d9]">Best Sellers</span>
 					<span className="text-[#ea518f]"> Products</span>
@@ -49,13 +49,13 @@ export const CallToActionSection = (): JSX.Element => {
 			</div>
 
 			<div className="relative w-full">
-				<div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+				<div className="grid grid-cols-1 gap-5 md:grid-cols-3 lg:grid-cols-3">
 					{products.map((product, index) => (
 						<div
 							key={product.id}
 							className={`relative h-[433px] w-full ${index === 1 ? "mt-10 lg:mt-20" : "mt-0"}`}
 						>
-							<Card className="h-[394px] w-full border-0 shadow-none">
+							<Card className="md:h-[96%] lg:h-[394px] w-full border-0 shadow-none">
 								<CardContent className="relative p-0">
 									<div className="relative h-[358px] w-full overflow-hidden">
 										<div className="pointer-events-none absolute inset-0 z-0">
@@ -93,10 +93,10 @@ export const CallToActionSection = (): JSX.Element => {
 											/>
 										</button>
 									</div>
-									<h3 className="mt-2 font-baloo text-2xl font-extrabold text-black">{product.name}</h3>
+									<h3 className="mt-2 font-baloo md:text-[18px] lg:text-2xl font-extrabold text-black">{product.name}</h3>
 								</CardContent>
 							</Card>
-							<p className="mt-1 font-baloo text-2xl font-extrabold text-black">{product.price}</p>
+							<p className="mt-1 font-baloo md:text-[18px] lg:text-2xl font-extrabold text-black">{product.price}</p>
 						</div>
 					))}
 				</div>
@@ -104,7 +104,7 @@ export const CallToActionSection = (): JSX.Element => {
 				<div className="absolute right-0 -mt-24 h-[200px] w-[290px]">
 					<div className="h-full w-full" style={{ transform: "scaleX(-1)" }}>
 						<Image
-							className="object-cover"
+							className="object-cover md:w-[200px]"
 							alt="Decorative image (mirrored)"
 							src="/image-44-3.png"
 							width={290}

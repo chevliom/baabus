@@ -4,7 +4,7 @@ import { Card, CardContent } from "../../ui/card";
 
 export const TestimonialsSection = (): JSX.Element => {
 	return (
-		<div className="flex w-full justify-center py-8">
+		<div className="flex w-full justify-center py-8 md:px-4">
 			<div className="flex max-w-full gap-6">
 				{/* Blog-style Promo (Right Side) */}
 				<Card className="relative h-[369px] w-[850px] overflow-hidden rounded-[20px] bg-[#61ab59]">
@@ -12,12 +12,12 @@ export const TestimonialsSection = (): JSX.Element => {
 						<div className="flex w-full flex-row">
 							{/* Left Text Block */}
 							<div className="flex max-w-[910px] flex-col justify-center">
-								<h2 className="font-fredoka  z-10 mb-6 text-[56px] leading-[64px] text-white">
+								<h2 className="font-fredoka  z-10 mb-6 md:text-[22px] lg:text-[56px] md:leading-[30px] lg:leading-[64px] text-white">
 									Make Every Day a<br /> Toys Adventure foe
 									<br /> Your Little Explorers!
 								</h2>
 
-								<Button className="mt-2 flex w-fit items-center gap-[9px] rounded-[30px] bg-[#ffca24] px-4 py-2.5 text-black hover:bg-[#ffca24]/90">
+								<Button className="mt-2 flex w-fit items-center gap-[9px] rounded-[30px] bg-[#ffca24] px-4 md:py-[13px] lg:py-2.5 text-black hover:bg-[#ffca24]/90">
 									<span className="font-fredoka z-10 text-xl leading-[32px]">READ BLOG</span>
 									<div className="flex h-[29px] w-[35px] items-center justify-center rounded-[17.5px/14.5px] bg-[#5c0047]">
 										<svg
@@ -58,7 +58,7 @@ export const TestimonialsSection = (): JSX.Element => {
 							</div>
 						</div>
 
-						<img className="absolute right-0 top-0 h-full w-auto" alt="Line" src="/line-4.svg" />
+						<img className="absolute right-0 md:top-[20px] lg:top-0 h-full w-auto" alt="Line" src="/line-4.svg" />
 					</CardContent>
 				</Card>
 				{/* Testimonial-style Promo (Left Side) */}
@@ -70,7 +70,7 @@ export const TestimonialsSection = (): JSX.Element => {
 							src="/line-5.svg"
 						/>
 
-						<div className="font-fredoka absolute left-[25px] top-[26px] w-[359px] text-[64px] leading-[70px] tracking-[0]">
+						<div className="font-fredoka absolute left-[25px] top-[26px] md:w-[250px] lg:w-[359px] md:text-[35px] lg:text-[64px] md:leading-[34px] lg:leading-[70px] tracking-[0]">
 							<span className="text-white">Get </span>
 							<span className="text-[#ffca24]">20% </span>
 							<span className="text-white">off with code </span>
@@ -82,7 +82,7 @@ export const TestimonialsSection = (): JSX.Element => {
 						</div>
 
 						<img
-							className="absolute left-72 top-[104px] h-[231px] w-[200px] object-cover"
+							className="absolute md:left-[150px]  lg:left-72 top-[104px] h-[231px] w-[200px] object-cover"
 							alt="Product image"
 							src="/image-58.png"
 						/>

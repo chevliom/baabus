@@ -5,9 +5,9 @@ export const FeaturesSection = (): JSX.Element => {
 	const categories = ["Swing Car", "Kick Scooter", "Baby Walker", "Xylophone", "Water Bottle", "Rise Tower"];
 
 	return (
-		<footer className="relative min-h-[500px] bg-[url('/image-60-0.png')] bg-cover bg-center bg-no-repeat pb-80">
+		<footer className="relative md:min-h-[300px] lg:min-h-[500px] bg-[url('/image-60-0.png')] bg-cover bg-center bg-no-repeat pb-80">
 			<div className="container mx-auto px-4">
-				<div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+				<div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
 					{/* Company Info Section */}
 
 					<div className="mt-28 flex h-full flex-col justify-between">
@@ -23,7 +23,7 @@ export const FeaturesSection = (): JSX.Element => {
 						</p>
 					</div>
 					{/* Categories Section */}
-					<div className="ml-40 mt-44 flex h-full flex-col justify-between">
+					<div className="md:ml-20 md:mt-28 lg:ml-40 lg:mt-44 flex h-full flex-col justify-between">
 						<div>
 							<h3 className="font-poppins mb-6 text-2xl font-semibold text-[#36061a]">Our Category</h3>
 							<ul className="font-poppins text-base leading-8 text-black">

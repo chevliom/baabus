@@ -103,7 +103,7 @@ export const NewsletterSection = (): JSX.Element => {
 				<div className="grid grid-cols-1 justify-items-center gap-6 sm:grid-cols-2">
 					{productCards.map((product) => {
 						const isPink = product.bgColor === "bg-[#fce6ec]";
-						const cardSize = isPink ? "w-[360px] h-[400px]" : "w-[400px] h-[500px]";
+						const cardSize = isPink ? "md:w-[350px] md:h-[300px] lg:w-[360px] lg:h-[400px]" : "md:w-[350px] md:h-[400px] lg:w-[400px] lg:h-[500px]";
 						const secondRow = product.id === 4 ? "-mt-24" : "";
 
 						return (
@@ -113,13 +113,13 @@ export const NewsletterSection = (): JSX.Element => {
 							>
 								<CardContent className="relative h-full w-full p-0">
 									<div
-										className="absolute left-4 top-4 text-[22px] leading-tight sm:text-[26px]"
+										className="absolute left-4 top-4 md:text-[24px] leading-tight lg:text-[26px]"
 										style={{ color: product.titleColor }}
 									>
 										{product.title}
 									</div>
 									<img
-										className="absolute left-[20px] top-[60px] h-[300px] w-[300px] object-contain"
+										className="absolute left-[20px] top-[60px] md:h-[230px] md:w-[230px] lg:h-[300px] lg:w-[300px] object-contain"
 										alt="Main product"
 										src={product.mainImage}
 									/>
@@ -129,7 +129,7 @@ export const NewsletterSection = (): JSX.Element => {
 										src={product.secondaryImage}
 									/>
 									<Button
-										className="font-baloo absolute bottom-[25px] left-[24px] h-[67px] w-[168px] rounded-[20px] text-xl font-extrabold text-white"
+										className="font-baloo absolute bottom-[25px] left-[24px] md:h-[40px] md:w-[140px] lg:h-[67px] lg:w-[168px] rounded-[20px] text-xl font-extrabold text-white"
 										style={{ backgroundColor: product.buttonColor }}
 									>
 										Shop Now!
