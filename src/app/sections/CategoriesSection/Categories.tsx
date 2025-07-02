@@ -78,8 +78,8 @@ export const Categories: React.FC = () => {
 			className="mx-2 flex flex-col items-center transition-transform duration-300 hover:scale-105 cursor-pointer"
 		>
 			<div className="mb-3 rounded-full border-2 border-dashed border-pink-400 p-1">
-				<div className="flex h-32 w-32 items-center justify-center overflow-hidden rounded-full bg-white sm:h-40 sm:w-40">
-					<img src={image} alt={alt} className="h-28 w-28 object-contain sm:h-36 sm:w-36" />
+				<div className="flex h-32 w-32 items-center justify-center overflow-hidden rounded-full bg-white h-40 w-40">
+					<img src={image} alt={alt} className="h-28 w-28 object-contain h-36 w-36" />
 				</div>
 			</div>
 			<h3 className="font-baloo text-xl font-extrabold text-blue-400">{name}</h3>
@@ -88,11 +88,11 @@ export const Categories: React.FC = () => {
 
 	return (
 		<div className="relative -mt-8 overflow-hidden bg-[#d9e9f7] md:pb-30 lg:pb-40 pt-20">
-			<div className="absolute bottom-10 left-10 z-40 mb-3 hidden opacity-70 sm:block">
+			<div className="absolute bottom-10 left-10 z-40 mb-3 hidden opacity-70 block">
 				<img src="./image-16-1.png" alt="Baby shoes" className="h-24 w-24 object-contain" />
 			</div>
 
-			<div className="absolute right-10 top-10 hidden opacity-70 sm:block">
+			<div className="absolute right-10 top-10 hidden opacity-70 block">
 				<img src="./image-16.png" alt="Pacifier" className="h-16 w-16 object-contain" />
 			</div>
 
@@ -103,7 +103,7 @@ export const Categories: React.FC = () => {
 						<img
 							src="/image-7-1.png"
 							alt="Decoration Left"
-							className="z-10 hidden h-32 w-32 object-contain sm:block"
+							className="z-10 hidden h-32 w-32 object-contain block"
 						/>
 						<button
 							onClick={() => scroll("left")}
@@ -155,7 +155,7 @@ export const Categories: React.FC = () => {
 						<img
 							src="/image-7-1.png"
 							alt="Decoration Right"
-							className="z-10 ml-2 hidden h-32 w-32 object-contain sm:block"
+							className="z-10 ml-2 hidden h-32 w-32 object-contain block"
 						/>
 					</div>
 				</>) :
