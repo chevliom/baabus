@@ -34,14 +34,14 @@ export const AboutUsSection = (): JSX.Element => {
 		<section className="relative z-40 ml-6 h-[518px] w-full">
 			{/* Background fill for empty bottom space */}
 			<div className="absolute inset-0 z-0 -ml-6 -mt-20 w-full bg-[#d9e9f7]" />
-			<div className="absolute -left-20 -top-[106px] h-[693px] w-[1608px] rounded-[500px] bg-[url(/rectangle-12-3.svg)] bg-[100%_100%] ">
-				<div className="absolute left-[90px] md:left-[163px] lg:left-[188px] top-72 w-[222px] md:w-[222px] lg:w-[582px] font-baloo text-[20px] md:text-[25px] lg:text-[64px]  font-extrabold leading-[115%]">
+			<div className="absolute -left-20 -top-[106px] h-[573px] md:h-[693px] w-[1608px] rounded-[500px] bg-[url(/rectangle-12-3.svg)] bg-[100%_100%] ">
+				<div className="absolute left-[78px] md:left-[163px] lg:left-[188px] top-72 w-[182px] md:w-[222px] lg:w-[582px] font-baloo text-[20px] md:text-[25px] lg:text-[64px]  font-extrabold leading-[115%]">
 					<span className="text-white">Best </span>
 					<span className="text-[#f8bfd6]">Toys</span>
 					<span className="text-white"> for  Your Kids to Play</span>
 				</div>
 
-				<Button className="absolute left-[90px] md:left-[165px] top-[330px] md:top-[390px] lg:left-48 lg:top-[445px] mt-4 rounded-[30px] border-2 border-dashed border-[#e62875] bg-[#fafeaa] hover:bg-[#fafeaa]">
+				<Button className="absolute left-[78px] md:left-[165px] top-[330px] md:top-[390px] lg:left-48 lg:top-[445px] mt-4 rounded-[30px] border-2 border-dashed border-[#e62875] bg-[#fafeaa] hover:bg-[#fafeaa]">
 					<span
 						className="text-primary-500 font-baloo text-[10px] md:text-xl font-extrabold leading-[23px] "
 						style={{ color: "rgba(230, 40, 117, 1)" }}
@@ -79,13 +79,15 @@ export const AboutUsSection = (): JSX.Element => {
 							height={458}
 							className="rotate-0 lg:rotate-8 h-full w-full transform object-cover hidden md:block"
 						/>
-
+					</div>
+					<div
+						className="absolute left-0 top-[70px] md:top-0 h-auto md:h-[100%] w-[100%] md:w-[67%]  lg:h-[458px] lg:w-[621px] overflow-hidden" >
 						<Image
 							src="/image-res.png"
 							alt="Blob girl"
 							width={621}
 							height={458}
-							className="rotate-0 lg:rotate-8 h-full w-full transform object-none block md:hidden"
+							className="rotate-0 lg:rotate-8 h-[120px] w-full md:h-full md:w-full transform object-contain block md:hidden"
 						/>
 					</div>
 				</div>
@@ -94,7 +96,7 @@ export const AboutUsSection = (): JSX.Element => {
 					<Image width={74} height={76} className="object-cover" alt="Toy decoration" src="/image-20.png" />
 				</div>
 
-				<div className="absolute left-[75px] md:left-[145px] top-[217px] md:top-[217px] lg:left-[175px] lg:top-[217px] h-[69px] w-[168px] lg:w-[228px]">
+				<div className="absolute left-[65px] md:left-[145px] top-[217px] md:top-[217px] lg:left-[175px] lg:top-[217px] h-[69px] w-[168px] md:w-[228px]">
 					<div className="relative h-[69px]">
 						<div className="absolute left-[13px] top-[11px] h-[41px] md:h-[51px] w-[130px] md:w-52 rounded-[10px] bg-[#123453]" />
 

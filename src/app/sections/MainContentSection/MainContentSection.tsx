@@ -60,15 +60,15 @@ export const MainContentSection = (): JSX.Element => {
 	};
 
 	return (
-		<section className="relative w-full overflow-hidden bg-white pt-16">
+		<section className="relative w-full overflow-hidden bg-white pt-10 md:pt-16">
 			{/* Title */}
 			<div className="md:mb-8 lg:mb-12">
-				<h2 className="text-center md:text-4xl lg:text-6xl font-bold">
+				<h2 className="text-center text-[24px] md:text-4xl lg:text-6xl font-bold">
 					<span className="text-blue-500">Kids</span>
 					<span className="text-pink-500"> Gallery</span>
 				</h2>
 				<div className="mt-1 flex justify-center">
-					<div className="w-72 border-b-4 border-dotted border-pink-500"></div>
+					<div className="w-40 md:w-72 border-b-4 border-dotted border-pink-500"></div>
 				</div>
 			</div>
 

@@ -58,11 +58,11 @@ export const TestimonialsSection = (): JSX.Element => {
 							</div>
 						</div>
 
-						<img className="absolute right-0 md:top-[20px] lg:top-0 h-full w-auto" alt="Line" src="/line-4.svg" />
+						<img className="absolute top-[40px] right-0 md:top-[20px] lg:top-0 h-full w-auto" alt="Line" src="/line-4.svg" />
 					</CardContent>
 				</Card>
 				{/* Testimonial-style Promo (Left Side) */}
-				<Card className="relative h-[369px] w-[553px] overflow-hidden rounded-[20px] border-none bg-[#498aca]">
+				<Card className="hidden md:block relative h-[369px] w-[553px] overflow-hidden rounded-[20px] border-none bg-[#498aca]">
 					<CardContent className="p-0">
 						<img
 							className="absolute left-[59px] top-[38px] h-[331px] w-[395px]"

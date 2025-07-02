@@ -5,14 +5,15 @@ export const FeaturesSection = (): JSX.Element => {
 	const categories = ["Swing Car", "Kick Scooter", "Baby Walker", "Xylophone", "Water Bottle", "Rise Tower"];
 
 	return (
-		<footer className="relative md:min-h-[300px] lg:min-h-[500px] bg-[url('/image-60-0.png')] bg-cover bg-center bg-no-repeat pb-80">
+
+		<footer className="relative min-h-[200px] md:min-h-[300px] lg:min-h-[500px] bg-[url('/image-60-0.png')] bg-cover bg-center bg-no-repeat pb-40 md:pb-80">
 			<div className="container mx-auto px-4">
 				<div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
 					{/* Company Info Section */}
 
-					<div className="mt-28 flex h-full flex-col justify-between">
+					<div className="mt-4 md:mt-28 flex h-full flex-col justify-between">
 						<img className="mb-8 h-[107px] w-[276px] object-cover" alt="Baabus Logo" src="/image-60.png" />
-						<p className="font-poppins -mt-8 mb-12 max-w-xl text-base text-[#0a1f32]">
+						<p className="font-poppins -mt-2 md:-mt-8 mb-12 max-w-xl text-base text-[#0a1f32]">
 							At BAABUS we are a leading innovator in the children&rsquo;s toys and accessories market,
 							dedicated to bringing joy, creativity, and quality to families around the world. Since our
 							inception, we have been committed to developing products that combine fun, safety, and
@@ -35,7 +36,7 @@ export const FeaturesSection = (): JSX.Element => {
 					</div>
 
 					{/* Contact Section */}
-					<div className="mt-44 flex h-full flex-col justify-between">
+					<div className="mt-4 md:mt-44 flex h-full flex-col justify-between">
 						<div>
 							<h3 className="font-poppins mb-6 text-2xl font-semibold text-[#36061a]">Contact Us</h3>
 							<address className="font-poppins text-base not-italic leading-8 text-black">
