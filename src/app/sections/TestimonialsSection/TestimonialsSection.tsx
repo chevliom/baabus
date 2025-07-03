@@ -7,9 +7,9 @@ export const TestimonialsSection = (): JSX.Element => {
 		<div className="flex w-full justify-center py-8 md:px-4">
 			<div className="flex max-w-full gap-6">
 				{/* Blog-style Promo (Right Side) */}
-				<Card className="relative h-[369px] w-[850px] overflow-hidden rounded-[20px] bg-[#61ab59]">
+				<Card className="relative h-[200px] md:h-[369px] w-[380px] md:w-[850px] overflow-hidden rounded-[20px] bg-[#61ab59]">
 					<CardContent className="flex h-full items-center p-0 px-6">
-						<div className="flex w-full flex-row">
+						<div className="flex w-full flex-row justify-center">
 							{/* Left Text Block */}
 							<div className="flex max-w-[910px] flex-col justify-center">
 								<h2 className="font-fredoka  z-10 mb-6 md:text-[22px] lg:text-[56px] md:leading-[30px] lg:leading-[64px] text-white">
@@ -53,12 +53,12 @@ export const TestimonialsSection = (): JSX.Element => {
 							</div>
 
 							{/* Right Image */}
-							<div className="z-10 ml-auto">
-								<img className="h-[319px] object-cover" alt="Toy image" src="/image-59.png" />
+							<div className="z-10 md:ml-auto">
+								<img className="h-[170px] md:h-[319px] object-cover" alt="Toy image" src="/image-59.png" />
 							</div>
 						</div>
 
-						<img className="absolute top-[40px] right-0 md:top-[20px] lg:top-0 h-full w-auto" alt="Line" src="/line-4.svg" />
+						<img className="absolute h-[100%] top-[40px] right-0 md:top-[20px] lg:top-0 md:h-full w-auto" alt="Line" src="/line-4.svg" />
 					</CardContent>
 				</Card>
 				{/* Testimonial-style Promo (Left Side) */}

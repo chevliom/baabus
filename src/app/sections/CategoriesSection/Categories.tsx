@@ -34,16 +34,16 @@ const CategoryItem = memo(
 			className="mx-2 flex cursor-pointer flex-col items-center transition-transform duration-300 hover:scale-105"
 		>
 			<div className="mb-3 rounded-full border-2 border-dashed border-pink-400 p-1">
-				<div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-white sm:h-28 sm:w-28 md:h-40 md:w-40">
+				<div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-white sm:h-28 sm:w-28 md:h-40 md:w-40">
 					<img
 						src={image}
 						alt={alt}
 						loading="lazy"
-						className="h-18 w-18 object-contain sm:h-24 sm:w-24 md:h-36 md:w-36"
+						className="h-16 w-16 object-contain sm:h-24 sm:w-24 md:h-36 md:w-36"
 					/>
 				</div>
 			</div>
-			<h3 className="font-baloo text-base font-extrabold text-blue-400 sm:text-lg md:text-xl">
+			<h3 className="font-baloo lg:text-base font-extrabold text-blue-400 text-[12px] sm:text-lg md:text-xl">
 				{name}
 			</h3>
 		</div>

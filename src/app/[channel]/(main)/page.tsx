@@ -83,7 +83,7 @@ export default function HomePage() {
 
 			<TestimonialsSection />
 
-			<div className="w-full py-8">
+			<div className="w-full py-8 px-4">
 				<div className="mx-auto max-w-[1362px]">
 					<div className="flex flex-wrap justify-between">
 						{footerLinks.map((link) => (

@@ -39,7 +39,7 @@ export const CallToActionSection = (): JSX.Element => {
 
 	return (
 		<section className="relative mx-auto w-full max-w-[1396px] pl-4 pr-4 md:pb-16 lg:pb-20 pt-8 md:pl-4 md:pr-4">
-			<div className="mb-12">
+			<div className="mb-4 lg:mb-12">
 				<p className="font-baloo text-2xl font-extrabold text-[#ea518f]">Our Products</p>
 				<h2 className="mt-0 md:mt-2 font-baloo md:text-3xl lg:text-5xl font-extrabold">
 					<span className="text-[#ea518f]">Our </span>
@@ -57,7 +57,7 @@ export const CallToActionSection = (): JSX.Element => {
 						>
 							<Card className="h-[154px] md:h-[96%] lg:h-[394px] w-full border-0 shadow-none">
 								<CardContent className="relative p-0">
-									<div className="relative h-[110px] md:h-[358px] w-full overflow-hidden">
+									<div className="relative h-[110px] md:h-[358px] w-full overflow-hidden shadow-lg rounded-xl mb-[10px]">
 										<div className="pointer-events-none absolute inset-0 z-0">
 											<Image
 												className="rounded-xl object-cover"
@@ -101,7 +101,7 @@ export const CallToActionSection = (): JSX.Element => {
 					))}
 				</div>
 
-				<div className="absolute right-0 -mt-14 md:-mt-24 h-[110px] w-[110px] md:h-[200px] md:w-[290px]">
+				<div className="absolute right-0 -mt-[20px] md:-mt-24 h-[110px] w-[110px] md:h-[200px] md:w-[290px]">
 					<div className="h-full w-full" style={{ transform: "scaleX(-1)" }}>
 						<Image
 							className="object-cover w-[100px] md:w-[200px]"
@@ -113,7 +113,7 @@ export const CallToActionSection = (): JSX.Element => {
 					</div>
 				</div>
 
-				<div className="mt-12 flex justify-center">
+				<div className="mt-4 md:mt-12 flex justify-center">
 					<Button
 						style={{
 							backgroundColor: "rgba(248, 191, 214, 1)",

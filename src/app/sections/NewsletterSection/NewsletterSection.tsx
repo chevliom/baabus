@@ -103,7 +103,7 @@ export const NewsletterSection = (): JSX.Element => {
 				<div className="grid grid-cols-2 justify-items-center gap-6 sm:grid-cols-2">
 					{productCards.map((product) => {
 						const isPink = product.bgColor === "bg-[#fce6ec]";
-						const cardSize = isPink ? "w-[175px] h-[230px] sm:w-[200px] sm:h-[230px] md:w-[350px] md:h-[300px] lg:w-[360px] lg:h-[400px]" : "w-[180px] h-[320px] sm:w-[200px]  sm:h-[320px] md:w-[350px] md:h-[400px] lg:w-[400px] lg:h-[500px]";
+						const cardSize = isPink ? "w-full h-[230px] md:w-[350px] md:h-[300px] lg:w-[360px] lg:h-[400px]" : "w-full h-[320px] md:w-[350px] md:h-[400px] lg:w-[400px] lg:h-[500px]";
 						const secondRow = product.id === 4 ? "-mt-24" : "";
 
 						return (
