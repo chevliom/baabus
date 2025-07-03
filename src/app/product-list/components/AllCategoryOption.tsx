@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/ui/Accordion";
 import { Checkbox } from "@/ui/Checkbox";
@@ -29,13 +29,24 @@ const ResultCount = () => {
 };
 
 export const AllCategoryOption = (): JSX.Element => {
+	// ⭐️ State to track selected rating checkboxes
+	const [selectedRatings, setSelectedRatings] = useState<string[]>(["4.0"]);
+	// ⭐️ State to track price range
+	const [priceRange, setPriceRange] = useState({ min: 50, max: 1500 });
+
 	const ratingOptions = [
-		{ value: "5.0", label: "5.0", checked: false },
-		{ value: "4.0", label: "4.0 & up", checked: true },
-		{ value: "3.0", label: "3.0 & up", checked: false },
-		{ value: "2.0", label: "2.0 & up", checked: false },
-		{ value: "1.0", label: "1.0 & up", checked: false },
+		{ value: "5.0", label: "5.0" },
+		{ value: "4.0", label: "4.0 & up" },
+		{ value: "3.0", label: "3.0 & up" },
+		{ value: "2.0", label: "2.0 & up" },
+		{ value: "1.0", label: "1.0 & up" },
 	];
+
+	const handleRatingChange = (value: string) => {
+		setSelectedRatings((prev) =>
+			prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+		);
+	};
 
 	return (
 		<CategoryProvider>
@@ -45,7 +56,6 @@ export const AllCategoryOption = (): JSX.Element => {
 					<h1 className="absolute left-1/2 top-8 -translate-x-1/2 transform text-4xl font-normal text-[#ea518f] [font-family:'Baloo',Helvetica] sm:text-8xl">
 						Category
 					</h1>
-
 					<Image
 						className="absolute left-4 top-0 h-auto w-28 object-cover sm:w-40"
 						alt="Decorative left"
@@ -66,11 +76,13 @@ export const AllCategoryOption = (): JSX.Element => {
 				<div className="flex flex-col px-4 sm:flex-row sm:gap-6">
 					<div className="mt-8 w-full sm:w-[242px]">
 						<AllCategoriesByAnima1 />
+						{/* Price Filter */}
 						<Accordion type="single" collapsible className="w-full">
 							<AccordionItem value="price" className="border-b-0 border-t border-[#E5E5E5]">
 								<AccordionTrigger className="py-5 text-lg font-medium text-[#1A1A1A]">Price</AccordionTrigger>
 								<AccordionContent className="pb-6">
 									<div className="relative mb-4 h-[18px] w-full">
+										{/* Static placeholder slider UI */}
 										<div className="absolute left-0 top-[6px] h-[6px] w-full rounded-full border border-[#EA518F] bg-[#F2F2F2]" />
 										<div className="absolute left-[33px] top-[6px] h-[6px] w-[155px] rounded-full bg-[#EA518F]" />
 										<div className="absolute left-[26px] top-0 h-[18px] w-[14px] rounded-full border-2 border-[#EA518F] bg-white" />
@@ -78,7 +90,9 @@ export const AllCategoryOption = (): JSX.Element => {
 									</div>
 									<div className="text-sm text-[#4C4C4C]">
 										Price:
-										<span className="ml-1 font-medium text-[#191919]">50 — 1,500</span>
+										<span className="ml-1 font-medium text-[#191919]">
+											{priceRange.min} — {priceRange.max}
+										</span>
 									</div>
 								</AccordionContent>
 							</AccordionItem>
@@ -91,47 +105,48 @@ export const AllCategoryOption = (): JSX.Element => {
 									Rating
 								</AccordionTrigger>
 								<AccordionContent>
-									{ratingOptions.map((option, index) => (
-										<div
-											key={option.value}
-											className={`flex items-center gap-2 py-2.5 ${index === ratingOptions.length - 1 ? "pb-6" : ""
-												}`}
-										>
-											{option.checked ? (
+									{ratingOptions.map((option, index) => {
+										const isChecked = selectedRatings.includes(option.value);
+										return (
+											<div
+												key={option.value}
+												className={`flex items-center gap-2 py-2.5 ${index === ratingOptions.length - 1 ? "pb-6" : ""
+													}`}
+											>
 												<Checkbox
 													id={`rating-${option.value}`}
-													checked={option.checked}
+													checked={isChecked}
+													onChange={() => handleRatingChange(option.value)}
 													className="h-5 w-5 rounded-[3px] border data-[state=checked]:bg-[#00B207] data-[state=unchecked]:bg-white"
 												/>
-											) : (
-												<div className="h-5 w-5 rounded-[3px] border border-[#CCCCCC] bg-white" />
-											)}
 
-											<div className="flex items-center gap-2">
-												{Array.from({ length: 5 }, (_, i) => (
-													<Image
-														key={i}
-														src="/star-6.svg"
-														alt="Star"
-														width={15}
-														height={14}
-														className="h-[14px] w-[15px]"
-													/>
-												))}
-												<label
-													htmlFor={`rating-${option.value}`}
-													className="cursor-pointer text-sm text-[#1A1A1A]"
-												>
-													{option.label}
-												</label>
+												<div className="flex items-center gap-2">
+													{Array.from({ length: 5 }, (_, i) => (
+														<Image
+															key={i}
+															src="/star-6.svg"
+															alt="Star"
+															width={15}
+															height={14}
+															className="h-[14px] w-[15px]"
+														/>
+													))}
+													<label
+														htmlFor={`rating-${option.value}`}
+														className="cursor-pointer text-sm text-[#1A1A1A]"
+													>
+														{option.label}
+													</label>
+												</div>
 											</div>
-										</div>
-									))}
+										);
+									})}
 								</AccordionContent>
 							</AccordionItem>
 						</Accordion>
 					</div>
 					<div className="mt-6 flex-1">
+						{/* 🟢 You can use selectedRatings and priceRange here to filter products */}
 						<ResultCount />
 						<FrameByAnima />
 					</div>

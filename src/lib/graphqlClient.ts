@@ -208,7 +208,11 @@ export async function fetchCategoriesWithProducts(channel = "default-channel") {
 					alt
 					url
 					}
-					products(first: 5, channel: $channel) {
+					products(
+						channel: "default-channel"
+						first: 10
+						filter: {price: {gte: 9, lte: 900}, categories: "Q2F0ZWdvcnk6Mg=="}	
+					) {
 					edges {
 						node {
 						id
@@ -593,13 +597,12 @@ export async function uploadDocuments({
 	});
 }
 
-
 export async function fetchMe() {
 	const response = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			"Authorization": Cookies.get("Token") || ""
+			Authorization: Cookies.get("Token") || "",
 		},
 		body: JSON.stringify({
 			query: `
@@ -640,14 +643,10 @@ export async function fetchMe() {
 				}
 			}
 		}
-	  `
+	  `,
 		}),
 	});
 
 	const json = (await response.json()) as ProductResponse;
 	return json.data ?? null;
 }
-
-
-
-
