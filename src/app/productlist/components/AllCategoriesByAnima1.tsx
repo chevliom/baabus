@@ -293,7 +293,7 @@ export const FrameByAnima = () => {
 
 	return (
 		<div className="mt-6 flex-1">
-			<div className="grid gap-6 sm:grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+			<div className="grid gap-6 grid-cols-2 sm:grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
 				{products.map((product) => (
 					<Link
 						href={`/productview?id=${product.id}`}
@@ -310,10 +310,7 @@ export const FrameByAnima = () => {
 									height={400}
 									className="max-h-[180px] object-contain"
 								/>
-								<HeartIcon
-									size={26}
-									className="absolute top-3 right-3 text-[#E31C79] fill-[#E31C79]"
-								/>
+
 							</div>
 
 							{/* Product Info */}
