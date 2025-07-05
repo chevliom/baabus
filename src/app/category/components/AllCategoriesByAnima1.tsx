@@ -45,7 +45,7 @@ const CategoryContext = createContext<CategoryContextType>({
 	categories: [],
 	loading: true,
 	selectedCategoryId: null,
-	setSelectedCategoryId: () => {},
+	setSelectedCategoryId: () => { },
 });
 
 // Provider

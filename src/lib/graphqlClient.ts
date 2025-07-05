@@ -208,16 +208,13 @@ export async function fetchCategoriesWithProducts(channel = "default-channel") {
 					alt
 					url
 					}
-					products(
-						channel: "default-channel"
-						first: 10
-						filter: {price: {gte: 9, lte: 900}, categories: "Q2F0ZWdvcnk6Mg=="}	
-					) {
+					products(first: 5, channel: $channel) {
 					edges {
 						node {
 						id
 						name
 						slug
+						averageRating   
 						thumbnail {
 							url
 						}

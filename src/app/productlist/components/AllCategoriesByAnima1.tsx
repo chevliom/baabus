@@ -2,17 +2,16 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import Link from "next/link";
-import { HeartIcon } from "lucide-react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import { Button } from "../../ui/button";
 import { Card, CardContent } from "../../../ui/Card";
 import { fetchCategoriesWithProducts } from "@/lib/graphqlClient";
-
+import { HeartIcon } from "lucide-react";
 type Product = {
 	id: string;
 	name: string;
 	slug: string;
+	averageRating?: number;
 	thumbnail?: { url: string };
 	pricing?: {
 		priceRange?: {
@@ -38,11 +37,20 @@ interface CategoryEdge {
 	node: Category;
 }
 
+type Filters = {
+	minPrice: number;
+	maxPrice: number;
+	minRating: number;
+};
+
+
 interface CategoryContextType {
 	categories: CategoryEdge[];
 	loading: boolean;
 	selectedCategoryId: string | null;
 	setSelectedCategoryId: (id: string | null) => void;
+	filters: Filters;
+	setFilters: React.Dispatch<React.SetStateAction<Filters>>;
 }
 
 const CategoryContext = createContext<CategoryContextType>({
@@ -50,12 +58,19 @@ const CategoryContext = createContext<CategoryContextType>({
 	loading: true,
 	selectedCategoryId: null,
 	setSelectedCategoryId: () => { },
+	filters: { minPrice: 0, maxPrice: 2000, minRating: 0 },
+	setFilters: () => { },
 });
 
 export const CategoryProvider = ({ children }: { children: React.ReactNode }) => {
 	const [categories, setCategories] = useState<CategoryEdge[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+	const [filters, setFilters] = useState<Filters>({
+		minPrice: 0,
+		maxPrice: 2000,
+		minRating: 0,
+	});
 
 	useEffect(() => {
 		const load = async () => {
@@ -77,7 +92,7 @@ export const CategoryProvider = ({ children }: { children: React.ReactNode }) =>
 	}, []);
 
 	return (
-		<CategoryContext.Provider value={{ categories, loading, selectedCategoryId, setSelectedCategoryId }}>
+		<CategoryContext.Provider value={{ categories, loading, selectedCategoryId, setSelectedCategoryId, filters, setFilters }}>
 			{children}
 		</CategoryContext.Provider>
 	);
@@ -233,7 +248,7 @@ export const AllCategoriesByAnima1 = () => {
 };
 
 export const FrameByAnima = () => {
-	const { categories, selectedCategoryId, loading } = useCategory();
+	const { categories, selectedCategoryId, loading, filters } = useCategory();
 	const [likedMap, setLikedMap] = useState<Record<string, boolean>>({});
 
 	const toggleLike = (product: any) => {
@@ -243,15 +258,20 @@ export const FrameByAnima = () => {
 	const products = React.useMemo(() => {
 		if (loading || !categories.length) return [];
 
-		if (selectedCategoryId) {
-			const selectedCategory = categories.find((c) => c.node.id === selectedCategoryId);
-			return selectedCategory?.node?.products?.edges.map((e) => e.node) || [];
-		}
+		const allProducts = selectedCategoryId
+			? categories.find((c) => c.node.id === selectedCategoryId)?.node.products.edges.map((e) => e.node) || []
+			: categories.flatMap((cat) => cat.node.products.edges.map((e) => e.node));
 
-
-
-		return categories.flatMap((cat) => cat.node?.products?.edges.map((e) => e.node) || []);
-	}, [categories, selectedCategoryId, loading]);
+		return allProducts.filter((product) => {
+			const price = product.pricing?.priceRange?.start?.gross?.amount ?? 0;
+			const rating = product.averageRating ?? 0;
+			return (
+				price >= filters.minPrice &&
+				price <= filters.maxPrice &&
+				rating >= filters.minRating
+			);
+		});
+	}, [categories, selectedCategoryId, loading, filters]);
 
 	if (loading) {
 		return (
@@ -272,54 +292,54 @@ export const FrameByAnima = () => {
 	}
 
 	return (
-		<div className="ml-6 w-full py-8 pr-20">
-			<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+		<div className="mt-6 flex-1">
+			<div className="grid gap-6 sm:grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
 				{products.map((product) => (
-					<Link href={`/productview?id=${product.id}`} key={product.id} className="w-full">
-
-						<Card
-							key={product.id}
-							className="w-full overflow-hidden rounded-[10px] shadow-[0px_4px_4px_#00000040]"
-						>
-							<div
-								className="relative h-60 bg-cover bg-center "
-								style={{ backgroundImage: `url(/productbg.png)` }}
-							>
-
+					<Link
+						href={`/productview?id=${product.id}`}
+						key={product.id}
+						className="w-full"
+					>
+						<Card className="relative flex flex-col rounded-[12px] bg-white shadow-md transition-transform hover:scale-[1.02]">
+							{/* Image & Heart */}
+							<div className="relative h-60 bg-[url('/productbg.png')] bg-cover bg-center flex items-center justify-center">
 								<Image
 									src={product.thumbnail?.url || "/placeholder-product.png"}
 									alt={product.name}
-									width={208}
-									height={208}
-									style={{ margin: "0 auto" }}
-									className="max-h-[210px] object-contain pt-6"
+									width={400}
+									height={400}
+									className="max-h-[180px] object-contain"
 								/>
-
+								<HeartIcon
+									size={26}
+									className="absolute top-3 right-3 text-[#E31C79] fill-[#E31C79]"
+								/>
 							</div>
-							<CardContent className="p-4">
-								<h3 className="mb-1 text-lg font-semibold tracking-tight text-[#36061a]">{product.name}</h3>
 
-								<div className="mb-2 flex items-center gap-2">
-									<svg className="h-4 w-4 text-yellow-400" viewBox="0 0 24 24" fill="currentColor">
-										<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-									</svg>
+							{/* Product Info */}
+							<CardContent className="flex flex-col gap-1 px-4 py-3">
+								<h3 className="text-[15px] font-bold uppercase text-[#37061A] font-[Poppins] line-clamp-2">
+									{product.name}
+								</h3>
 
-									<span className="text-xs text-gray-500">5.0</span>
-									<span className="text-xs text-gray-400">(1.2k Reviews)</span>
+								<div className="flex items-center justify-between w-full mt-1">
+									<div className="flex items-center gap-1 text-xs">
+										<Image src="/star-6.svg" alt="Star" width={14} height={14} />
+										<span className="text-[13px] text-[#4C4C4C]">
+											{product.averageRating ?? 0}
+										</span>
+										<span className="text-[13px] text-[#B0B0B0]">(1.2k Reviews)</span>
+									</div>
 
-									<span className="ml-auto text-base font-bold text-black">
-										{product.pricing?.priceRange?.start?.gross?.amount
-											? `${product.pricing.priceRange.start.gross.currency} ${product.pricing.priceRange.start.gross.amount}`
-											: "Price not available"}
+									<span className="text-[18px] font-bold text-[#000000] font-[Poppins]">
+										Rs {product.pricing?.priceRange?.start?.gross?.amount ?? "N/A"}
 									</span>
 								</div>
 							</CardContent>
 						</Card>
-
 					</Link>
-
 				))}
 			</div>
-		</div>
+		</div >
 	);
 };
