@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/ui/Accordion";
 import { Checkbox } from "@/ui/Checkbox";
@@ -11,6 +11,7 @@ import {
 	useCategory,
 } from "@/app/productlist/components/AllCategoriesByAnima1";
 import { HeaderSection } from "@/app/sections/HeaderSection";
+import { useSearchParams } from "next/navigation";
 
 const ResultCount = () => {
 	const { categories, selectedCategoryId, loading, filters } = useCategory();
@@ -35,15 +36,20 @@ const ResultCount = () => {
 	);
 };
 
-export const AllProductOption = (): JSX.Element => (
-	<CategoryProvider>
-		<AllProductOptionInner />
-	</CategoryProvider>
-);
+export const AllProductOption = () => {
+	const searchParams = useSearchParams();
+	const categoryId = searchParams.get("id");
+
+	return (
+		<CategoryProvider initialCategoryId={categoryId}>
+			<AllProductOptionInner />
+		</CategoryProvider>
+	);
+};
 
 export const AllProductOptionInner = (): JSX.Element => {
 	const { filters, setFilters } = useCategory();
-	const [showFilters, setShowFilters] = useState(false); // <-- mobile toggle state
+	const [showFilters, setShowFilters] = useState(false);
 	const { minPrice, maxPrice, minRating } = filters;
 	const minLimit = 0;
 	const maxLimit = 2000;
@@ -55,6 +61,10 @@ export const AllProductOptionInner = (): JSX.Element => {
 		{ value: "2.0", label: "2.0 & up" },
 		{ value: "1.0", label: "1.0 & up" },
 	];
+
+	useEffect(() => {
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	}, []);
 
 	return (
 		<div className="min-h-screen w-full bg-white">

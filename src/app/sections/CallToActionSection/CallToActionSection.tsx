@@ -1,41 +1,78 @@
 "use client";
 
 import { HeartIcon } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "../../ui/button";
 import { Card, CardContent } from "../../ui/card";
+import { fetchTrendingProducts } from "@/lib/graphqlClient";
+import { useRouter } from 'next/navigation';
 
 export const CallToActionSection = (): JSX.Element => {
 	const [isFavorited, setIsFavorited] = useState<boolean>(false);
+	const router = useRouter();
 
-	// Product data for mapping
 	const products = [
 		{
 			id: 3,
-			name: "Bus Water Bottle With Strap For Kids",
-			price: "Rs 890",
-			mainImage: "/image-38.png",
+			name: "",
+			price: "",
+			mainImage: "",
 			overlayImage: "/overlay-1.png",
 			position: { top: 0, left: 905 },
+			categoryId: "",
 		},
 		{
 			id: 2,
-			name: "BAABUS DISCOVER Kick Scooter",
-			price: "Rs 890",
-			mainImage: "/image-bus.png",
+			name: "",
+			price: "",
+			mainImage: "",
 			overlayImage: "/overlay-2.png",
 			position: { top: 100, left: 451 },
+			categoryId: "",
 		},
 		{
 			id: 1,
-			name: "BAABUS Magic Swing Car",
-			price: "Rs 890",
-			mainImage: "/image-35.png",
+			name: "",
+			price: "",
+			mainImage: "",
 			overlayImage: "/overlay-3.png",
 			position: { top: 0, left: 0 },
+			categoryId: "",
 		},
 	];
+
+	const [finalCards, setFinalCards] = useState(products);
+
+	useEffect(() => {
+		(async () => {
+			const apiProducts = await fetchTrendingProducts();
+
+			const updated = products.map((card, index) => {
+				const apiCard = apiProducts[index + 4];
+				if (!apiCard) return card;
+				const firstMedia = apiCard.media?.[0]?.url ?? card.mainImage;
+				const grossObj = apiCard.pricing?.priceRange?.start?.gross;
+				const categoryId = apiCard.category?.id ?? null;
+
+				const price = grossObj
+					? `${grossObj.currency} ${grossObj.amount}`
+					: card.price;
+
+				return {
+					...card,
+					name: apiCard.name,
+					mainImage: firstMedia,
+					price,
+					categoryId
+				};
+			});
+
+			setFinalCards(updated);
+		})();
+	}, []);
+
+
 
 	return (
 		<section className="relative mx-auto w-full max-w-[1396px] pl-4 pr-4 md:pb-16 lg:pb-20 pt-8 md:pl-4 md:pr-4">
@@ -50,12 +87,13 @@ export const CallToActionSection = (): JSX.Element => {
 
 			<div className="relative w-full">
 				<div className="grid grid-cols-3 gap-5 md:grid-cols-3 lg:grid-cols-3">
-					{products.map((product, index) => (
+					{finalCards.map((product, index) => (
 						<div
+							onClick={() => router.push(`/productlist?id=${product.categoryId}`)}
 							key={product.id}
-							className={`relative h-[200px] md:h-[433px] w-full ${index === 1 ? "mt-10 lg:mt-20" : "mt-0"}`}
+							className={`relative h-[200px] md:h-[433px] w-full transition-transform duration-300 ease-in-out hover:scale-105 ${index === 1 ? "mt-10 lg:mt-20" : "mt-0"}`}
 						>
-							<Card className="h-[154px] md:h-[96%] lg:h-[394px] w-full border-0 shadow-none">
+							<Card className="h-[154px] md:h-[96%] lg:h-[394px] w-full border-0 shadow-none rounded-xl cursor-pointer ">
 								<CardContent className="relative p-0">
 									<div className="relative h-[110px] md:h-[358px] w-full overflow-hidden shadow-lg rounded-xl mb-[10px]">
 										<div className="pointer-events-none absolute inset-0 z-0">
@@ -71,29 +109,15 @@ export const CallToActionSection = (): JSX.Element => {
 										{/* Main Product Image on top */}
 										<div className="relative z-10 h-full w-full">
 											<Image
-												className="object-contain"
+												className="object-contain px-2 py-2 md:px-10 md:py-10"
 												alt={product.name}
 												src={product.mainImage}
 												fill
-												sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-												priority
+												sizes=""
 											/>
 										</div>
-
-										{/* Favorite button on top */}
-										<button
-											className="absolute right-3 top-3 md:right-7 md:top-7 z-20 flex h-[20px] w-[20px] md:h-[30px] md:w-[30px] items-center justify-center border-none"
-											onClick={() => setIsFavorited(!isFavorited)}
-											aria-label="Toggle favorite"
-										>
-											<HeartIcon
-												className="h-[30px] w-[30px] transition-colors duration-200"
-												color={isFavorited ? "red" : "white"}
-												fill={isFavorited ? "red" : "white"}
-											/>
-										</button>
 									</div>
-									<h3 className="mt-2 font-baloo text-[12px] md:text-[18px] lg:text-2xl font-extrabold text-black">{product.name}</h3>
+									<h3 className="mt-2 font-baloo text-[12px] md:text-[18px] lg:text-2xl font-semibold text-black">{product.name}</h3>
 								</CardContent>
 							</Card>
 							<p className="mt-1 font-baloo text-[14px] md:text-[18px] lg:text-2xl font-extrabold text-black">{product.price}</p>
@@ -101,7 +125,7 @@ export const CallToActionSection = (): JSX.Element => {
 					))}
 				</div>
 
-				<div className="absolute right-0 -mt-[20px] md:-mt-24 h-[110px] w-[110px] md:h-[200px] md:w-[290px]">
+				<div className="absolute -right-[60px]">
 					<div className="h-full w-full" style={{ transform: "scaleX(-1)" }}>
 						<Image
 							className="object-cover w-[100px] md:w-[200px]"
@@ -115,11 +139,12 @@ export const CallToActionSection = (): JSX.Element => {
 
 				<div className="mt-4 md:mt-12 flex justify-center">
 					<Button
+						onClick={() => router.push('/productlist')}
 						style={{
 							backgroundColor: "rgba(248, 191, 214, 1)",
 							color: "rgba(151, 18, 72, 1)",
 						}}
-						className="rounded-[30px] md:p-6 p-4 text-[12px] md:text-2xl shadow-[0px_4px_4px_#00000040] mb-[20px]"
+						className="rounded-[30px] md:p-6 p-4 text-[12px] md:text-2xl shadow-[0px_4px_4px_#00000040] mb-[20px] transition-colors duration-300 hover:bg-[#ea518f] hover:text-white"
 					>
 						View All Products
 					</Button>

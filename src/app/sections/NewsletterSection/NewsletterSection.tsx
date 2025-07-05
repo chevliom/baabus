@@ -1,44 +1,50 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../../ui/button";
 import { Card, CardContent } from "../../ui/card";
+import { useRouter } from 'next/navigation';
+import { fetchTrendingProducts } from "@/lib/graphqlClient";
 
 // Product card data
 const productCards = [
 	{
 		id: 1,
-		title: "sip, smile, and go!",
+		title: "",
 		titleColor: "#ea518f",
 		buttonColor: "#f188b2",
 		bgColor: "bg-[#fce6ec]",
-		mainImage: "/image-bus.png",
+		mainImage: "",
 		secondaryImage: "/image-44-3.png",
+		categoryId: "",
 	},
 	{
 		id: 2,
-		title: "ride, glide, and shine!",
+		title: "",
 		titleColor: "#3587d3",
 		buttonColor: "#6ca7df",
 		bgColor: "bg-[#d9e8f6]",
-		mainImage: "/image-34.png",
+		mainImage: "",
 		secondaryImage: "/image-33.png",
+		categoryId: "",
 	},
 	{
 		id: 4,
-		title: "step fun, safe, and exciting!",
+		title: "",
 		titleColor: "#3587d3",
 		buttonColor: "#6ca7df",
 		bgColor: "bg-[#d9e8f6]",
-		mainImage: "/image-38.png",
+		mainImage: "",
 		secondaryImage: "/image-39.png",
+		categoryId: "",
 	},
 	{
 		id: 3,
-		title: "explore sounds, rhythm, and creativity!",
+		title: "",
 		titleColor: "#f188b2",
 		buttonColor: "#f188b2",
 		bgColor: "bg-[#fce6ec]",
-		mainImage: "/image-35.png",
+		mainImage: "",
 		secondaryImage: "/image-36.png",
+		categoryId: "",
 	},
 ];
 
@@ -81,8 +87,36 @@ const decorativeImages = [
 		position: "bottom-[0px] left-[0px]",
 	},
 ];
+type CardData = {
+	id: string;
+	title: string;
+	mainImage: string;
+	secondaryImage?: string;
+	titleColor: string;
+	buttonColor: string;
+	bgColor: string;
+};
 
 export const NewsletterSection = (): JSX.Element => {
+	const router = useRouter();
+
+	const [finalCards, setFinalCards] = useState(productCards);
+
+	useEffect(() => {
+		(async () => {
+			const apiProducts = await fetchTrendingProducts();
+			const updated = productCards.map((card, index) => ({
+				...card,
+				title: apiProducts?.[index]?.name ?? "Coming Soon!",
+				mainImage: apiProducts?.[index]?.media?.[0]?.url ?? "/fallback.png",
+				categoryId: apiProducts?.[index]?.category?.id ?? "",
+			}));
+			setFinalCards(updated);
+		})();
+	}, []);
+
+	console.log("Final Cards:", finalCards);
+
 	return (
 		<section className="font-baloo relative w-full overflow-hidden bg-white pb-32 pt-10 font-extrabold">
 			{/* Decorative images */}
@@ -101,9 +135,9 @@ export const NewsletterSection = (): JSX.Element => {
 			{/* Content */}
 			<div className="relative z-20 mx-auto md:h-[943px] auto max-w-[858px] px-4">
 				<div className="grid grid-cols-2 justify-items-center gap-6 sm:grid-cols-2">
-					{productCards.map((product) => {
+					{finalCards.map((product, index) => {
 						const isPink = product.bgColor === "bg-[#fce6ec]";
-						const cardSize = isPink ? "w-full h-[230px] md:w-[350px] md:h-[300px] lg:w-[360px] lg:h-[400px]" : "w-full h-[320px] md:w-[350px] md:h-[400px] lg:w-[400px] lg:h-[500px]";
+						const cardSize = isPink ? "w-full h-[230px] md:w-[350px] md:h-[300px] lg:w-[400px] lg:h-[420px]" : "w-full h-[320px] md:w-[350px] md:h-[400px] lg:w-[400px] lg:h-[500px]";
 						const secondRow = product.id === 4 ? "-mt-24" : "";
 
 						return (
@@ -118,17 +152,45 @@ export const NewsletterSection = (): JSX.Element => {
 									>
 										{product.title}
 									</div>
-									<img
-										className="absolute left-[20px] top-[40px] md:top-[60px] h-[167px] w-[127px] md:h-[230px] md:w-[230px] lg:h-[300px] lg:w-[300px] object-contain"
-										alt="Main product"
-										src={product.mainImage}
-									/>
-									<img
-										className="absolute bottom-[30px] left-[230px] z-10 h-[120px] w-[120px] object-contain"
-										alt="Decoration"
-										src={product.secondaryImage}
-									/>
+									<div className="flex justify-center items-center h-full w-full">
+										<img
+											className="h-[167px] w-[127px] md:h-[230px] md:w-[230px] lg:h-[300px] lg:w-[300px] xl:w-[250px] xl:h-[250px] object-contain"
+											alt="Main product"
+											src={product.mainImage}
+										/>
+									</div>
+									{index === 0 && (
+										<img
+											className="absolute bottom-[0px] left-[260px] z-10 h-[120px] w-[120px] object-contain"
+											alt="Decoration"
+											src="/image-44-3.png"
+										/>
+									)}
+									{index === 1 && (
+										<img
+											src="/image-33.png"
+											alt="Flying Flower"
+											className="hidden md:block absolute -bottom-0 -right-[11px] md:-right-[18px] w-[90px] h-[90px] md:w-[170px] md:h-[170px] object-contain z-20 rotate-[280deg]"
+										/>
+									)}
+									{index === 2 && (
+										<img
+											src="/image-39.png"
+											alt="Flying Flower"
+											className="hidden md:block absolute -bottom-4 -right-[11px] md:-right-[10px] w-[90px] h-[90px] md:w-[200px] md:h-[200px] object-contain z-20"
+										/>
+									)}
+
+									{index === 3 && (
+										<img
+											src="/image-36.png"
+											alt="Flying Flower"
+											className="hidden md:block absolute -bottom-6 -right-[11px] md:-right-[30px] w-[90px] h-[90px] md:w-[160px] md:h-[160px] object-contain z-20"
+										/>
+									)}
+
 									<Button
+										onClick={() => router.push(`/productlist?id=${product.categoryId}`)}
 										className="font-baloo absolute bottom-[25px] left-[24px] md:h-[40px] md:w-[140px] lg:h-[67px] lg:w-[168px] rounded-[20px] text-xl font-extrabold text-white"
 										style={{ backgroundColor: product.buttonColor }}
 									>

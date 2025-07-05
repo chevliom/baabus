@@ -48,6 +48,7 @@ export const SingleProductView = (): JSX.Element => {
 		},
 	];
 
+	const [related, setRelated] = useState<any[]>([]);
 	const [mainImage, setMainImage] = useState(thumbnails[0].src);
 
 	return (
@@ -58,7 +59,7 @@ export const SingleProductView = (): JSX.Element => {
 			<div className="container mx-auto mt-40 px-4">
 				{/* Product Gallery and Info */}
 				<div className="mx-auto mt-8 flex max-w-7xl flex-col gap-12 border-b-2 px-4 pb-12 md:flex-row md:items-start">
-					<FrameByAnima />
+					<FrameByAnima setRelated={setRelated} />
 				</div>
 
 				<Separator className="my-8" />
@@ -237,7 +238,7 @@ export const SingleProductView = (): JSX.Element => {
 			</div>
 
 			{/* Footer or Bottom Frame */}
-			<FrameWrapperByAnima />
+			<FrameWrapperByAnima products={related} />
 		</div>
 	);
 };

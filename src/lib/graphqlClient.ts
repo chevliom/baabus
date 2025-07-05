@@ -215,6 +215,10 @@ export async function fetchCategoriesWithProducts(channel = "default-channel") {
 						name
 						slug
 						averageRating   
+						 category{
+                            id
+                            name
+                        }
 						thumbnail {
 							url
 						}
@@ -452,6 +456,30 @@ type AccountRegisterResponse = {
 	};
 };
 
+export interface ProductNode {
+	id: string;
+	name: string;
+	slug: string;
+	description: string;
+	media: {
+		id: string;
+		url: string;
+		type: string;
+		productId: string;
+	}[];
+	pricing: {
+		priceRange: {
+			start: { gross: { amount: number; currency: string } };
+			stop: { gross: { amount: number; currency: string } };
+		};
+	};
+	category: { id: string; name: string };
+	attributes: {
+		attribute: { name: string };
+		values: { name: string }[];
+	}[];
+}
+
 const GRAPHQL_ENDPOINT = "https://baabusbabycare.visiobyte.in/graphql/";
 
 export async function registerAccount(input: AccountRegisterInput): Promise<{
@@ -646,4 +674,69 @@ export async function fetchMe() {
 
 	const json = (await response.json()) as ProductResponse;
 	return json.data ?? null;
+}
+
+export async function fetchTrendingProducts(): Promise<ProductNode[]> {
+	const response = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: Cookies.get("Token") || "",
+		},
+		body: JSON.stringify({
+			query: `
+        {
+          trendingProducts(first: 10, channel: "default-channel") {
+            edges {
+              node {
+                id
+                name
+                slug
+                description
+                media {
+                  id
+                  url(format: ORIGINAL, size: 512)
+                  type
+                  productId
+                }
+                pricing {
+                  priceRange {
+                    start {
+                      gross {
+                        amount
+                        currency
+                      }
+                    }
+                    stop {
+                      gross {
+                        amount
+                        currency
+                      }
+                    }
+                  }
+                }
+                category {
+				id
+                  name
+                }
+                attributes {
+                  attribute {
+                    name
+                  }
+                  values {
+                    name
+                  }
+                }
+              }
+            }
+          }
+        }
+      `,
+		}),
+	});
+
+	const json: any = await response.json();
+	const edges = json.data?.trendingProducts?.edges ?? [];
+
+	return edges.map((edge: { node: ProductNode }) => edge.node);
 }

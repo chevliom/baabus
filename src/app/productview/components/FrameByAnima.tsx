@@ -8,6 +8,7 @@ import { Button } from "@/ui/Button";
 import { Card, CardContent } from "@/ui/Card";
 import Cookies from "js-cookie";
 import { toast } from "react-hot-toast";
+import { fetchCategoriesWithProducts } from "@/lib/graphqlClient";
 
 const socialIcons = [
 	{ id: 1, src: "/akar-icons_facebook-fill.svg", alt: "Facebook" },
@@ -15,7 +16,7 @@ const socialIcons = [
 	{ id: 3, src: "/ant-design_twitter-circle-filled.svg", alt: "Twitter" },
 ];
 
-export const FrameByAnima = (): JSX.Element => {
+export const FrameByAnima = ({ setRelated }: { setRelated: (val: any[]) => void }): JSX.Element => {
 	const searchParams = useSearchParams();
 	const id = searchParams.get("id");
 
@@ -99,7 +100,7 @@ export const FrameByAnima = (): JSX.Element => {
                 isAvailable
                 availableForPurchaseAt
                 productType { name }
-                category { name }
+                category { id, name }
                 productVariants(first: 10) {
                   edges {
                     node {
@@ -133,6 +134,36 @@ export const FrameByAnima = (): JSX.Element => {
 
 		fetchProduct();
 	}, [id]);
+
+
+	useEffect(() => {
+		const fetchRelatedProducts = async () => {
+			if (!productData?.category?.id) return;
+
+			try {
+				const categoryEdges = await fetchCategoriesWithProducts(
+					Cookies.get("channel") || "default-channel"
+				);
+
+				const thisCat = categoryEdges.find(
+					(edge: any) => edge.node.id === productData.category.id
+				);
+
+				if (!thisCat) return;
+
+				const productsInSameCat = thisCat.node.products.edges
+					.map((e: any) => e.node)
+					.filter((p: any) => p.id !== productData.id)
+					.slice(0, 3);
+
+				setRelated(productsInSameCat);
+			} catch (err) {
+				console.error("Error fetching related products", err);
+			}
+		};
+
+		fetchRelatedProducts();
+	}, [productData]);
 
 	useEffect(() => {
 		const fetchWishlist = async () => {
@@ -316,6 +347,9 @@ export const FrameByAnima = (): JSX.Element => {
 			toast.error("Something went wrong.");
 		}
 	};
+
+
+
 
 	return (
 		<Card className="w-full border-none bg-transparent px-4 shadow-none md:px-0">

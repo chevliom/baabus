@@ -62,10 +62,10 @@ const CategoryContext = createContext<CategoryContextType>({
 	setFilters: () => { },
 });
 
-export const CategoryProvider = ({ children }: { children: React.ReactNode }) => {
+export const CategoryProvider = ({ children, initialCategoryId }: { children: React.ReactNode, initialCategoryId?: string | null; }) => {
 	const [categories, setCategories] = useState<CategoryEdge[]>([]);
 	const [loading, setLoading] = useState(true);
-	const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+	const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(initialCategoryId ?? null);
 	const [filters, setFilters] = useState<Filters>({
 		minPrice: 0,
 		maxPrice: 2000,
