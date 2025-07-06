@@ -41,7 +41,7 @@ export default function HomePage() {
 			id: 4,
 			title: "Babus Card",
 			subtitle: "To Get Exclusive offers",
-			icon: "/vector.svg",
+			icon: "/vector.png",
 		},
 	];
 
@@ -67,7 +67,7 @@ export default function HomePage() {
 			</div>
 
 			{/* <ContactSection /> */}
-			<div className="h-full w-full overflow-hidden">
+			<div className="hidden sm:block h-full w-full overflow-hidden">
 				<Image
 					src="/Highlights.png"
 					alt="Highlights"
@@ -77,6 +77,18 @@ export default function HomePage() {
 					priority
 				/>
 			</div>
+
+			<div className="block sm:hidden h-full w-full overflow-hidden">
+				<Image
+					src="/highlights-mobile.png"
+					alt="Highlights Mobile"
+					width={600}
+					height={800}
+					className="h-auto w-full"
+					priority
+				/>
+			</div>
+
 
 			<MainContentSection />
 			<FooterSection />
@@ -90,15 +102,6 @@ export default function HomePage() {
 							<div key={link.id} className="mb-4 flex items-start gap-3">
 								<div className="relative h-[34px] w-[34px]">
 									<Image className="object-contain" alt={link.title} src={link.icon} width={34} height={34} />
-									{link.id === 4 && (
-										<Image
-											className="absolute bottom-2 left-0"
-											alt="Nested Vector"
-											src="/vector-1.svg"
-											width={40}
-											height={20}
-										/>
-									)}
 								</div>
 								<div>
 									<h3 className="font-baloo text-2xl font-extrabold text-black">{link.title}</h3>

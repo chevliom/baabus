@@ -75,7 +75,7 @@ export const CallToActionSection = (): JSX.Element => {
 
 
 	return (
-		<section className="relative mx-auto w-full max-w-[1396px] pl-4 pr-4 md:pb-16 lg:pb-20 pt-8 md:pl-4 md:pr-4">
+		<section className="relative mx-auto w-full p-4 md:p-12 lg:p-16">
 			<div className="mb-4 lg:mb-12">
 				<p className="font-baloo text-2xl font-extrabold text-[#ea518f]">Our Products</p>
 				<h2 className="mt-0 md:mt-2 font-baloo md:text-3xl lg:text-5xl font-extrabold">
@@ -86,14 +86,14 @@ export const CallToActionSection = (): JSX.Element => {
 			</div>
 
 			<div className="relative w-full">
-				<div className="grid grid-cols-3 gap-5 md:grid-cols-3 lg:grid-cols-3">
+				<div className="grid grid-cols-3 gap-5 md:gap-10 md:grid-cols-3 lg:grid-cols-3">
 					{finalCards.map((product, index) => (
 						<div
 							onClick={() => router.push(`/productlist?id=${product.categoryId}`)}
 							key={product.id}
 							className={`relative h-[200px] md:h-[433px] w-full transition-transform duration-300 ease-in-out hover:scale-105 ${index === 1 ? "mt-10 lg:mt-20" : "mt-0"}`}
 						>
-							<Card className="h-[154px] md:h-[96%] lg:h-[394px] w-full border-0 shadow-none rounded-xl cursor-pointer ">
+							<Card className="h-[135px] md:h-[90%] lg:h-[394px] w-full border-0 shadow-none rounded-xl cursor-pointer ">
 								<CardContent className="relative p-0">
 									<div className="relative h-[110px] md:h-[358px] w-full overflow-hidden shadow-lg rounded-xl mb-[10px]">
 										<div className="pointer-events-none absolute inset-0 z-0">
@@ -120,15 +120,27 @@ export const CallToActionSection = (): JSX.Element => {
 									<h3 className="mt-2 font-baloo text-[12px] md:text-[18px] lg:text-2xl font-semibold text-black">{product.name}</h3>
 								</CardContent>
 							</Card>
-							<p className="mt-1 font-baloo text-[14px] md:text-[18px] lg:text-2xl font-extrabold text-black">{product.price}</p>
+							<div className="w-full mt-3 overflow-x-auto scrollbar-hide hidden md:block lg:block xl:block">
+								<div className="flex justify-start gap-2 md:gap-4 whitespace-nowrap">
+									{["Safe & Secure", "Sturdy Design", "Built-in Toys"].map((text, i) => (
+										<span
+											key={i}
+											className="font-baloo text-[13px] md:text-[16px] lg:text-lg font-bold text-[#37061A] bg-pink-100 px-4 py-1.5 rounded-full border border-dashed border-black"
+										>
+											{text}
+										</span>
+									))}
+								</div>
+							</div>
+
 						</div>
 					))}
 				</div>
 
-				<div className="absolute -right-[60px]">
+				<div className="absolute -right-[10px] md:-right-[30px] lg:-right-[5px] top-[245px] sm:top-[210px] md:top-[450px] lg:top-[500px]">
 					<div className="h-full w-full" style={{ transform: "scaleX(-1)" }}>
 						<Image
-							className="object-cover w-[100px] md:w-[200px]"
+							className="object-cover w-[70px] md:w-[200px] sm:w-[160px]"
 							alt="Decorative image (mirrored)"
 							src="/image-44-3.png"
 							width={290}
@@ -137,7 +149,7 @@ export const CallToActionSection = (): JSX.Element => {
 					</div>
 				</div>
 
-				<div className="mt-4 md:mt-12 flex justify-center">
+				<div className="md:mt-12 flex justify-center">
 					<Button
 						onClick={() => router.push('/productlist')}
 						style={{

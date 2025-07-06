@@ -8,6 +8,9 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
+import { Lobster } from 'next/font/google';
+import { Dancing_Script } from 'next/font/google';
+
 
 // Define types for testimonials
 interface Testimonial {
@@ -88,6 +91,16 @@ const testimonials: Testimonial[] = [
 		showNameAndTitle: true,
 	},
 ];
+const lobster = Lobster({
+	subsets: ['latin'],
+	weight: '400',
+});
+
+const dancingScript = Dancing_Script({
+	subsets: ['latin'],
+	weight: ['500'], // choose a lighter one here
+});
+
 
 export const FooterSection = (): JSX.Element => {
 	const scrollRef = useRef<HTMLDivElement>(null);
@@ -147,16 +160,16 @@ export const FooterSection = (): JSX.Element => {
 
 	return (
 		<section className="hidden md:block lg:block w-full overflow-hidden py-16">
-			<div className="container mx-auto px-4">
+			<div className="container mx-auto px-4 mt-20">
 				<h1 className="mb-12 text-left text-5xl leading-tight md:text-6xl lg:text-[70px]">
 					<span className="font-baloo font-extrabold text-black">What </span>
-					<span className="font-['Playball',Helvetica] text-[#f188b3]">Lovely</span>
+					<span className={`${dancingScript.className} font-normal text-pink-400 text-[70px]`}>Lovely</span>
 					<span className="font-baloo font-extrabold text-black">
-						{" "}
-						Moms and <br /> Dads Are{" "}
+						{" "} Moms and <br /> Dads Are{" "}
 					</span>
-					<span className="font-['Playball',Helvetica] text-[#f188b3]">Saying!</span>
+					<span className={`${dancingScript.className} font-normal text-pink-400 text-[70px]`}>Saying!</span>
 				</h1>
+
 
 				<div
 					className="scrollbar-hide flex gap-6 overflow-x-auto pb-6 pt-12"
@@ -174,18 +187,20 @@ export const FooterSection = (): JSX.Element => {
 						{duplicatedTestimonials.map((testimonial, index) => (
 							<Card
 								key={`${testimonial.id}-${index}`}
-								className="inline-block w-[512px] rounded-lg shadow-card-drop-2"
+								className="inline-block w-[512px]  shadow-card-drop-2"
 								style={{ backgroundColor: testimonial.backgroundColor }}
 							>
 								<CardContent className="relative flex items-center gap-4 p-6">
-									<div className="relative flex-shrink-0">
-										<Avatar className="-mt-20 h-[250px] w-40 rounded-none">
-											<AvatarImage
+									<div className="relative ">
+										<div className="-mt-20 h-[250px] w-40">
+											<Image
 												src="/rectangle-12-2.png"
 												alt="Customer"
+												width={40}
+												height={40}
 												className="h-full w-full object-cover"
 											/>
-										</Avatar>
+										</div>
 									</div>
 
 									<div className="ml-2 flex flex-1 flex-col items-start gap-4">
@@ -210,7 +225,7 @@ export const FooterSection = (): JSX.Element => {
 											</span>
 										</div>
 
-										<p className="font-['Manrope',Helvetica] text-sm font-medium leading-[18px] text-primaryp-000">
+										<p className="font-['Manrope',Helvetica] text-sm font-medium leading-[18px] text-[#17030B]">
 											Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia
 											consequat duis enim velit mollit.
 										</p>
@@ -231,7 +246,7 @@ export const FooterSection = (): JSX.Element => {
 
 									<DropdownMenu>
 										<DropdownMenuTrigger asChild>
-											<button className="absolute right-4 top-11 flex items-center gap-0.5 rounded-[10px] bg-primaryp-000 px-1 py-2">
+											<button className="absolute -right-[14px] top-11 flex items-center gap-0.5 rounded-[10px] bg-[#17030B] px-1 py-2">
 												<div
 													style={{
 														backgroundColor: `var(--${testimonial.textColor})`,

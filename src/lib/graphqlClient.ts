@@ -480,6 +480,22 @@ export interface ProductNode {
 	}[];
 }
 
+export interface ProductReview {
+	id: string;
+	channel: string;
+	rating: number;
+	review: string;
+	createdAt: string;
+	user: {
+		id: string;
+		email: string;
+		firstName: string;
+		lastName: string;
+		avatar: { url: string | null; alt: string | null } | null;
+	};
+	product: { id: string; name: string };
+}
+
 const GRAPHQL_ENDPOINT = "https://baabusbabycare.visiobyte.in/graphql/";
 
 export async function registerAccount(input: AccountRegisterInput): Promise<{
@@ -739,4 +755,47 @@ export async function fetchTrendingProducts(): Promise<ProductNode[]> {
 	const edges = json.data?.trendingProducts?.edges ?? [];
 
 	return edges.map((edge: { node: ProductNode }) => edge.node);
+}
+
+export async function fetchProductReviews(
+	productId: string,
+	channel = "default-channel",
+): Promise<ProductReview[]> {
+	const res = await fetch("https://baabusbabycare.visiobyte.in/graphql/", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({
+			query: /* GraphQL */ `
+				query ProductReviews($productId: ID!, $channel: String!) {
+					productReviews(productId: $productId, channel: $channel) {
+						id
+						channel
+						rating
+						review
+						createdAt
+						user {
+							id
+							email
+							avatar {
+								url
+								alt
+							}
+							firstName
+							lastName
+						}
+						product {
+							id
+							name
+						}
+					}
+				}
+			`,
+			variables: { productId: productId.trim(), channel },
+		}),
+		next: { revalidate: 30 },
+	});
+
+	const json: any = await res.json();
+	if (!json?.data?.productReviews) return [];
+	return json.data.productReviews as ProductReview[];
 }

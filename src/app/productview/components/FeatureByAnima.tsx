@@ -18,7 +18,7 @@ export const FeatureByAnima = (): JSX.Element => {
 	];
 
 	return (
-		<Card className="w-full max-w-[537px] rounded-md border border-[#e6e6e6]">
+		<Card className="w-full max-w-[537px] rounded-xl border border-[#e6e6e6]">
 			<CardContent className="flex items-center justify-between p-6">
 				{features.map((feature, index) => (
 					<div key={index} className="flex items-center gap-3">

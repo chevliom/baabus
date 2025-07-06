@@ -180,7 +180,7 @@ export default function l1() {
 
             <section className="py-10 bg-white text-center">
                 {/* Title */}
-                <h2 className="text-3xl font-bold mb-[30px] underline decoration-dotted decoration-[3px] decoration-[#B71557] underline-offset-[6px] text-center mx-auto max-w-max">
+                <h2 className="text-3xl font-bold  mb-[30px] underline decoration-dotted decoration-[3px] decoration-[#B71557] underline-offset-[6px] text-center mx-auto max-w-max">
                     <span className="text-[#22609B]">Kids </span>
                     <span className="text-[#B71557]">Gallery</span>
                 </h2>

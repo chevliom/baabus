@@ -50,7 +50,7 @@ export const FrameWrapperByAnima = ({ products = [] }: { products: any[] }): JSX
 	];
 
 	return (
-		<section className="mx-auto w-full max-w-[1303px] py-8">
+		<section className="mx-auto w-full max-w-[1303px] py-8 mt-10">
 			<h2 className="mb-8 text-center font-['Poppins',Helvetica] text-4xl font-normal text-black">
 				Related Products
 			</h2>
@@ -60,34 +60,21 @@ export const FrameWrapperByAnima = ({ products = [] }: { products: any[] }): JSX
 					const variant = product.productVariants.edges?.[0]?.node;
 					const image = variant?.images?.[0]?.url || "/image-7.png";
 					const price = product.pricing?.priceRange?.start?.gross?.amount || 0;
-					console.log("Product Data:", product);
 					const background = "/image-6.png";
 
 					return (
 						<Card
 							key={product.id}
 							onClick={() => router.push(`/productlist?id=${product.category?.id}`)}
-							className="w-[336px] overflow-hidden rounded-[10px] shadow-[0px_4px_4px_#00000040]"
+							className="w-[336px] overflow-hidden rounded-[10px] shadow-[0px_4px_4px_#00000040] cursor-pointer transition-transform hover:scale-[1.02] hover:shadow-[0px_6px_6px_#00000040] md:w-[336px] lg:w-[336px] xl:w-[336px] 2xl:w-[336px]"
 						>
 							<CardContent className="p-0">
 								<div className="relative">
+									{/* Background with product image */}
 									<div
 										className="relative h-60 w-full bg-cover bg-center"
 										style={{ backgroundImage: `url(${background})` }}
 									>
-										<button
-											className="absolute right-4 top-4 z-10"
-											onClick={() => setLiked(!liked)}
-										>
-											<Image
-												src={liked ? "/redheart.png" : "/whiteheart.png"}
-												alt="Heart"
-												className="transition duration-200 ease-in-out"
-												width={24}
-												height={24}
-											/>
-										</button>
-
 										<Image
 											className="mx-auto object-contain px-4 py-6"
 											alt={product.name}
@@ -97,44 +84,24 @@ export const FrameWrapperByAnima = ({ products = [] }: { products: any[] }): JSX
 										/>
 									</div>
 
+									{/* Product details */}
 									<div className="p-2">
-										<h3 className="mt-2 font-['Poppins',Helvetica] text-xl font-semibold text-[#36061a]">
+										<h3 className="text-[15px] font-bold uppercase text-[#37061A] font-[Poppins] line-clamp-2">
 											{product.name}
 										</h3>
 
-										<div className="mt-2 flex items-center">
-											<Image
-												className="h-4 w-4"
-												alt="Star Icon"
-												src="/star-6.svg"
-												width={16} // 1rem = 16px
-												height={16}
-											/>
-											<span className="ml-2 font-['Poppins',Helvetica] text-xs font-light text-[#00000066]">
-												{product.averageRating}
-											</span>
-											<span className="ml-1 font-['Poppins',Helvetica] text-xs font-light text-[#00000066]">
-												({product.reviews} Reviews)
-											</span>
-										</div>
+										<div className="flex items-center justify-between w-full mt-1">
+											<div className="flex items-center gap-1 text-xs">
+												<Image src="/star-6.svg" alt="Star" width={14} height={14} />
+												<span className="text-[13px] text-[#4C4C4C]">
+													{product.averageRating ?? 0}
+												</span>
+												<span className="text-[13px] text-[#B0B0B0]">(1.2k Reviews)</span>
+											</div>
 
-										<div className="mt-2 flex items-center justify-between">
-											<span className="font-['Poppins',Helvetica] text-xl font-bold text-black">
-												Rs {price}
+											<span className="text-[18px] font-bold text-[#000000] font-[Poppins]">
+												Rs {product.pricing?.priceRange?.start?.gross?.amount ?? "N/A"}
 											</span>
-										</div>
-
-										<div className="mb-2 mt-4 flex justify-between">
-											<Button
-												variant="outline"
-												className="h-10 w-[120px] rounded-[10px] border-[#ea518f] font-['Baloo',Helvetica] text-[13px] font-bold text-[#ea518f]"
-											>
-												Add To Cart
-											</Button>
-
-											<Button className="h-10 w-[120px] rounded-[10px] bg-[#ea518f] font-['Baloo',Helvetica] text-[13px] font-bold text-white hover:text-[#ea518f] shadow-[0px_4px_4px_#00000040]">
-												Buy Now
-											</Button>
 										</div>
 									</div>
 								</div>
@@ -142,6 +109,7 @@ export const FrameWrapperByAnima = ({ products = [] }: { products: any[] }): JSX
 						</Card>
 					);
 				})}
+
 			</div>
 		</section>
 	);

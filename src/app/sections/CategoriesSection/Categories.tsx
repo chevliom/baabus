@@ -113,7 +113,7 @@ export const Categories: React.FC = () => {
 			</div>
 
 			<div className="container mx-auto p-0 pb-[60px] lg:px-4 lg:py-8">
-				<h2 className="text-center mb-4 font-baloo text-3xl font-extrabold text-pink-600 md:text-4xl md:mb-4 md:mt-6 md:text-[30px] lg:mb-12">
+				<h2 className="text-center mb-4 font-baloo text-3xl font-extrabold text-pink-600 md:text-4xl md:mb-4 md:mt-1 md:text-[64px] lg:mb-12">
 					Categories
 				</h2>
 

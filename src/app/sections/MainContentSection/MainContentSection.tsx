@@ -17,8 +17,8 @@ export const MainContentSection = (): JSX.Element => {
 		{ image: "/image-56.png", text: "Wooden educational toys" },
 		{ image: "/image-54.png", text: "Boy with soccer ball" },
 		{ image: "/image-52.png", text: "Girl with teddy bear" },
-		{ image: "/image-54.png", text: "Boy with soccer ball" },
-		{ image: "/image-56.png", text: "Wooden educational toys" },
+		{ image: "/image-55.png", text: "Boy with soccer ball" },
+		{ image: "/image-57.png", text: "Wooden educational toys" },
 	];
 
 	const getVisibleItems = (): VisibleItem[] => {
@@ -63,48 +63,52 @@ export const MainContentSection = (): JSX.Element => {
 		<section className="relative w-full overflow-hidden bg-white pt-10 md:pt-16">
 			{/* Title */}
 			<div className="md:mb-8 lg:mb-12">
-				<h2 className="text-center text-[24px] md:text-4xl lg:text-6xl font-bold">
-					<span className="text-blue-500">Kids</span>
-					<span className="text-pink-500"> Gallery</span>
+				<h2 className="text-center text-[24px] md:text-4xl lg:text-6xl font-bold font-baloo">
+					<span className="text-[#2873B9]">Kids</span>
+					<span className="text-pink-600"> Gallery</span>
 				</h2>
-				<div className="mt-1 flex justify-center">
-					<div className="w-40 md:w-72 border-b-4 border-dotted border-pink-500"></div>
+				<div className="flex justify-center">
+					<div className="w-40 md:w-[325px] mr-[34px] border-b-4 border-dotted border-pink-500"></div>
 				</div>
 			</div>
 
-			{/* Static Gallery */}
-			<div className="relative h-96 w-full overflow-hidden">
-				<div className="relative flex h-full items-center justify-center">
-					<div className="relative mx-auto flex h-full w-full max-w-6xl items-center justify-center">
-						{getVisibleItems().map((itemData, idx) => {
-							const { position, rotation } = itemData;
-							let bgColor = "bg-pink-600";
-							if (position === -1) bgColor = "bg-pink-500";
-							if (position === -2) bgColor = "bg-pink-400";
-							if (position === 1) bgColor = "bg-pink-500";
-							if (position === 2) bgColor = "bg-pink-400";
-
-							const heightClass = Math.abs(position) === 2 ? "h-96" : "h-80";
-
-							return (
-								<div
-									key={idx}
-									className={`absolute ${heightClass} w-72 ${bgColor} overflow-hidden rounded-3xl shadow-2xl`}
-									style={getStyle(position, rotation)}
-								>
-									<Image
-										src={itemData.item.image}
-										alt={itemData.item.text}
-										width={288}
-										height={Math.abs(position) === 2 ? 384 : 320}
-										className="h-full w-full object-cover"
-									/>
-								</div>
-							);
-						})}
+			<div className="hidden md:block">
+				<div className="relative h-96 w-full overflow-hidden">
+					<div className="relative flex h-full items-center justify-center overflow-hidden">
+						<div className="relative  flex h-full w-full  items-center justify-center">
+							{getVisibleItems().map((itemData, idx) => {
+								const { position, rotation } = itemData;
+								return (
+									<div
+										key={idx}
+										className={`absolute h-96 w-72 overflow-hidden `}
+										style={getStyle(position, rotation)}
+									>
+										<Image
+											src={itemData.item.image}
+											alt={itemData.item.text}
+											width={288}
+											height={Math.abs(position) === 2 ? 384 : 320}
+											className="h-full w-full object-cover"
+										/>
+									</div>
+								);
+							})}
+						</div>
 					</div>
 				</div>
 			</div>
+
+			<div className="block md:hidden w-full mt-10 p-2">
+				<Image
+					src="/mobile-res.png"
+					alt="Mobile Version"
+					width={600}
+					height={400}
+					className="w-full h-auto object-cover"
+				/>
+			</div>
+
 		</section>
 	);
 };
