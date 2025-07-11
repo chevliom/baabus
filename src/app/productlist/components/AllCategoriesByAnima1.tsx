@@ -323,9 +323,9 @@ export const FrameByAnima = () => {
 									<div className="flex items-center gap-1 text-xs">
 										<Image src="/star-6.svg" alt="Star" width={14} height={14} />
 										<span className="text-[13px] text-[#4C4C4C]">
-											{product.averageRating ?? 0}
+											{Number(product.averageRating ?? 0).toFixed(1)}
 										</span>
-										<span className="text-[13px] text-[#B0B0B0]">(1.2k Reviews)</span>
+										<span className="text-[13px] text-[#B0B0B0]">Rating</span>
 									</div>
 
 									<span className="text-[18px] font-bold text-[#000000] font-[Poppins]">
